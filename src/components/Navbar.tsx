@@ -102,7 +102,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_0_12px_rgba(185,28,28,0.4)]"
             />
           </div>
-          <div className="hidden min-[400px]:flex flex-col">
+          <div className="flex flex-col">
             <span className="font-heading text-sm sm:text-base font-bold tracking-wider text-white group-hover:text-red-400 transition-colors leading-tight">
               ANTONY CARRION
             </span>
