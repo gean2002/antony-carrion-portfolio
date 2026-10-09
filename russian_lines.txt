@@ -1,0 +1,123 @@
+src/App.tsx:64: {/* 2. ABOUT & SERVICES (ОБО МНЕ / УСЛУГИ) */}
+src/App.tsx:70: {/* 3. PROJECTS (МОИ ПРОЕКТЫ) */}
+src/App.tsx:76: {/* 4. WORK PROCESS (ЭТАПЫ РАБОТЫ) */}
+src/App.tsx:79: {/* 5. TECHNOLOGIES & CALL TO ACTION (ТЕХНОЛОГИИ & CTA) */}
+src/App.tsx:82: {/* 6. CONTACTS (КОНТАКТЫ & LAPTOP MOCKUP) */}
+src/components/AboutAndServices.tsx:38: {/* LEFT SIDE: ОБО МНЕ (ABOUT ME) */}
+src/components/AboutAndServices.tsx:44: ОБО МНЕ
+src/components/AboutAndServices.tsx:172: <strong className="text-white font-semibold">Меня зовут Нищаков Максим</strong>, я занимаюсь веб-разработкой и созданием сайтов разной сложности.
+src/components/AboutAndServices.tsx:175: Помогаю бизнесу и людям выделиться в интернете с помощью качественных и современных решений.
+src/components/AboutAndServices.tsx:178: От продуманной архитектуры до мельчайших микро-анимаций: каждый пиксель работает на повышение конверсии.
+src/components/AboutAndServices.tsx:190: <span>БОЛЬШЕ ОБО МНЕ</span>
+src/components/AboutAndServices.tsx:198: {/* RIGHT SIDE: УСЛУГИ (SERVICES) */}
+src/components/AboutAndServices.tsx:204: УСЛУГИ
+src/components/AboutModal.tsx:31: БИОГРАФИЯ И ПРИНЦИПЫ
+src/components/AboutModal.tsx:34: НИЩАКОВ МАКСИМ
+src/components/AboutModal.tsx:45: aria-label="Закрыть"
+src/components/AboutModal.tsx:57: Привет! Я Максим, веб-разработчик и UI/UX специалист из Москвы.
+src/components/AboutModal.tsx:60: Мой путь в разработке начался более 3 лет назад с увлечения созданием красивых интерфейсов и сложной верстки. Сегодня я создаю сайты под ключ: от интерактивных продающих лендингов до полноценных интернет-магазинов и корпоративных порталов.
+src/components/AboutModal.tsx:63: В своей работе я не использую шаблонные решения «на коленке». Каждый проект проектируется с глубоким пониманием бизнес-задач клиента, аудитории и психологических триггеров конверсии.
+src/components/AboutModal.tsx:74: Чистый код
+src/components/AboutModal.tsx:77: Семантическая верстка, разделение логики, отсутствие лишних тяжелых библиотек.
+src/components/AboutModal.tsx:86: Скорость & SEO
+src/components/AboutModal.tsx:89: Сайты загружаются менее чем за 1.2 секунды. Высокие показатели Google PageSpeed (95+).
+src/components/AboutModal.tsx:98: Дедлайны 100%
+src/components/AboutModal.tsx:101: Понятный тайминг по этапам. Никаких пропаж из связи и срывов согласованных сроков.
+src/components/AboutModal.tsx:109: Что вы получаете при заказе сайта:
+src/components/AboutModal.tsx:114: <span>Адаптивность под 100% экранов и телефонов</span>
+src/components/AboutModal.tsx:118: <span>Базовая SEO-оптимизация и мета-теги</span>
+src/components/AboutModal.tsx:122: <span>Подключение форм, заявок и Telegram-уведомлений</span>
+src/components/AboutModal.tsx:126: <span>30 дней бесплатной поддержки после сдачи</span>
+src/components/AboutModal.tsx:134: Открыт к новым интересным коммерческим проектам
+src/components/AboutModal.tsx:143: ОБСУДИТЬ ВАШ ПРОЕКТ
+src/components/AllProjectsModal.tsx:23: { id: 'all', label: 'Все проекты' },
+src/components/AllProjectsModal.tsx:25: { id: 'ИНТЕРНЕТ-МАГАЗИН', label: 'Интернет-Магазины' },
+src/components/AllProjectsModal.tsx:26: { id: 'КОРПОРАТИВНЫЙ САЙТ', label: 'Корпоративные' },
+src/components/AllProjectsModal.tsx:27: { id: 'ДИЗАЙН-СТУДИЯ', label: 'Дизайн-Студии' },
+src/components/AllProjectsModal.tsx:46: ВСЕ ПРОЕКТЫ И КЕЙСЫ
+src/components/AllProjectsModal.tsx:49: Каталог выполненных работ за 2023–2024 гг.
+src/components/AllProjectsModal.tsx:60: aria-label="Закрыть"
+src/components/ContactModal.tsx:17: const [projectType, setProjectType] = useState<string>(initialService || 'Лендинг пейдж');
+src/components/ContactModal.tsx:19: const [timeline, setTimeline] = useState<string>('2–3 недели');
+src/components/ContactModal.tsx:28: 'Лендинг пейдж',
+src/components/ContactModal.tsx:29: 'Интернет-магазин',
+src/components/ContactModal.tsx:30: 'Корпоративный сайт',
+src/components/ContactModal.tsx:31: 'Верстка по макету',
+src/components/ContactModal.tsx:32: 'Доработка / Оптимизация',
+src/components/ContactModal.tsx:36: 'до 50 000 ₽',
+src/components/ContactModal.tsx:43: 'Срочно (до 7 дней)',
+src/components/ContactModal.tsx:44: '2–3 недели',
+src/components/ContactModal.tsx:45: '1 месяц',
+src/components/ContactModal.tsx:46: 'Обсуждается',
+src/components/ContactModal.tsx:75: ОБСУДИТЬ ПРОЕКТ
+src/components/ContactModal.tsx:78: Заполните бриф или напишите напрямую в Telegram
+src/components/ContactModal.tsx:89: aria-label="Закрыть"
+src/components/ContactModal.tsx:104: СПАСИБО, {name || 'ВАША ЗАЯВКА'} ПРИНЯТА!
+src/components/ContactModal.tsx:107: Максим свяжется с вами в течение 30 минут для уточнения деталей и расчета сметы.
+src/components/ContactModal.tsx:112: `Здравствуйте, Максим! Я отправил заявку на проект "${projectType}". Мой контакт: ${contact}`
+src/components/ContactModal.tsx:119: <span>НАПИСАТЬ В TELEGRAM ПРЯМО СЕЙЧАС</span>
+src/components/ContactModal.tsx:125: ЗАКРЫТЬ
+src/components/ContactModal.tsx:135: 1. Тип веб-проекта:
+src/components/ContactModal.tsx:161: 2. Ориентировочный бюджет:
+src/components/ContactModal.tsx:187: 3. Желаемые сроки запуска:
+src/components/ContactModal.tsx:214: Ваше имя:
+src/components/ContactModal.tsx:219: placeholder="Александр"
+src/components/ContactModal.tsx:228: Telegram или телефон:
+src/components/ContactModal.tsx:233: placeholder="@username или +7..."
+src/components/ContactModal.tsx:244: Кратко о задаче (или ссылка на макет / референсы):
+src/components/ContactModal.tsx:248: placeholder="Нужен сайт для строительной компании с калькулятором стоимости..."
+src/components/ContactModal.tsx:259: Гарантирую соблюдение дедлайна, чистый код и бесплатную 30-дневную техподдержку после релиза.
+src/components/ContactModal.tsx:270: <span>ОТПРАВИТЬ ЗАЯВКУ НА РАСЧЕТ</span>
+src/components/ContactsSection.tsx:32: КОНТАКТЫ
+src/components/ContactsSection.tsx:66: title="Копировать"
+src/components/ContactsSection.tsx:77: Открыть
+src/components/ContactsSection.tsx:103: title="Копировать"
+src/components/ContactsSection.tsx:117: Город
+src/components/ContactsSection.tsx:134: ЗАПОЛНИТЬ БРИФ / ОБСУДИТЬ САЙТ
+src/components/ContactsSection.tsx:147: {/* Slogan Text Matching Mockup: "СОЗДАЮ САЙТЫ, КОТОРЫЕ РАБОТАЮТ НА ВАШ БИЗНЕС" */}
+src/components/ContactsSection.tsx:151: СОЗДАЮ САЙТЫ, КОТОРЫЕ РАБОТАЮТ
+src/components/ContactsSection.tsx:154: НА ВАШ БИЗНЕС
+src/components/ContactsSection.tsx:158: От индивидуального дизайна до стабильного хостинга и технического сопровождения
+src/components/Footer.tsx:18: <span>© 2024 {PORTFOLIO_DATA.name}. Все права защищены.</span>
+src/components/Footer.tsx:26: <span>НАВЕРХ</span>
+src/components/Footer.tsx:30: {/* Right: ВЕБ-РАЗРАБОТКА </> */}
+src/components/HeroSection.tsx:54: {/* CTA Button: ОБСУДИТЬ ПРОЕКТ -> */}
+src/components/HeroSection.tsx:63: <span>ОБСУДИТЬ ПРОЕКТ</span>
+src/components/HeroSection.tsx:72: ПОРТФОЛИО
+src/components/Navbar.tsx:72: aria-label="На главную"
+src/components/Navbar.tsx:109: title={soundEnabled ? 'Выключить звук' : 'Включить звук'}
+src/components/Navbar.tsx:110: aria-label={soundEnabled ? 'Выключить звук кликов' : 'Включить звук кликов'}
+src/components/Navbar.tsx:171: <span>СВЯЗЬ</span>
+src/components/Navbar.tsx:180: aria-label="Меню навигации"
+src/components/Navbar.tsx:238: ОБСУДИТЬ ПРОЕКТ
+src/components/ProcessSection.tsx:36: ЭТАПЫ РАБОТЫ
+src/components/ProcessSection.tsx:90: <span>Срок:</span>
+src/components/ProcessSection.tsx:112: ПОДРОБНЕЕ ОБ ЭТАПЕ: {currentStep.step} / {currentStep.title}
+src/components/ProcessSection.tsx:121: <span className="text-xs text-zinc-400 font-mono">Ориентировочное время:</span>
+src/components/ProjectModal.tsx:48: aria-label="Закрыть"
+src/components/ProjectModal.tsx:60: <span className="text-xs font-mono text-zinc-400">Интерактивный предпросмотр:</span>
+src/components/ProjectModal.tsx:74: <span className="hidden sm:inline">Десктоп</span>
+src/components/ProjectModal.tsx:88: <span className="hidden sm:inline">Мобильный</span>
+src/components/ProjectModal.tsx:111: <span>Заказчик:</span>
+src/components/ProjectModal.tsx:121: <span>Срок:</span>
+src/components/ProjectModal.tsx:131: <span>Год:</span>
+src/components/ProjectModal.tsx:141: <span>Результат:</span>
+src/components/ProjectModal.tsx:152: О проекте и задачах:
+src/components/ProjectModal.tsx:162: Использованный стек технологий:
+src/components/ProjectModal.tsx:179: Хотите похожий проект для вашей сферы?
+src/components/ProjectModal.tsx:189: ОБСУДИТЬ ПОДОБНЫЙ САЙТ
+src/components/ProjectsSection.tsx:23: {/* Section Header: Title + "СМОТРЕТЬ ВСЕ ->" */}
+src/components/ProjectsSection.tsx:29: МОИ ПРОЕКТЫ
+src/components/ProjectsSection.tsx:33: {/* Right Action: СМОТРЕТЬ ВСЕ -> */}
+src/components/ProjectsSection.tsx:41: <span className="group-hover:text-red-400 transition-colors">СМОТРЕТЬ ВСЕ</span>
+src/components/ProjectsSection.tsx:64: <span>КЕЙС</span>
+src/components/TechAndCtaSection.tsx:20: {/* LEFT: ТЕХНОЛОГИИ (TECHNOLOGIES) */}
+src/components/TechAndCtaSection.tsx:27: ТЕХНОЛОГИИ
+src/components/TechAndCtaSection.tsx:65: <span>Стек: Frontend + Backend + CMS</span>
+src/components/TechAndCtaSection.tsx:66: <span className="text-red-500">3+ года практики</span>
+src/components/TechAndCtaSection.tsx:70: {/* RIGHT: CINEMATIC CTA BLOCK (ГОТОВЫЙ ПРОЕКТ НАЧИНАЕТСЯ ЗДЕСЬ) */}
+src/components/TechAndCtaSection.tsx:80: ГОТОВЫЙ ПРОЕКТ <br />
+src/components/TechAndCtaSection.tsx:81: НАЧИНАЕТСЯ <span className="text-red-600 red-glow-text">ЗДЕСЬ</span>
+src/components/TechAndCtaSection.tsx:86: Обсудим вашу идею и превратим её в эффективное веб-решение
+src/components/TechAndCtaSection.tsx:89: {/* Red CTA Button: НАПИСАТЬ МНЕ -> */}
+src/components/TechAndCtaSection.tsx:98: <span>НАПИСАТЬ МНЕ</span>

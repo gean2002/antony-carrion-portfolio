@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+@theme {
+  --color-red-400: #d63d3d;
+  --color-red-500: #b91c1c; 
+  --color-red-600: #8f1212; /* Deep elegant red to match mockup */
+  --color-red-700: #7f1d1d;
+  --color-red-800: #450a0a;
+  --color-red-900: #2a0404;
+  --color-red-950: #1a0202;
+}
+
+@layer base {
+  :root {
+    --font-heading: 'Oswald', sans-serif;
+    --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    background-color: #030303;
+    color: #f4f4f5; /* zinc-100 instead of e4e4e7 */
+    font-family: var(--font-body);
+    font-size: 1.05rem; /* slightly larger body text */
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+  }
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-code {
+  font-family: var(--font-mono);
+}
+
+/* Atmospheric red glow utility */
+.red-glow {
+  box-shadow: 0 0 35px -5px rgba(143, 18, 18, 0.4);
+}
+
+.red-glow-lg {
+  box-shadow: 0 0 70px 10px rgba(143, 18, 18, 0.3);
+}
+
+.red-glow-text {
+  text-shadow: 0 0 24px rgba(143, 18, 18, 0.8);
+}
+
+/* Subtle dark card gradient */
+.card-dark {
+  background: linear-gradient(180deg, rgba(18, 18, 20, 0.85) 0%, rgba(10, 10, 12, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.card-dark:hover {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Grid backdrop pattern */
+.bg-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+/* Smooth website showcase preview scroll on hover */
+.project-scroll-preview {
+  transform: translateY(0%);
+  transition: transform 2s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+.group:hover .project-scroll-preview {
+  transform: translateY(-58%);
+  transition: transform 7s linear;
+}
+
+.project-scroll-deep {
+  transform: translateY(0%);
+  transition: transform 2s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+.group:hover .project-scroll-deep {
+  transform: translateY(-48%);
+  transition: transform 6s linear;
+}
+
+/* Animated Process Step Icons */
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes iconCompass {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(20deg); }
+  75% { transform: rotate(-20deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes iconCodePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+@keyframes iconShieldPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(239,68,68,0)); }
+  50% { transform: scale(1.12); filter: drop-shadow(0 0 8px rgba(239,68,68,0.7)); }
+}
+
+@keyframes iconRocket {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(3px, -5px) rotate(8deg); }
+}
+
+.anim-icon-chat {
+  animation: iconFloat 2.4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.anim-icon-compass {
+  animation: iconCompass 3.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.anim-icon-code {
+  animation: iconCodePulse 2.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.anim-icon-shield {
+  animation: iconShieldPulse 2.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.anim-icon-rocket {
+  animation: iconRocket 2.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+
