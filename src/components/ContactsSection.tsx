@@ -1,24 +1,55 @@
 import React, { useState } from 'react';
-import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { getPortfolioData } from '../data/portfolioData';
 import { Mail, MapPin, Send, CheckCircle2, ArrowRight, MessageSquare, Phone, Copyright } from 'lucide-react';
 import { playSubtleClick } from '../utils/audio';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ContactsSectionProps {
   onOpenContactModal: () => void;
 }
 
 export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactModal }) => {
+  const { t, language } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
+  const currencySymbol = language === 'it' ? '€' : '$';
+  
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
-  const [projectType, setProjectType] = useState('Landing page');
+  const [projectType, setProjectType] = useState(t('form.type1'));
   const [budget, setBudget] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     playSubtleClick();
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+    
+    try {
+      await fetch("https://formsubmit.co/ajax/71dc468991040c93f0ff7dab032f7866", {
+        method: "POST",
+        headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            Nome: name,
+            Contatto: contact,
+            Progetto: projectType,
+            Budget: budget || 'Non specificato',
+            Messaggio: message || 'Nessun messaggio aggiuntivo',
+            _subject: "Nuovo messaggio dal Portfolio!",
+            _template: "box"
+        })
+      });
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error(error);
+      alert("Si è verificato un errore durante l'invio. Riprova più tardi.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -37,18 +68,15 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                 <div className="flex items-center gap-2.5 mb-4">
                   <span className="w-[3px] h-5 bg-red-600" />
                   <h2 className="font-heading font-bold text-base tracking-widest text-white uppercase">
-                    CONTATTI
+                    {t('contacts.title')}
                   </h2>
                 </div>
 
                 {/* Slogan */}
-                <h3 className="font-heading font-bold text-2xl sm:text-3xl text-white uppercase leading-tight tracking-wide">
-                  CREO SITI CHE LAVORANO<br />
-                  <span className="text-red-600">PER IL TUO BUSINESS</span>
-                </h3>
+                <h3 className="font-heading font-bold text-2xl sm:text-3xl text-white uppercase leading-tight tracking-wide" dangerouslySetInnerHTML={{__html: t('contacts.subtitle').replace('PER IL TUO BUSINESS', '<span class="text-red-600">PER IL TUO BUSINESS</span>').replace('PARA TU NEGOCIO', '<span class="text-red-600">PARA TU NEGOCIO</span>')}}></h3>
 
                 <p className="mt-2 text-xs sm:text-sm text-zinc-400 font-body leading-relaxed max-w-sm">
-                  Hai un progetto da sviluppare o vuoi ottimizzare il tuo business online? Compila il form a lato o contattami subito.
+                  {t('contacts.text')}
                 </p>
               </div>
 
@@ -96,7 +124,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                     <MapPin className="w-4 h-4 text-white" />
                   </div>
                   <div>
-                    <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">Città</div>
+                    <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">{t('contacts.city')}</div>
                     <span className="text-xs sm:text-sm font-heading text-zinc-300">{PORTFOLIO_DATA.contacts.location}</span>
                   </div>
                 </div>
@@ -124,7 +152,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
               <div className="flex items-center gap-2 mb-4">
                 <MessageSquare className="w-4 h-4 text-red-500" />
                 <h4 className="font-heading font-bold text-xs sm:text-sm tracking-wider text-white uppercase">
-                  SCRIVIMI UN MESSAGGIO
+                  {t('contacts.write')}
                 </h4>
               </div>
 
@@ -134,23 +162,12 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                     <CheckCircle2 className="w-7 h-7 text-red-400" />
                   </div>
                   <h5 className="font-heading font-bold text-lg text-white uppercase">
-                    MESSAGGIO INVIATO CON SUCCESSO!
+                    {t('form.success')}
                   </h5>
                   <p className="text-xs sm:text-sm text-zinc-400 max-w-md mx-auto font-body">
-                    Grazie <strong className="text-white">{name || 'per il tuo messaggio'}</strong>, ho ricevuto la tua richiesta. Ti risponderò entro pochissime ore.
+                    {t('thanks')} <strong className="text-white">{name || ''}</strong>, {t('form.successSub')}
                   </p>
                   <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
-                    <a
-                      href={`https://wa.me/393454184481?text=${encodeURIComponent(
-                        `Ciao Antony! Ti ho inviato una richiesta dal tuo portfolio per un progetto "${projectType}". Vorrei capire costi e dettagli per realizzare il mio nuovo sito web, possiamo sentirci?`
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-semibold text-xs tracking-wider uppercase transition-colors"
-                    >
-                      <span>APRI CHAT WHATSAPP</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </a>
                     <button
                       onClick={() => {
                         setIsSubmitted(false);
@@ -160,7 +177,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                       }}
                       className="px-4 py-2.5 border border-white/20 hover:border-white/40 text-zinc-300 font-heading text-xs tracking-wider uppercase transition-colors cursor-pointer"
                     >
-                      INVIA UN ALTRO MESSAGGIO
+                      {t('form.sendNew')}
                     </button>
                   </div>
                 </div>
@@ -170,12 +187,12 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                     {/* Name */}
                     <div>
                       <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                        NOME / AZIENDA *
+                        {t('form.name')}
                       </label>
                       <input
                         type="text"
                         required
-                        placeholder="Es. Mario Rossi"
+                        placeholder={t('form.namePlaceholder')}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body"
@@ -185,12 +202,12 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                     {/* Contact (WhatsApp or Phone) */}
                     <div>
                       <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                        NUMERO WHATSAPP O TELEFONO *
+                        {t('form.contact')}
                       </label>
                       <input
                         type="tel"
                         required
-                        placeholder="+39 ... o numero WhatsApp"
+                        placeholder={t('form.contactPlaceholder')}
                         value={contact}
                         onChange={(e) => setContact(e.target.value)}
                         className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body"
@@ -202,31 +219,30 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                     {/* Project type */}
                     <div>
                       <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                        TIPO DI PROGETTO
+                        {t('form.project')}
                       </label>
                       <select
                         value={projectType}
                         onChange={(e) => setProjectType(e.target.value)}
                         className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white transition-colors font-body"
                       >
-                        <option value="Landing page">Landing page</option>
-                        <option value="Negozio online">Negozio online</option>
-                        <option value="Sito aziendale">Sito aziendale</option>
+                        <option value={t('form.type1')}>{t('form.type1')}</option>
+                        <option value={t('form.type2')}>{t('form.type2')}</option>
+                        <option value={t('form.type3')}>{t('form.type3')}</option>
                       </select>
                     </div>
 
                     {/* Budget */}
                     <div>
                       <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                        BUDGET STIMATO (€)
+                        {t('form.budget')} ({currencySymbol})
                       </label>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 font-mono">€</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 font-mono">{currencySymbol}</span>
                         <input
                           type="number"
-                          min="500"
                           required
-                          placeholder="Minimo 500"
+                          placeholder=""
                           value={budget}
                           onChange={(e) => setBudget(e.target.value)}
                           className="w-full pl-8 pr-3.5 py-2.5 bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none text-base sm:text-sm text-white transition-colors font-mono"
@@ -238,11 +254,11 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                   {/* Message */}
                   <div>
                     <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                      IL TUO MESSAGGIO
+                      {t('form.message')}
                     </label>
                     <textarea
                       rows={3}
-                      placeholder="Descrivi brevemente gli obiettivi, funzionalità richieste o scadenze..."
+                      placeholder={t('form.messagePlaceholder')}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none p-3.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body resize-none"
@@ -253,14 +269,15 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                   <div className="pt-1 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <button
                       type="submit"
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-[#c81919] hover:bg-[#b01414] text-white font-heading font-bold text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer shadow-lg shadow-red-950/40 active:scale-95"
+                      disabled={isSubmitting}
+                      className={`w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-[#c81919] hover:bg-[#b01414] text-white font-heading font-bold text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer shadow-lg shadow-red-950/40 active:scale-95 ${isSubmitting ? 'opacity-70 cursor-wait' : ''}`}
                     >
-                      <span>INVIA MESSAGGIO</span>
+                      <span>{isSubmitting ? t('form.submitting') : t('form.submit')}</span>
                       <Send className="w-3.5 h-3.5" />
                     </button>
 
                     <span className="text-[11px] text-zinc-500 font-body text-center sm:text-right">
-                      🔒 Risposta garantita entro 24 ore
+                      🔒 {t('tech.response')}
                     </span>
                   </div>
                 </form>
@@ -273,7 +290,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
           <div className="mt-8 pt-4 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-500 font-body text-center sm:text-left">
             <div className="flex items-center justify-center sm:justify-start gap-1.5">
               <Copyright className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
-              <span>2026 {PORTFOLIO_DATA.name}. Tutti i diritti riservati.</span>
+              <span>2026 {PORTFOLIO_DATA.name}. {t('footer.rights')}</span>
             </div>
 
             <div className="flex items-center gap-1.5 font-heading text-zinc-400 uppercase tracking-wider text-xs">

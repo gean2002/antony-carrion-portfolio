@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { getPortfolioData } from '../data/portfolioData';
 import { playSubtleClick } from '../utils/audio';
-import { Volume2, VolumeX, Menu, X, Send, Phone } from 'lucide-react';
+import { Volume2, VolumeX, Menu, X, Send, Phone, Globe } from 'lucide-react';
+import { useLanguage, Language } from '../context/LanguageContext';
 
 interface NavbarProps {
   onOpenContact: () => void;
@@ -14,17 +15,19 @@ export const Navbar: React.FC<NavbarProps> = ({
   soundEnabled,
   onToggleSound,
 }) => {
+  const { language, setLanguage, t } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
   const [activeSection, setActiveSection] = useState('hero');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const navLinks = [
-    { id: 'hero', label: 'HOME' },
-    { id: 'about', label: 'CHI SONO' },
-    { id: 'services', label: 'SERVIZI' },
-    { id: 'projects', label: 'PROGETTI' },
-    { id: 'process', label: 'FASI' },
-    { id: 'contacts', label: 'CONTATTI' },
+    { id: 'hero', label: t('nav.home') },
+    { id: 'about', label: t('nav.about') },
+    { id: 'services', label: t('nav.services') },
+    { id: 'projects', label: t('nav.projects') },
+    { id: 'process', label: t('nav.process') },
+    { id: 'contacts', label: t('nav.contact') },
   ];
 
   const isManualScrolling = React.useRef(false);
@@ -97,18 +100,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <div className="relative flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
             <img
-              src="/logo-ac.png"
+              src="/logo-full.png"
               alt="Antony Carrion Logo"
-              className="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_0_12px_rgba(185,28,28,0.4)]"
+              className="h-8 sm:h-10 w-auto object-contain drop-shadow-[0_0_12px_rgba(185,28,28,0.4)]"
             />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-heading text-sm sm:text-base font-bold tracking-wider text-white group-hover:text-red-400 transition-colors leading-tight">
-              ANTONY CARRION
-            </span>
-            <span className="text-[10px] font-mono tracking-widest text-zinc-400 uppercase">
-              WEB DESIGNER
-            </span>
           </div>
         </button>
 
@@ -161,6 +156,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Phone className="w-3.5 h-3.5 text-red-500" />
               <span className="font-mono text-xs font-medium tracking-tight">{PORTFOLIO_DATA.contacts.phone}</span>
             </a>
+            
+            {/* Selettore Lingua */}
+            <div className="flex items-center gap-1 ml-2 bg-white/5 p-0.5 rounded border border-white/10">
+              <button 
+                onClick={() => setLanguage('it')}
+                className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors ${language === 'it' ? 'bg-red-600 text-white' : 'text-zinc-400 hover:text-white'}`}
+              >
+                IT
+              </button>
+              <button 
+                onClick={() => setLanguage('es')}
+                className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors ${language === 'es' ? 'bg-red-600 text-white' : 'text-zinc-400 hover:text-white'}`}
+              >
+                ES
+              </button>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -223,7 +234,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }}
                 className="px-4 py-2.5 text-xs font-bold tracking-wider font-heading text-white border border-red-700/60 hover:border-red-600 bg-transparent text-center"
               >
-                DISCUTI IL PROGETTO
+                {t('modal.discuss')}
               </button>
             </div>
           </div>

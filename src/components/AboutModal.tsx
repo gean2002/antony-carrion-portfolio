@@ -1,5 +1,6 @@
 import React from 'react';
-import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { getPortfolioData } from '../data/portfolioData';
+import { useLanguage } from '../context/LanguageContext';
 import { playSubtleClick } from '../utils/audio';
 import { X, CheckCircle2, Terminal, Award, FileCode2, GraduationCap } from 'lucide-react';
 
@@ -14,6 +15,9 @@ export const AboutModal: React.FC<AboutModalProps> = ({
   onClose,
   onDiscussProject,
 }) => {
+  const { language, t } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
+
   if (!isOpen) return null;
 
   return (
@@ -28,7 +32,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
             <span className="w-1.5 h-6 bg-red-600 shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
             <div>
               <span className="text-xs font-mono text-red-500 uppercase tracking-wider block">
-                BIOGRAFIA E FORMAZIONE
+                {t('modal.bio')}
               </span>
               <h2 className="font-heading font-black text-lg sm:text-xl text-white tracking-wide uppercase">
                 ANTONY CARRION
@@ -54,13 +58,13 @@ export const AboutModal: React.FC<AboutModalProps> = ({
           {/* Main Story */}
           <div className="space-y-3.5 text-zinc-300 font-body text-sm leading-relaxed">
             <p className="text-base text-white font-medium">
-              Ciao! Sono Antony Carrion, sviluppatore web e Shopify specialist con base in Italia.
+              {t('about.p1')}
             </p>
             <p>
-              Ho conseguito il diploma presso l'<strong className="text-white">Istituto Superiore Ettore Majorana di Grugliasco</strong>, dove ho maturato una solida formazione tecnica, logica e analitica. Questa base accademica è stata il trampolino di lancio per dedicarmi con rigore allo sviluppo frontend, alla programmazione backend e alla creazione di architetture digitali scalabili.
+              <span dangerouslySetInnerHTML={{__html: t('about.p2').replace('Istituto Superiore Ettore Majorana di Grugliasco', '<strong class="text-white">Istituto Superiore Ettore Majorana di Grugliasco</strong>').replace('Instituto Superior Ettore Majorana de Grugliasco', '<strong class="text-white">Instituto Superior Ettore Majorana de Grugliasco</strong>').replace('Ettore Majorana High School of Grugliasco', '<strong class="text-white">Ettore Majorana High School of Grugliasco</strong>')}}></span>
             </p>
             <p>
-              Oggi mi dedico alla realizzazione di soluzioni web chiavi in mano: dagli store e-commerce performanti su Shopify a landing page e siti corporate ad alto impatto emotivo e di conversione.
+              {t('about.p3')}
             </p>
           </div>
 
@@ -77,7 +81,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
                 Istituto Superiore Ettore Majorana di Grugliasco
               </h4>
               <p className="text-xs text-zinc-300 font-body leading-relaxed mt-1">
-                Percorso di istruzione superiore tecnica con focus su logica, metodologie progettuali e informatica. Un bagaglio formativo che mi permette di approcciare ogni sfida di sviluppo web con precisione ingegneristica, velocità e problem solving strutturato.
+                {t('about.eduDesc')}
               </p>
             </div>
           </div>
@@ -89,10 +93,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({
                 <FileCode2 className="w-4 h-4" />
               </div>
               <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-white mb-1.5">
-                Codice pulito
+                {t('about.f1Title')}
               </h4>
               <p className="text-xs text-zinc-300 font-body leading-relaxed">
-                Impaginazione semantica, separazione della logica, assenza di librerie pesanti inutili.
+                {t('about.f1Desc')}
               </p>
             </div>
 
@@ -101,10 +105,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({
                 <Terminal className="w-4 h-4" />
               </div>
               <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-white mb-1.5">
-                Velocità & SEO
+                {t('about.f2Title')}
               </h4>
               <p className="text-xs text-zinc-300 font-body leading-relaxed">
-                I siti si caricano in meno di 1.2 secondi. Alti punteggi su Google PageSpeed (95+).
+                {t('about.f2Desc')}
               </p>
             </div>
 
@@ -113,10 +117,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({
                 <Award className="w-4 h-4" />
               </div>
               <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-white mb-1.5">
-                Scadenze 100%
+                {t('about.f3Title')}
               </h4>
               <p className="text-xs text-zinc-300 font-body leading-relaxed">
-                Tempistiche chiare per ogni fase. Nessuna sparizione e rispetto delle scadenze concordate.
+                {t('about.f3Desc')}
               </p>
             </div>
           </div>
@@ -124,20 +128,20 @@ export const AboutModal: React.FC<AboutModalProps> = ({
           {/* Guarantees List */}
           <div className="p-6 bg-zinc-950/80 border border-red-600/30 rounded-sm">
             <h4 className="font-heading font-bold text-xs text-red-400 uppercase tracking-wider mb-3">
-              Cosa ottieni ordinando un sito:
+              {t('about.whatYouGet')}
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-zinc-300 font-body">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
-                <span>Adattabilità per il 100% di schermi e telefoni</span>
+                <span>{t('about.g1')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
-                <span>Ottimizzazione SEO base e meta-tag</span>
+                <span>{t('about.g2')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
-                <span>Integrazione form, richieste e notifiche Telegram</span>
+                <span>{t('about.g3')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
@@ -149,7 +153,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
           {/* Footer Action */}
           <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-xs text-zinc-300 font-mono">
-              Aperto a nuovi interessanti progetti commerciali
+              {t('about.openTo')}
             </div>
             <button
               onClick={() => {
@@ -158,7 +162,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
               }}
               className="w-full sm:w-auto px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-heading font-bold text-xs uppercase tracking-wider rounded transition-all red-glow cursor-pointer"
             >
-              DISCUTI IL TUO PROGETTO
+              {t('about.discussBtn')}
             </button>
           </div>
 

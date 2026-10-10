@@ -1,5 +1,6 @@
+import { useLanguage } from '../context/LanguageContext';
 import React, { useRef, useEffect } from 'react';
-import { PORTFOLIO_DATA, Service } from '../data/portfolioData';
+import { getPortfolioData, Service } from '../data/portfolioData';
 import { playSubtleClick, playTechBlip } from '../utils/audio';
 import { ArrowRight, Code, Layout, ShoppingCart, Headphones } from 'lucide-react';
 
@@ -12,6 +13,9 @@ export const AboutAndServices: React.FC<AboutAndServicesProps> = ({
   onOpenAboutModal,
   onSelectService,
 }) => {
+  const { language, t } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
+
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -80,20 +84,14 @@ export const AboutAndServices: React.FC<AboutAndServicesProps> = ({
               <div className="flex items-center gap-2.5 mb-4">
                 <span className="w-[3px] h-5 bg-red-600" />
                 <h2 className="font-heading font-bold text-base tracking-widest text-white uppercase">
-                  CHI SONO
+                  {t('nav.about')}
                 </h2>
               </div>
 
               <div className="space-y-3 text-zinc-400 font-body text-xs sm:text-sm leading-relaxed">
-                <p>
-                  Mi chiamo <span className="text-zinc-200 font-medium">Antony Carrion</span>, sviluppatore web e Shopify specialist con base in Italia.
-                </p>
-                <p>
-                  Diplomato presso l'<span className="text-zinc-200 font-medium">Istituto Superiore Ettore Majorana di Grugliasco</span>, unisco una solida preparazione tecnica al design d'impatto e all'ottimizzazione delle conversioni.
-                </p>
-                <p>
-                  Aiuto aziende e professionisti a scalare su internet con soluzioni moderne, veloci e chiavi in mano.
-                </p>
+                {PORTFOLIO_DATA.bio.map((paragraph, i) => (
+                  <p key={i} dangerouslySetInnerHTML={{ __html: paragraph.replace("Istituto Superiore Ettore Majorana di Grugliasco", "<span class='text-zinc-200 font-medium'>Istituto Superiore Ettore Majorana de Grugliasco</span>").replace("Instituto Superior Ettore Majorana de Grugliasco", "<span class='text-zinc-200 font-medium'>Instituto Superior Ettore Majorana de Grugliasco</span>") }} />
+                ))}
               </div>
 
               {/* Eye-catching CTA button */}
@@ -107,7 +105,7 @@ export const AboutAndServices: React.FC<AboutAndServicesProps> = ({
                 >
                   <span className="flex items-center gap-2.5">
                     <span className="w-2 h-2 rounded-full bg-red-500 group-hover:bg-white animate-pulse" />
-                    <span>SCOPRI LA MIA STORIA</span>
+                    <span>{t('about.story')}</span>
                   </span>
                   <ArrowRight className="w-4 h-4 text-red-500 group-hover:text-white group-hover:translate-x-1.5 transition-all" />
                 </button>
@@ -119,7 +117,7 @@ export const AboutAndServices: React.FC<AboutAndServicesProps> = ({
               <div className="flex items-center gap-2.5 mb-4 sm:mb-5">
                 <span className="w-[3px] h-5 bg-red-600" />
                 <h2 className="font-heading font-bold text-base sm:text-lg tracking-widest text-white uppercase">
-                  SERVIZI
+                  {t('nav.services')}
                 </h2>
               </div>
 

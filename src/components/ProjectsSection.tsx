@@ -1,5 +1,6 @@
+import { useLanguage } from '../context/LanguageContext';
 import React from 'react';
-import { PORTFOLIO_DATA, Project } from '../data/portfolioData';
+import { getPortfolioData, Project } from '../data/portfolioData';
 import { ProjectCardPreview } from './ProjectCardPreview';
 interface ProjectsSectionProps {
   onSelectProject?: (project: Project) => void;
@@ -7,6 +8,9 @@ interface ProjectsSectionProps {
 }
 
 export const ProjectsSection: React.FC<ProjectsSectionProps> = () => {
+  const { language, t } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
+
   return (
     <section id="projects" className="relative py-6 sm:py-8 bg-[#030303] border-t border-white/5">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -16,7 +20,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = () => {
           <div className="flex items-center gap-2.5">
             <span className="w-[3px] h-4 bg-red-700" />
             <h2 className="font-heading font-bold text-base tracking-widest text-white uppercase">
-              PROGETTI
+              {t('nav.projects')}
             </h2>
           </div>
         </div>

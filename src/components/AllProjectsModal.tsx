@@ -1,5 +1,6 @@
+import { useLanguage } from '../context/LanguageContext';
 import React, { useState } from 'react';
-import { PORTFOLIO_DATA, Project } from '../data/portfolioData';
+import { getPortfolioData, Project } from '../data/portfolioData';
 import { ProjectCardPreview } from './ProjectCardPreview';
 import { playSubtleClick, playTechBlip } from '../utils/audio';
 import { X, ArrowRight, ExternalLink } from 'lucide-react';
@@ -15,6 +16,9 @@ export const AllProjectsModal: React.FC<AllProjectsModalProps> = ({
   onClose,
   onSelectProject,
 }) => {
+  const { language, t } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
+
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
   if (!isOpen) return null;
@@ -43,10 +47,10 @@ export const AllProjectsModal: React.FC<AllProjectsModalProps> = ({
             <span className="w-1.5 h-6 bg-red-600 shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
             <div>
               <h2 className="font-heading font-black text-lg sm:text-xl text-white tracking-wide uppercase">
-                TUTTI I PROGETTI E CASI
+                {t('projects.allTitle')}
               </h2>
               <span className="text-xs font-mono text-zinc-300">
-                Catalogo dei lavori completati nel 2023-2024.
+                {t('projects.allSub')}
               </span>
             </div>
           </div>

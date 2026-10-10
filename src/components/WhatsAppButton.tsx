@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { getPortfolioData } from '../data/portfolioData';
+import { useLanguage } from '../context/LanguageContext';
 import { playTechBlip } from '../utils/audio';
 
 export const WhatsAppButton: React.FC = () => {
+  const { language, t } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
+
   const [isHovered, setIsHovered] = useState(false);
 
   return (

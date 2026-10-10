@@ -1,13 +1,16 @@
 import React from 'react';
-import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { getPortfolioData } from '../data/portfolioData';
 import { playSubtleClick } from '../utils/audio';
 import { ArrowRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface HeroSectionProps {
   onOpenContact: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
+  const { t, language } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
   return (
     <section
       id="hero"
@@ -47,12 +50,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
 
             {/* Role */}
             <p className="mt-2.5 sm:mt-3 font-heading text-xs sm:text-sm tracking-[0.25em] text-zinc-300 uppercase">
-              {PORTFOLIO_DATA.role}
+              {t('hero.title1')} {t('hero.title2')}
             </p>
 
             {/* Subtitle */}
             <p className="mt-2 text-zinc-400 text-xs sm:text-sm leading-relaxed max-w-sm font-body">
-              {PORTFOLIO_DATA.roleDescription}
+              {t('hero.subtitle')}
             </p>
 
             {/* CTA Button */}
@@ -64,7 +67,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
                 }}
                 className="group inline-flex items-center gap-2.5 px-5 py-2.5 bg-transparent border border-red-700/60 hover:border-red-600 hover:bg-red-600/10 text-zinc-200 hover:text-white font-heading font-medium text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer active:scale-95"
               >
-                <span>DISCUTI IL PROGETTO</span>
+                <span>{t('hero.cta')}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-red-600 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </div>

@@ -1,9 +1,13 @@
 import React from 'react';
-import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { getPortfolioData } from '../data/portfolioData';
+import { useLanguage } from '../context/LanguageContext';
 import { playSubtleClick } from '../utils/audio';
 import { ArrowUp, Code2, Copyright } from 'lucide-react';
 
 export const Footer: React.FC = () => {
+  const { language, t } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
+
   const scrollToTop = () => {
     playSubtleClick();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -15,10 +19,10 @@ export const Footer: React.FC = () => {
         
         {/* Left: Copyright & Logo */}
         <div className="flex items-center gap-2.5">
-          <img src="/logo-ac.png" alt="Antony Carrion Logo" className="h-6 w-auto object-contain opacity-90" />
+          <img src="/logo-full.png" alt="Antony Carrion Logo" className="h-5 sm:h-6 w-auto object-contain opacity-90" />
           <div className="flex items-center gap-1.5">
             <Copyright className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-            <span>2026 {PORTFOLIO_DATA.name}. Tutti i diritti riservati.</span>
+            <span>2026 {PORTFOLIO_DATA.name}. {t('footer.rights')}</span>
           </div>
         </div>
 

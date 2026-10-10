@@ -1,9 +1,13 @@
 import React from 'react';
-import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { getPortfolioData } from '../data/portfolioData';
+import { useLanguage } from '../context/LanguageContext';
 import { playTechBlip } from '../utils/audio';
 import { ChevronRight, MessageSquare, Compass, Code, ShieldCheck, Rocket } from 'lucide-react';
 
 export const ProcessSection: React.FC = () => {
+  const { language, t } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
+
   const getStepIcon = (index: number) => {
     const baseCls = "w-6 h-6 sm:w-7 sm:h-7 text-red-500 group-hover:text-red-300 transition-colors duration-300";
     switch (index) {
@@ -24,7 +28,7 @@ export const ProcessSection: React.FC = () => {
         <div className="flex items-center gap-3 mb-6 sm:mb-8">
           <span className="w-1 h-6 bg-red-600 rounded-sm" />
           <h2 className="font-heading font-bold text-lg sm:text-xl tracking-widest text-white uppercase">
-            FASI DI LAVORO
+            {t('nav.process')}
           </h2>
         </div>
 

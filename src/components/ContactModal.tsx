@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { getPortfolioData } from '../data/portfolioData';
 import { playSubtleClick, playTechBlip } from '../utils/audio';
 import { X, Send, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -14,27 +15,57 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   onClose,
   initialService,
 }) => {
-  const [projectType, setProjectType] = useState<string>(initialService || 'Landing page');
+  const { t, language } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
+  const currencySymbol = language === 'it' ? '€' : '$';
+  
+  const [projectType, setProjectType] = useState<string>(initialService || t('form.type1'));
   const [budget, setBudget] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [contact, setContact] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
   const projectTypes = [
-    'Landing page',
-    'Negozio online',
-    'Sito aziendale',
+    t('form.type1'),
+    t('form.type2'),
+    t('form.type3'),
   ];
 
 
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     playSubtleClick();
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+    
+    try {
+      await fetch("https://formsubmit.co/ajax/71dc468991040c93f0ff7dab032f7866", {
+        method: "POST",
+        headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            Nome: name,
+            Contatto: contact,
+            Progetto: projectType,
+            Budget: budget || 'Non specificato',
+            Messaggio: message || 'Nessun messaggio aggiuntivo',
+            _subject: "Nuova richiesta (Pop-up) dal Portfolio!",
+            _template: "box"
+        })
+      });
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error(error);
+      alert("Si è verificato un errore durante l'invio. Riprova più tardi.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {
@@ -57,10 +88,10 @@ export const ContactModal: React.FC<ContactModalProps> = ({
             <span className="w-1.5 h-6 bg-red-600 shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
             <div>
               <h2 className="font-heading font-black text-lg sm:text-xl text-white tracking-wide uppercase">
-                DISCUTI IL PROGETTO
+                {t('modal.discuss')}
               </h2>
               <span className="text-xs font-body text-zinc-300">
-                Compila il brief o scrivi direttamente su Telegram
+                {t('modal.discussSub')}
               </span>
             </div>
           </div>
@@ -86,28 +117,17 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 <CheckCircle2 className="w-8 h-8 text-red-500" />
               </div>
               <h3 className="font-heading font-black text-xl text-white uppercase">
-                GRAZIE, {name || 'LA TUA RICHIESTA'} È STATA RICEVUTA!
+                {t('thanks')}, {name || ''} {t('received')}
               </h3>
               <p className="text-sm text-zinc-300 max-w-md mx-auto font-body">
-                Antony ti contatterà entro 30 minuti per chiarire i dettagli e calcolare un preventivo.
+                {t('form.successSub')}
               </p>
               <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <a
-                  href={`https://wa.me/393454184481?text=${encodeURIComponent(
-                    `Ciao Antony! Ho inviato una richiesta per il progetto "${projectType}". Vorrei ricevere maggiori informazioni e capire come realizzare il mio sito web con te! Il mio contatto: ${contact}`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-bold text-xs uppercase tracking-wider rounded flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>SCRIVI SU WHATSAPP ADESSO</span>
-                </a>
                 <button
                   onClick={handleReset}
                   className="w-full sm:w-auto px-5 py-3 border border-white/10 hover:border-white/30 text-zinc-300 text-xs font-heading font-semibold uppercase rounded"
                 >
-                  CHIUDI
+                  {t('nav.home')}
                 </button>
               </div>
             </div>
@@ -117,7 +137,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               {/* 1. Project Type Selector */}
               <div>
                 <label className="block text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider mb-2">
-                  1. Tipo di progetto web:
+                  1. {t('form.project')}:
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {projectTypes.map((type) => (
@@ -143,15 +163,14 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               {/* 2. Budget Range */}
               <div>
                 <label className="block text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider mb-2">
-                  2. Budget stimato (€):
+                  2. {t('form.budget')} ({currencySymbol}):
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 font-mono">€</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 font-mono">{currencySymbol}</span>
                   <input
                     type="number"
-                    min="500"
                     required
-                    placeholder="Minimo 500"
+                    placeholder=""
                     value={budget}
                     onChange={(e) => setBudget(e.target.value)}
                     className="w-full pl-8 pr-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-base sm:text-sm font-mono"
@@ -163,12 +182,12 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider mb-1.5">
-                    Il tuo nome:
+                    {t('form.name')}
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="Alessandro"
+                    placeholder={t('form.namePlaceholder')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full px-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-base sm:text-sm font-body"
@@ -177,12 +196,12 @@ export const ContactModal: React.FC<ContactModalProps> = ({
 
                 <div>
                   <label className="block text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider mb-1.5">
-                    Numero WhatsApp:
+                    {t('form.contact')}
                   </label>
                   <input
                     type="tel"
                     required
-                    placeholder="+39 ... o numero WhatsApp"
+                    placeholder={t('form.contactPlaceholder')}
                     value={contact}
                     onChange={(e) => setContact(e.target.value)}
                     className="w-full px-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-base sm:text-sm font-body"
@@ -193,11 +212,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               {/* 5. Additional Message / Link */}
               <div>
                 <label className="block text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider mb-1.5">
-                  Breve descrizione del compito (o link al mockup / riferimenti):
+                  {t('form.message')}:
                 </label>
                 <textarea
                   rows={3}
-                  placeholder="Ho bisogno di un sito per un'azienda di costruzioni con un calcolatore dei costi..."
+                  placeholder={t('form.messagePlaceholder')}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   className="w-full px-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-base sm:text-sm font-body resize-none"
@@ -208,7 +227,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               <div className="p-3 bg-zinc-950/80 border border-white/5 rounded flex items-center gap-3 text-zinc-300 text-xs font-body">
                 <ShieldCheck className="w-5 h-5 text-red-500 shrink-0" />
                 <span>
-                  Garantisco il rispetto delle scadenze, codice pulito e 30 giorni di supporto tecnico gratuito dopo il rilascio.
+                  {t('modal.guarantee')}
                 </span>
               </div>
 
@@ -216,10 +235,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-heading font-bold text-sm tracking-wider uppercase rounded transition-all red-glow cursor-pointer text-center flex items-center justify-center gap-2"
+                  disabled={isSubmitting}
+                  className={`w-full py-4 bg-red-600 hover:bg-red-500 text-white font-heading font-bold text-sm tracking-wider uppercase rounded transition-all red-glow cursor-pointer text-center flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-70 cursor-wait' : ''}`}
                 >
                   <Send className="w-4 h-4" />
-                  <span>INVIA LA RICHIESTA DI PREVENTIVO</span>
+                  <span>{isSubmitting ? t('form.submitting') : t('form.submit')}</span>
                 </button>
               </div>
             </form>

@@ -1,5 +1,6 @@
 import React from 'react';
-import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { getPortfolioData } from '../data/portfolioData';
+import { useLanguage } from '../context/LanguageContext';
 import { TechLogo } from './TechLogos';
 import { playSubtleClick, playTechBlip } from '../utils/audio';
 import { ArrowRight } from 'lucide-react';
@@ -9,6 +10,9 @@ interface TechAndCtaSectionProps {
 }
 
 export const TechAndCtaSection: React.FC<TechAndCtaSectionProps> = ({ onOpenContact }) => {
+  const { language, t } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
+
   return (
     <section className="relative py-6 sm:py-8 bg-[#040404] border-t border-white/5">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -20,7 +24,7 @@ export const TechAndCtaSection: React.FC<TechAndCtaSectionProps> = ({ onOpenCont
               <div className="flex items-center gap-2.5 mb-6">
                 <span className="w-[3px] h-5 bg-red-700" />
                 <h2 className="font-heading font-bold text-base tracking-widest text-white uppercase">
-                  TECNOLOGIE
+                  {t('tech.title')}
                 </h2>
               </div>
 
@@ -61,19 +65,19 @@ export const TechAndCtaSection: React.FC<TechAndCtaSectionProps> = ({ onOpenCont
             {/* Content on the left half: clean solid dark background */}
             <div className="relative z-10 w-full sm:w-[55%] lg:w-1/2 px-5 sm:px-7 py-5 sm:py-6">
               <h3 className="font-heading font-black text-base sm:text-xl lg:text-[1.65rem] text-white uppercase leading-[1.15] tracking-wide">
-                IL PROGETTO PRONTO<br />
-                INIZIA <span className="text-[#e50914]">QUI</span>
+                {t('tech.ready1')}<br />
+                <span className="text-[#e50914]">{t('tech.ready2')}</span>
               </h3>
 
               <p className="mt-2 text-[11px] sm:text-xs text-zinc-300 font-body leading-relaxed max-w-[280px]">
-                Discuteremo la tua idea, le opzioni<br className="hidden sm:inline" /> e la proposta commerciale.
+                {t('tech.discuss')}
               </p>
 
               <button
                 onClick={() => { playSubtleClick(); onOpenContact(); }}
                 className="mt-4 sm:mt-5 group inline-flex items-center gap-3 px-5 sm:px-6 py-2.5 sm:py-3 bg-[#d3101b] hover:bg-[#b00d16] text-white font-heading font-bold text-[11px] sm:text-xs tracking-wider uppercase transition-all duration-200 cursor-pointer shadow-md shadow-red-950/60 active:scale-95"
               >
-                <span>SCRIVIMI</span>
+                <span>{t('tech.writeMe')}</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
               </button>
             </div>
