@@ -51,6 +51,12 @@ const contactsData = {
   vk: 'https://vk.com',
 };
 
+const contactsDataES = {
+  ...contactsData,
+  location: 'Turín / Remoto',
+  whatsappUrl: `https://wa.me/393454184481?text=${encodeURIComponent('¡Hola Antony! Quisiera más información y entender cómo podemos crear un sitio web moderno y eficaz para mi negocio. ¿Estás disponible para hablar?')}`,
+};
+
 const technologiesData = [
   { id: 't1', name: 'HTML5', level: '98%', years: '3 anni', color: '#e34f26', iconType: 'html' },
   { id: 't2', name: 'CSS3', level: '95%', years: '3 anni', color: '#1572b6', iconType: 'css' },
@@ -225,7 +231,7 @@ const PORTFOLIO_DATA_ES = {
     'Graduado del Instituto Superior Ettore Majorana de Grugliasco, tengo sólidas bases técnicas y lógicas aplicadas al desarrollo web de alto rendimiento.',
     'Ayudo a empresas y profesionales a escalar en internet con e-commerce, landing pages y portales web modernos orientados a la conversión.'
   ],
-  contacts: contactsData,
+  contacts: contactsDataES,
   services: [
     {
       id: 'web-dev',

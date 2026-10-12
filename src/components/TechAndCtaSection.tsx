@@ -48,23 +48,24 @@ export const TechAndCtaSection: React.FC<TechAndCtaSectionProps> = ({ onOpenCont
             </div>
           </div>
 
-          {/* RIGHT: CTA Card - compact, with user artwork occupying only the right half */}
+          {/* RIGHT: CTA Card - responsive layout per mobile, tablet e desktop */}
           <div className="lg:col-span-7 relative overflow-hidden border border-white/10 rounded-none min-h-[220px] sm:min-h-[240px] flex items-center bg-[#070709] shadow-xl">
-            {/* The artwork covers ONLY the right half (50%) */}
-            <div className="absolute top-0 right-0 bottom-0 w-1/2 overflow-hidden pointer-events-none">
+            {/* The artwork: copre la metà destra su schermi grandi, con fade morbido */}
+            <div className="absolute top-0 right-0 bottom-0 w-2/5 sm:w-1/2 overflow-hidden pointer-events-none opacity-40 sm:opacity-90 lg:opacity-100">
               <img
                 src="/cta-traveler.jpg"
-                alt="Maxim nel paesaggio vulcanico"
+                alt="Antony paesaggio vulcanico"
                 className="w-full h-full object-cover object-[50%_25%] brightness-105 contrast-[1.02]"
+                loading="lazy"
               />
               {/* Soft fade on the left edge into the card background #070709 */}
               <div className="absolute inset-y-0 left-0 w-16 sm:w-28 bg-gradient-to-r from-[#070709] to-transparent pointer-events-none" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#070709]/30 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#070709]/40 via-transparent to-transparent pointer-events-none" />
             </div>
 
             {/* Content on the left half: clean solid dark background */}
-            <div className="relative z-10 w-full sm:w-[55%] lg:w-1/2 px-5 sm:px-7 py-5 sm:py-6">
-              <h3 className="font-heading font-black text-base sm:text-xl lg:text-[1.65rem] text-white uppercase leading-[1.15] tracking-wide">
+            <div className="relative z-10 w-full sm:w-[65%] lg:w-1/2 px-5 sm:px-7 py-5 sm:py-6">
+              <h3 className="font-heading font-black text-lg sm:text-xl lg:text-[1.65rem] text-white uppercase leading-[1.15] tracking-wide">
                 {t('tech.ready1')}<br />
                 <span className="text-[#e50914]">{t('tech.ready2')}</span>
               </h3>

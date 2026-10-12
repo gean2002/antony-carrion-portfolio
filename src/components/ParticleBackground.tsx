@@ -33,7 +33,8 @@ export const ParticleBackground: React.FC = () => {
       color: string;
     }
 
-    const particleCount = 45;
+    const isMobile = window.innerWidth < 768;
+    const particleCount = isMobile ? 22 : 45;
     const particles: Particle[] = [];
 
     for (let i = 0; i < particleCount; i++) {

@@ -240,7 +240,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 font-mono">{currencySymbol}</span>
                         <input
-                          type="number"
+                          type="text"
                           required
                           placeholder=""
                           value={budget}

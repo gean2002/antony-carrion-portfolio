@@ -16,7 +16,8 @@ export const ProjectCardPreview: React.FC<ProjectCardPreviewProps> = ({ type, is
           src="/project-landing.png"
           alt="Landing Page Luméra Skincare 4K"
           className="w-full h-auto block select-none pointer-events-none project-scroll-preview contrast-[1.03] brightness-[1.01]"
-          loading="eager"
+          loading="lazy"
+          decoding="async"
         />
 
         {/* Badge */}
@@ -36,7 +37,8 @@ export const ProjectCardPreview: React.FC<ProjectCardPreviewProps> = ({ type, is
           src="/project-urbanx.png"
           alt="URBANX Shopify Store"
           className="w-full h-auto block select-none pointer-events-none project-scroll-preview"
-          loading="eager"
+          loading="lazy"
+          decoding="async"
         />
 
         {/* Badge */}
@@ -56,7 +58,8 @@ export const ProjectCardPreview: React.FC<ProjectCardPreviewProps> = ({ type, is
           src="/project-corp.png"
           alt="Sito Aziendale Studio Legale"
           className="w-full h-auto block select-none pointer-events-none project-scroll-preview"
-          loading="eager"
+          loading="lazy"
+          decoding="async"
         />
 
         {/* Badge */}
@@ -75,7 +78,8 @@ export const ProjectCardPreview: React.FC<ProjectCardPreviewProps> = ({ type, is
         src="/project-barber-final.png"
         alt="JM Barber Club Torino 4K"
         className="w-full h-auto block select-none pointer-events-none project-scroll-deep"
-        loading="eager"
+        loading="lazy"
+        decoding="async"
       />
 
       {/* Badge */}

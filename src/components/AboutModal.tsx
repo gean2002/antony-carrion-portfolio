@@ -75,10 +75,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({
             </div>
             <div>
               <div className="text-[10px] font-mono text-red-400 uppercase tracking-widest">
-                Formazione & Diploma
+                {t('about.eduTitle')}
               </div>
               <h4 className="font-heading font-bold text-sm sm:text-base text-white uppercase mt-0.5">
-                Istituto Superiore Ettore Majorana di Grugliasco
+                {t('about.eduName')}
               </h4>
               <p className="text-xs text-zinc-300 font-body leading-relaxed mt-1">
                 {t('about.eduDesc')}
@@ -145,7 +145,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
-                <span>30 giorni di supporto tecnico gratuito dopo la consegna</span>
+                <span>{t('about.g4')}</span>
               </div>
             </div>
           </div>

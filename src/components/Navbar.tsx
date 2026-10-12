@@ -89,9 +89,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#050505]/95 backdrop-blur-md border-b border-white/5 py-3 shadow-2xl shadow-black/80`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#050505]/95 backdrop-blur-md border-b border-white/5 py-2.5 sm:py-3 shadow-2xl shadow-black/80`}
     >
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 flex items-center justify-between">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between">
         {/* Left Zone: Brand Logo (AC) */}
         <button
           onClick={() => scrollTo('hero')}
@@ -102,7 +102,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <img
               src="/logo-full.png"
               alt="Antony Carrion Logo"
-              className="h-8 sm:h-10 w-auto object-contain drop-shadow-[0_0_12px_rgba(185,28,28,0.4)]"
+              className="h-7 sm:h-9 md:h-10 w-auto object-contain drop-shadow-[0_0_12px_rgba(185,28,28,0.4)]"
             />
           </div>
         </button>
@@ -132,7 +132,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Zone: Social & Mobile Menu */}
         <div className="flex items-center gap-4 sm:gap-5">
-          {/* WhatsApp & Telefono */}
+          {/* WhatsApp & Telefono (Desktop) */}
           <div className="hidden sm:flex items-center gap-3 text-zinc-300 text-sm">
             {/* WhatsApp */}
             <a
@@ -156,22 +156,28 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Phone className="w-3.5 h-3.5 text-red-500" />
               <span className="font-mono text-xs font-medium tracking-tight">{PORTFOLIO_DATA.contacts.phone}</span>
             </a>
-            
-            {/* Selettore Lingua */}
-            <div className="flex items-center gap-1 ml-2 bg-white/5 p-0.5 rounded border border-white/10">
-              <button 
-                onClick={() => setLanguage('it')}
-                className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors ${language === 'it' ? 'bg-red-600 text-white' : 'text-zinc-400 hover:text-white'}`}
-              >
-                IT
-              </button>
-              <button 
-                onClick={() => setLanguage('es')}
-                className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors ${language === 'es' ? 'bg-red-600 text-white' : 'text-zinc-400 hover:text-white'}`}
-              >
-                ES
-              </button>
-            </div>
+          </div>
+
+          {/* Selettore Lingua (Visibile sia su Desktop che su Mobile nella Navbar principale) */}
+          <div className="flex items-center gap-1 bg-white/5 p-0.5 rounded border border-white/10">
+            <button 
+              onClick={() => {
+                playSubtleClick();
+                setLanguage('it');
+              }}
+              className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors ${language === 'it' ? 'bg-red-600 text-white shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'text-zinc-400 hover:text-white'}`}
+            >
+              IT
+            </button>
+            <button 
+              onClick={() => {
+                playSubtleClick();
+                setLanguage('es');
+              }}
+              className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors ${language === 'es' ? 'bg-red-600 text-white shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'text-zinc-400 hover:text-white'}`}
+            >
+              ES
+            </button>
           </div>
 
           {/* Mobile Menu Button */}

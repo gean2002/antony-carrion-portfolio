@@ -137,7 +137,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               {/* 1. Project Type Selector */}
               <div>
                 <label className="block text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider mb-2">
-                  1. {t('form.project')}:
+                  {t('form.project')}:
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {projectTypes.map((type) => (
@@ -160,15 +160,15 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 </div>
               </div>
 
-              {/* 2. Budget Range */}
+              {/* Budget Range */}
               <div>
                 <label className="block text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider mb-2">
-                  2. {t('form.budget')} ({currencySymbol}):
+                  {t('form.budget')} ({currencySymbol}):
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 font-mono">{currencySymbol}</span>
                   <input
-                    type="number"
+                    type="text"
                     required
                     placeholder=""
                     value={budget}

@@ -20,7 +20,7 @@ export const WhatsAppButton: React.FC = () => {
         }`}
       >
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-2" />
-        <span>Scrivimi su WhatsApp</span>
+        <span>{t('whatsapp.tooltip')}</span>
       </div>
 
       {/* Floating Button / Pallino */}
@@ -28,7 +28,7 @@ export const WhatsAppButton: React.FC = () => {
         href={PORTFOLIO_DATA.contacts.whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Contattami su WhatsApp"
+        aria-label={t('whatsapp.aria')}
         onClick={() => playTechBlip()}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}

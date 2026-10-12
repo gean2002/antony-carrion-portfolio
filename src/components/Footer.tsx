@@ -31,7 +31,7 @@ export const Footer: React.FC = () => {
           onClick={scrollToTop}
           className="flex items-center gap-1.5 text-zinc-400 hover:text-red-400 transition-colors py-1 px-3 border border-white/5 hover:border-red-500/30 rounded text-xs font-mono cursor-pointer"
         >
-          <span>TORNA SU</span>
+          <span>{t('footer.toTop')}</span>
           <ArrowUp className="w-3.5 h-3.5" />
         </button>
 
