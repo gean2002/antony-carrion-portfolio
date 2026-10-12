@@ -16,6 +16,7 @@ import { ParticleBackground } from './components/ParticleBackground';
 import { ContactModal } from './components/ContactModal';
 import { AboutModal } from './components/AboutModal';
 import { WhatsAppButton } from './components/WhatsAppButton';
+import { Analytics } from '@vercel/analytics/react';
 import { Service } from './data/portfolioData';
 import { getSoundEnabled, setSoundEnabled } from './utils/audio';
 
@@ -97,6 +98,9 @@ export default function App() {
 
       {/* Floating WhatsApp Action Button (Pallino) */}
       <WhatsAppButton />
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
     </div>
   );
 }
