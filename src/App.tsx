@@ -17,6 +17,7 @@ import { ContactModal } from './components/ContactModal';
 import { AboutModal } from './components/AboutModal';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Service } from './data/portfolioData';
 import { getSoundEnabled, setSoundEnabled } from './utils/audio';
 
@@ -101,6 +102,9 @@ export default function App() {
 
       {/* Vercel Web Analytics */}
       <Analytics />
+
+      {/* Vercel Speed Insights */}
+      <SpeedInsights />
     </div>
   );
 }
