@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { getPortfolioData } from '../data/portfolioData';
-import { Mail, MapPin, Send, CheckCircle2, ArrowRight, MessageSquare, Phone, Copyright } from 'lucide-react';
+import { Mail, MapPin, Send, CheckCircle2, MessageSquare, Copyright } from 'lucide-react';
 import { playSubtleClick } from '../utils/audio';
 import { useLanguage } from '../context/LanguageContext';
+import { submitContactForm, FormSubmitError, FIELD_LIMITS } from '../utils/secureForm';
+import { PrivacyConsentField, HoneypotField } from './FormSecurityFields';
+import { Highlight } from './Highlight';
 
 interface ContactsSectionProps {
   onOpenContactModal: () => void;
+  onOpenLegal: (tab: 'privacy' | 'cookies') => void;
+  onOpenCookiePreferences: () => void;
 }
 
-export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactModal }) => {
+export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, onOpenCookiePreferences }) => {
   const { t, language } = useLanguage();
   const PORTFOLIO_DATA = getPortfolioData(language);
   const currencySymbol = language === 'it' ? '€' : '$';
@@ -18,35 +23,36 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
   const [projectType, setProjectType] = useState(t('form.type1'));
   const [budget, setBudget] = useState('');
   const [message, setMessage] = useState('');
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [honeypot, setHoneypot] = useState('');
+  const [startedAt, setStartedAt] = useState(() => Date.now());
+  const [errorKey, setErrorKey] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     playSubtleClick();
+    setErrorKey(null);
     setIsSubmitting(true);
     
     try {
-      await fetch("https://formsubmit.co/ajax/71dc468991040c93f0ff7dab032f7866", {
-        method: "POST",
-        headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            Nome: name,
-            Contatto: contact,
-            Progetto: projectType,
-            Budget: budget || 'Non specificato',
-            Messaggio: message || 'Nessun messaggio aggiuntivo',
-            _subject: "Nuovo messaggio dal Portfolio!",
-            _template: "box"
-        })
+      await submitContactForm({
+        name,
+        contact,
+        projectType,
+        budget,
+        message,
+        honeypot,
+        startedAt,
+        subject: 'Nuovo messaggio dal Portfolio!',
       });
       setIsSubmitted(true);
     } catch (error) {
-      console.error(error);
-      alert("Si è verificato un errore durante l'invio. Riprova più tardi.");
+      const code = error instanceof FormSubmitError ? error.code : 'network';
+      // Silently "succeed" for bots so they don't retry
+      if (code === 'spam') setIsSubmitted(true);
+      else setErrorKey(`form.err.${code}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -73,7 +79,9 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                 </div>
 
                 {/* Slogan */}
-                <h3 className="font-heading font-bold text-2xl sm:text-3xl text-white uppercase leading-tight tracking-wide" dangerouslySetInnerHTML={{__html: t('contacts.subtitle').replace('PER IL TUO BUSINESS', '<span class="text-red-600">PER IL TUO BUSINESS</span>').replace('PARA TU NEGOCIO', '<span class="text-red-600">PARA TU NEGOCIO</span>')}}></h3>
+                <h3 className="font-heading font-bold text-2xl sm:text-3xl text-white uppercase leading-tight tracking-wide">
+                  <Highlight text={t('contacts.subtitle')} phrases={['PER IL TUO BUSINESS', 'PARA TU NEGOCIO']} className="text-red-600" />
+                </h3>
 
                 <p className="mt-2 text-xs sm:text-sm text-zinc-400 font-body leading-relaxed max-w-sm">
                   {t('contacts.text')}
@@ -174,6 +182,9 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                         setName('');
                         setContact('');
                         setMessage('');
+                        setBudget('');
+                        setPrivacyAccepted(false);
+                        setStartedAt(Date.now());
                       }}
                       className="px-4 py-2.5 border border-white/20 hover:border-white/40 text-zinc-300 font-heading text-xs tracking-wider uppercase transition-colors cursor-pointer"
                     >
@@ -182,7 +193,8 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4 relative" noValidate={false}>
+                  <HoneypotField value={honeypot} onChange={setHoneypot} />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     {/* Name */}
                     <div>
@@ -192,6 +204,9 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                       <input
                         type="text"
                         required
+                        minLength={2}
+                        maxLength={FIELD_LIMITS.name}
+                        autoComplete="name"
                         placeholder={t('form.namePlaceholder')}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
@@ -207,6 +222,10 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                       <input
                         type="tel"
                         required
+                        maxLength={FIELD_LIMITS.contact}
+                        pattern="[+\d\s().\-]{6,40}"
+                        inputMode="tel"
+                        autoComplete="tel"
                         placeholder={t('form.contactPlaceholder')}
                         value={contact}
                         onChange={(e) => setContact(e.target.value)}
@@ -242,6 +261,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                         <input
                           type="text"
                           required
+                          maxLength={FIELD_LIMITS.budget}
                           placeholder=""
                           value={budget}
                           onChange={(e) => setBudget(e.target.value)}
@@ -258,6 +278,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                     </label>
                     <textarea
                       rows={3}
+                      maxLength={FIELD_LIMITS.message}
                       placeholder={t('form.messagePlaceholder')}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
@@ -265,12 +286,26 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
                     />
                   </div>
 
+                  {/* GDPR consent */}
+                  <PrivacyConsentField
+                    id="privacy-inline"
+                    checked={privacyAccepted}
+                    onChange={setPrivacyAccepted}
+                    onOpenPrivacy={() => onOpenLegal('privacy')}
+                  />
+
+                  {errorKey && (
+                    <p role="alert" className="text-xs text-red-400 font-body bg-red-950/30 border border-red-700/40 px-3 py-2">
+                      {t(errorKey)}
+                    </p>
+                  )}
+
                   {/* Submit Button */}
                   <div className="pt-1 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <button
                       type="submit"
-                      disabled={isSubmitting}
-                      className={`w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-[#c81919] hover:bg-[#b01414] text-white font-heading font-bold text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer shadow-lg shadow-red-950/40 active:scale-95 ${isSubmitting ? 'opacity-70 cursor-wait' : ''}`}
+                      disabled={isSubmitting || !privacyAccepted}
+                      className={`w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-[#c81919] hover:bg-[#b01414] text-white font-heading font-bold text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer shadow-lg shadow-red-950/40 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isSubmitting ? 'cursor-wait' : ''}`}
                     >
                       <span>{isSubmitting ? t('form.submitting') : t('form.submit')}</span>
                       <Send className="w-3.5 h-3.5" />
@@ -292,6 +327,21 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenContactM
               <Copyright className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
               <span>2026 {PORTFOLIO_DATA.name}. {t('footer.rights')}</span>
             </div>
+
+            {/* Legal links */}
+            <nav aria-label="Legal" className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+              <button onClick={() => onOpenLegal('privacy')} className="hover:text-red-400 transition-colors cursor-pointer">
+                {t('legal.privacy')}
+              </button>
+              <span className="text-zinc-700">|</span>
+              <button onClick={() => onOpenLegal('cookies')} className="hover:text-red-400 transition-colors cursor-pointer">
+                {t('legal.cookies')}
+              </button>
+              <span className="text-zinc-700">|</span>
+              <button onClick={onOpenCookiePreferences} className="hover:text-red-400 transition-colors cursor-pointer">
+                {t('legal.preferences')}
+              </button>
+            </nav>
 
             <div className="flex items-center gap-1.5 font-heading text-zinc-400 uppercase tracking-wider text-xs">
               <span>{PORTFOLIO_DATA.role}</span>

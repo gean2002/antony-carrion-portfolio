@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
-import { getPortfolioData } from '../data/portfolioData';
+import React, { useState, useEffect } from 'react';
 import { playSubtleClick, playTechBlip } from '../utils/audio';
-import { X, Send, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
+import { X, Send, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { submitContactForm, FormSubmitError, FIELD_LIMITS } from '../utils/secureForm';
+import { PrivacyConsentField, HoneypotField } from './FormSecurityFields';
 
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialService?: string;
+  onOpenPrivacy: () => void;
 }
 
 export const ContactModal: React.FC<ContactModalProps> = ({
   isOpen,
   onClose,
   initialService,
+  onOpenPrivacy,
 }) => {
   const { t, language } = useLanguage();
-  const PORTFOLIO_DATA = getPortfolioData(language);
   const currencySymbol = language === 'it' ? '€' : '$';
   
   const [projectType, setProjectType] = useState<string>(initialService || t('form.type1'));
@@ -24,8 +26,20 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   const [name, setName] = useState<string>('');
   const [contact, setContact] = useState<string>('');
   const [message, setMessage] = useState<string>('');
+  const [privacyAccepted, setPrivacyAccepted] = useState<boolean>(false);
+  const [honeypot, setHoneypot] = useState<string>('');
+  const [startedAt, setStartedAt] = useState<number>(() => Date.now());
+  const [errorKey, setErrorKey] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setStartedAt(Date.now());
+      setErrorKey(null);
+      if (initialService) setProjectType(initialService);
+    }
+  }, [isOpen, initialService]);
 
   if (!isOpen) return null;
 
@@ -35,34 +49,28 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     t('form.type3'),
   ];
 
-
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     playSubtleClick();
+    setErrorKey(null);
     setIsSubmitting(true);
     
     try {
-      await fetch("https://formsubmit.co/ajax/71dc468991040c93f0ff7dab032f7866", {
-        method: "POST",
-        headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            Nome: name,
-            Contatto: contact,
-            Progetto: projectType,
-            Budget: budget || 'Non specificato',
-            Messaggio: message || 'Nessun messaggio aggiuntivo',
-            _subject: "Nuova richiesta (Pop-up) dal Portfolio!",
-            _template: "box"
-        })
+      await submitContactForm({
+        name,
+        contact,
+        projectType,
+        budget,
+        message,
+        honeypot,
+        startedAt,
+        subject: 'Nuova richiesta (Pop-up) dal Portfolio!',
       });
       setIsSubmitted(true);
     } catch (error) {
-      console.error(error);
-      alert("Si è verificato un errore durante l'invio. Riprova più tardi.");
+      const code = error instanceof FormSubmitError ? error.code : 'network';
+      if (code === 'spam') setIsSubmitted(true);
+      else setErrorKey(`form.err.${code}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -72,7 +80,10 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     setIsSubmitted(false);
     setName('');
     setContact('');
+    setBudget('');
     setMessage('');
+    setPrivacyAccepted(false);
+    setErrorKey(null);
     onClose();
   };
 
@@ -133,7 +144,8 @@ export const ContactModal: React.FC<ContactModalProps> = ({
             </div>
           ) : (
             /* Form Fields */
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 relative" noValidate={false}>
+              <HoneypotField value={honeypot} onChange={setHoneypot} />
               {/* 1. Project Type Selector */}
               <div>
                 <label className="block text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider mb-2">
@@ -170,6 +182,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                   <input
                     type="text"
                     required
+                    maxLength={FIELD_LIMITS.budget}
                     placeholder=""
                     value={budget}
                     onChange={(e) => setBudget(e.target.value)}
@@ -187,6 +200,9 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                   <input
                     type="text"
                     required
+                    minLength={2}
+                    maxLength={FIELD_LIMITS.name}
+                    autoComplete="name"
                     placeholder={t('form.namePlaceholder')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -201,6 +217,10 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                   <input
                     type="tel"
                     required
+                    maxLength={FIELD_LIMITS.contact}
+                    pattern="[+\d\s().\-]{6,40}"
+                    inputMode="tel"
+                    autoComplete="tel"
                     placeholder={t('form.contactPlaceholder')}
                     value={contact}
                     onChange={(e) => setContact(e.target.value)}
@@ -216,6 +236,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 </label>
                 <textarea
                   rows={3}
+                  maxLength={FIELD_LIMITS.message}
                   placeholder={t('form.messagePlaceholder')}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
@@ -231,12 +252,26 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 </span>
               </div>
 
+              {/* GDPR consent */}
+              <PrivacyConsentField
+                id="privacy-modal"
+                checked={privacyAccepted}
+                onChange={setPrivacyAccepted}
+                onOpenPrivacy={onOpenPrivacy}
+              />
+
+              {errorKey && (
+                <p role="alert" className="text-xs text-red-400 font-body bg-red-950/30 border border-red-700/40 px-3 py-2 rounded">
+                  {t(errorKey)}
+                </p>
+              )}
+
               {/* Submit Button */}
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className={`w-full py-4 bg-red-600 hover:bg-red-500 text-white font-heading font-bold text-sm tracking-wider uppercase rounded transition-all red-glow cursor-pointer text-center flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-70 cursor-wait' : ''}`}
+                  disabled={isSubmitting || !privacyAccepted}
+                  className={`w-full py-4 bg-red-600 hover:bg-red-500 text-white font-heading font-bold text-sm tracking-wider uppercase rounded transition-all red-glow cursor-pointer text-center flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${isSubmitting ? 'cursor-wait' : ''}`}
                 >
                   <Send className="w-4 h-4" />
                   <span>{isSubmitting ? t('form.submitting') : t('form.submit')}</span>

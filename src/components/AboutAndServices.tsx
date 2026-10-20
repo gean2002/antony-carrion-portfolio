@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import { getPortfolioData, Service } from '../data/portfolioData';
 import { playSubtleClick, playTechBlip } from '../utils/audio';
 import { ArrowRight, Code, Layout, ShoppingCart, Headphones } from 'lucide-react';
+import { Highlight } from './Highlight';
 
 interface AboutAndServicesProps {
   onOpenAboutModal: () => void;
@@ -90,7 +91,16 @@ export const AboutAndServices: React.FC<AboutAndServicesProps> = ({
 
               <div className="space-y-3 text-zinc-400 font-body text-xs sm:text-sm leading-relaxed">
                 {PORTFOLIO_DATA.bio.map((paragraph, i) => (
-                  <p key={i} dangerouslySetInnerHTML={{ __html: paragraph.replace("Istituto Superiore Ettore Majorana di Grugliasco", "<span class='text-zinc-200 font-medium'>Istituto Superiore Ettore Majorana de Grugliasco</span>").replace("Instituto Superior Ettore Majorana de Grugliasco", "<span class='text-zinc-200 font-medium'>Instituto Superior Ettore Majorana de Grugliasco</span>") }} />
+                  <p key={i}>
+                    <Highlight
+                      text={paragraph}
+                      phrases={[
+                        'Istituto Superiore Ettore Majorana di Grugliasco',
+                        'Instituto Superior Ettore Majorana de Grugliasco',
+                      ]}
+                      className="text-zinc-200 font-medium"
+                    />
+                  </p>
                 ))}
               </div>
 

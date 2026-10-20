@@ -3,6 +3,7 @@ import { getPortfolioData } from '../data/portfolioData';
 import { useLanguage } from '../context/LanguageContext';
 import { playSubtleClick } from '../utils/audio';
 import { X, CheckCircle2, Terminal, Award, FileCode2, GraduationCap } from 'lucide-react';
+import { Highlight } from './Highlight';
 
 interface AboutModalProps {
   isOpen: boolean;
@@ -61,7 +62,14 @@ export const AboutModal: React.FC<AboutModalProps> = ({
               {t('about.p1')}
             </p>
             <p>
-              <span dangerouslySetInnerHTML={{__html: t('about.p2').replace('Istituto Superiore Ettore Majorana di Grugliasco', '<strong class="text-white">Istituto Superiore Ettore Majorana di Grugliasco</strong>').replace('Instituto Superior Ettore Majorana de Grugliasco', '<strong class="text-white">Instituto Superior Ettore Majorana de Grugliasco</strong>').replace('Ettore Majorana High School of Grugliasco', '<strong class="text-white">Ettore Majorana High School of Grugliasco</strong>')}}></span>
+              <Highlight
+                text={t('about.p2')}
+                phrases={[
+                  'Istituto Superiore Ettore Majorana di Grugliasco',
+                  'Instituto Superior Ettore Majorana de Grugliasco',
+                ]}
+                className="text-white font-semibold"
+              />
             </p>
             <p>
               {t('about.p3')}

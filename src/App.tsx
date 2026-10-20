@@ -11,20 +11,25 @@ import { ProjectsSection } from './components/ProjectsSection';
 import { ProcessSection } from './components/ProcessSection';
 import { TechAndCtaSection } from './components/TechAndCtaSection';
 import { ContactsSection } from './components/ContactsSection';
-import { Footer } from './components/Footer';
 import { ParticleBackground } from './components/ParticleBackground';
 import { ContactModal } from './components/ContactModal';
 import { AboutModal } from './components/AboutModal';
 import { WhatsAppButton } from './components/WhatsAppButton';
+import { CookieBanner } from './components/CookieBanner';
+import { LegalModal, LegalTab } from './components/LegalModal';
 import { Analytics } from '@vercel/analytics/react';
 import { Service } from './data/portfolioData';
 import { getSoundEnabled, setSoundEnabled } from './utils/audio';
+import { ConsentState, getStoredConsent } from './utils/consent';
 
 export default function App() {
   const [soundEnabled, setSound] = useState<boolean>(getSoundEnabled());
   const [isContactModalOpen, setIsContactModalOpen] = useState<boolean>(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState<boolean>(false);
   const [selectedServiceForBrief, setSelectedServiceForBrief] = useState<string | undefined>(undefined);
+  const [legalTab, setLegalTab] = useState<LegalTab | null>(null);
+  const [forceCookiePrefs, setForceCookiePrefs] = useState<boolean>(false);
+  const [consent, setConsent] = useState<ConsentState | null>(() => getStoredConsent());
 
   const handleToggleSound = () => {
     const next = !soundEnabled;
@@ -47,7 +52,7 @@ export default function App() {
       {/* Subtle Atmospheric Digital Particle & Embers Canvas */}
       <ParticleBackground />
 
-      {/* Top Navigation Bar with [M] Logo & Russian Links */}
+      {/* Top Navigation Bar */}
       <Navbar
         onOpenContact={() => handleOpenContact()}
         soundEnabled={soundEnabled}
@@ -75,7 +80,11 @@ export default function App() {
         <TechAndCtaSection onOpenContact={() => handleOpenContact()} />
 
         {/* 6. CONTACTS (CONTATTI & LAPTOP MOCKUP) */}
-        <ContactsSection onOpenContactModal={() => handleOpenContact()} />
+        <ContactsSection
+          onOpenContactModal={() => handleOpenContact()}
+          onOpenLegal={(tab) => setLegalTab(tab)}
+          onOpenCookiePreferences={() => setForceCookiePrefs(true)}
+        />
       </main>
 
       {/* MODALS */}
@@ -84,6 +93,7 @@ export default function App() {
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
         initialService={selectedServiceForBrief}
+        onOpenPrivacy={() => setLegalTab('privacy')}
       />
 
       {/* Extended About Antony Modal */}
@@ -96,11 +106,26 @@ export default function App() {
         }}
       />
 
+      {/* Privacy & Cookie Policy Modal */}
+      <LegalModal
+        tab={legalTab}
+        onChangeTab={setLegalTab}
+        onClose={() => setLegalTab(null)}
+      />
+
+      {/* GDPR / ePrivacy Cookie Consent Banner */}
+      <CookieBanner
+        forceOpen={forceCookiePrefs}
+        onForceOpenHandled={() => setForceCookiePrefs(false)}
+        onConsentChange={setConsent}
+        onOpenPolicy={() => setLegalTab('cookies')}
+      />
+
       {/* Floating WhatsApp Action Button (Pallino) */}
       <WhatsAppButton />
 
-      {/* Vercel Web Analytics */}
-      <Analytics />
+      {/* Vercel Web Analytics — loaded ONLY when the user grants analytics consent */}
+      {consent?.analytics && <Analytics />}
     </div>
   );
 }
