@@ -89,7 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#050505]/95 backdrop-blur-md border-b border-white/5 py-2.5 sm:py-3 shadow-2xl shadow-black/80`}
+      className="intro-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#050505]/95 backdrop-blur-md border-b border-white/5 py-2.5 sm:py-3 shadow-2xl shadow-black/80"
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between">
         {/* Left Zone: Brand Logo (AC) */}

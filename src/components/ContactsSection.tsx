@@ -63,7 +63,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         
         {/* Single large bordered card enclosing contacts, form, laptop, and copyright */}
-        <div className="border border-white/10 bg-[#060608] relative overflow-hidden p-5 sm:p-8 lg:p-10">
+        <div className="reveal reveal-scale border border-white/10 bg-[#060608] relative overflow-hidden p-5 sm:p-8 lg:p-10">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
 
@@ -143,7 +143,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
                 <img
                   src="/contact-laptop.jpg"
                   alt="Laptop Workspace"
-                  className="w-full h-full object-contain brightness-95"
+                  className="reveal-media w-full h-full object-contain brightness-95"
                 />
                 <div className="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[#060608] to-transparent pointer-events-none" />
                 <div className="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#060608] to-transparent pointer-events-none" />
@@ -305,7 +305,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
                     <button
                       type="submit"
                       disabled={isSubmitting || !privacyAccepted}
-                      className={`w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-[#c81919] hover:bg-[#b01414] text-white font-heading font-bold text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer shadow-lg shadow-red-950/40 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isSubmitting ? 'cursor-wait' : ''}`}
+                      className={`btn-shimmer w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-[#c81919] hover:bg-[#b01414] text-white font-heading font-bold text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer shadow-lg shadow-red-950/40 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isSubmitting ? 'cursor-wait' : ''}`}
                     >
                       <span>{isSubmitting ? t('form.submitting') : t('form.submit')}</span>
                       <Send className="w-3.5 h-3.5" />

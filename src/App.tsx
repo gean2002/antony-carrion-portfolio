@@ -16,6 +16,7 @@ import { ContactModal } from './components/ContactModal';
 import { AboutModal } from './components/AboutModal';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { CookieBanner } from './components/CookieBanner';
+import { ScrollEffects } from './components/ScrollEffects';
 import { LegalModal, LegalTab } from './components/LegalModal';
 import { Analytics } from '@vercel/analytics/react';
 import { Service } from './data/portfolioData';
@@ -51,6 +52,9 @@ export default function App() {
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 selection:bg-red-600 selection:text-white font-body">
       {/* Subtle Atmospheric Digital Particle & Embers Canvas */}
       <ParticleBackground />
+
+      {/* Scroll progress bar + scroll-reveal fallbacks */}
+      <ScrollEffects />
 
       {/* Top Navigation Bar */}
       <Navbar

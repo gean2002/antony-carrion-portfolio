@@ -19,7 +19,7 @@ export const TechAndCtaSection: React.FC<TechAndCtaSectionProps> = ({ onOpenCont
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
 
           {/* LEFT: Technologies (Clean icons on dark background, no grey box cards) */}
-          <div className="lg:col-span-5 flex flex-col justify-between py-2">
+          <div className="reveal reveal-from-left lg:col-span-5 flex flex-col justify-between py-2">
             <div>
               <div className="flex items-center gap-2.5 mb-6">
                 <span className="w-[3px] h-5 bg-red-700" />
@@ -29,7 +29,7 @@ export const TechAndCtaSection: React.FC<TechAndCtaSectionProps> = ({ onOpenCont
               </div>
 
               {/* 3-col x 2-row clean icons */}
-              <div className="grid grid-cols-3 gap-y-6 gap-x-4 sm:gap-y-7 sm:gap-x-6">
+              <div className="reveal-group grid grid-cols-3 gap-y-6 gap-x-4 sm:gap-y-7 sm:gap-x-6">
                 {PORTFOLIO_DATA.technologies.map((tech) => (
                   <div
                     key={tech.id}
@@ -49,13 +49,13 @@ export const TechAndCtaSection: React.FC<TechAndCtaSectionProps> = ({ onOpenCont
           </div>
 
           {/* RIGHT: CTA Card - responsive layout per mobile, tablet e desktop */}
-          <div className="lg:col-span-7 relative overflow-hidden border border-white/10 rounded-none min-h-[220px] sm:min-h-[240px] flex items-center bg-[#070709] shadow-xl">
+          <div className="reveal reveal-from-right lg:col-span-7 relative overflow-hidden border border-white/10 rounded-none min-h-[220px] sm:min-h-[240px] flex items-center bg-[#070709] shadow-xl">
             {/* The artwork: copre la metà destra su schermi grandi, con fade morbido */}
             <div className="absolute top-0 right-0 bottom-0 w-2/5 sm:w-1/2 overflow-hidden pointer-events-none opacity-40 sm:opacity-90 lg:opacity-100">
               <img
                 src="/cta-traveler.jpg"
                 alt="Antony paesaggio vulcanico"
-                className="w-full h-full object-cover object-[50%_25%] brightness-105 contrast-[1.02]"
+                className="reveal-media w-full h-full object-cover object-[50%_25%] brightness-105 contrast-[1.02]"
                 loading="lazy"
               />
               {/* Soft fade on the left edge into the card background #070709 */}
@@ -76,7 +76,7 @@ export const TechAndCtaSection: React.FC<TechAndCtaSectionProps> = ({ onOpenCont
 
               <button
                 onClick={() => { playSubtleClick(); onOpenContact(); }}
-                className="mt-4 sm:mt-5 group inline-flex items-center gap-3 px-5 sm:px-6 py-2.5 sm:py-3 bg-[#d3101b] hover:bg-[#b00d16] text-white font-heading font-bold text-[11px] sm:text-xs tracking-wider uppercase transition-all duration-200 cursor-pointer shadow-md shadow-red-950/60 active:scale-95"
+                className="btn-shimmer mt-4 sm:mt-5 group inline-flex items-center gap-3 px-5 sm:px-6 py-2.5 sm:py-3 bg-[#d3101b] hover:bg-[#b00d16] text-white font-heading font-bold text-[11px] sm:text-xs tracking-wider uppercase transition-all duration-200 cursor-pointer shadow-md shadow-red-950/60 active:scale-95"
               >
                 <span>{t('tech.writeMe')}</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />

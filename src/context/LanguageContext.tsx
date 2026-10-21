@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { flushSync } from 'react-dom';
 
 export type Language = 'it' | 'es';
 
@@ -319,8 +320,33 @@ export const LanguageProvider: React.FC<{children: React.ReactNode}> = ({ childr
   }, []);
 
   const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem('app_lang', lang);
+    if (lang === language) return;
+    const activeEl = document.activeElement as HTMLElement | null;
+    const update = () => {
+      flushSync(() => {
+        setLanguageState(lang);
+      });
+      localStorage.setItem('app_lang', lang);
+      document.documentElement.lang = lang;
+    };
+
+    const docWithVT = document as Document & {
+      startViewTransition?: (cb: () => void) => { finished: Promise<void> };
+    };
+
+    if (
+      typeof window !== 'undefined' &&
+      docWithVT.startViewTransition &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      const transition = docWithVT.startViewTransition(update);
+      transition.finished.finally(() => {
+        activeEl?.focus?.({ preventScroll: true });
+      });
+    } else {
+      update();
+      activeEl?.focus?.({ preventScroll: true });
+    }
   };
 
   const t = (key: string): string => {
