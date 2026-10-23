@@ -123,7 +123,7 @@ const legal: Record<Language, { privacy: LegalDoc; cookies: LegalDoc }> = {
         {
           title: '5. Link esterni',
           body: [
-            'Cliccando sui pulsanti WhatsApp o Telegram verrai indirizzato a servizi esterni che applicano le proprie privacy e cookie policy.',
+            'Cliccando sul pulsante WhatsApp verrai indirizzato a un servizio esterno che applica le proprie privacy e cookie policy.',
           ],
         },
         {
@@ -242,7 +242,7 @@ const legal: Record<Language, { privacy: LegalDoc; cookies: LegalDoc }> = {
         {
           title: '5. Enlaces externos',
           body: [
-            'Al pulsar los botones de WhatsApp o Telegram serás redirigido a servicios externos que aplican sus propias políticas de privacidad y cookies.',
+            'Al pulsar el botón de WhatsApp serás redirigido a un servicio externo que aplica sus propias políticas de privacidad y cookies.',
           ],
         },
         {

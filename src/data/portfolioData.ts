@@ -45,8 +45,6 @@ const contactsData = {
   phoneUrl: 'tel:+393454184481',
   email: 'antonycarrion.dev@gmail.com',
   location: 'Torino / Remoto',
-  telegram: '@carrion_antony',
-  telegramUrl: 'https://t.me/carrion_antony',
   github: 'https://github.com',
   vk: 'https://vk.com',
 };
@@ -207,7 +205,14 @@ const PORTFOLIO_DATA_IT = {
       duration: '1 giorno',
       details: 'Distribuiamo il progetto sul server di produzione, forniamo gli accessi e insegniamo come gestire i contenuti.'
     },
-  ] as ProcessStep[],
+    {
+      step: '06',
+      title: 'LANCIO',
+      description: '',
+      duration: '',
+      details: ''
+    }
+  ].slice(0, 5) as ProcessStep[],
   technologies: technologiesData,
 };
 
