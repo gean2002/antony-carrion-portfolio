@@ -16,12 +16,10 @@ interface ContactsSectionProps {
 export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, onOpenCookiePreferences }) => {
   const { t, language } = useLanguage();
   const PORTFOLIO_DATA = getPortfolioData(language);
-  const currencySymbol = language === 'it' ? '€' : '$';
   
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
   const [projectType, setProjectType] = useState(t('form.type1'));
-  const [budget, setBudget] = useState('');
   const [message, setMessage] = useState('');
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [honeypot, setHoneypot] = useState('');
@@ -41,7 +39,6 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
         name,
         contact,
         projectType,
-        budget,
         message,
         honeypot,
         startedAt,
@@ -182,7 +179,6 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
                         setName('');
                         setContact('');
                         setMessage('');
-                        setBudget('');
                         setPrivacyAccepted(false);
                         setStartedAt(Date.now());
                       }}
@@ -234,41 +230,19 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    {/* Project type */}
-                    <div>
-                      <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                        {t('form.project')}
-                      </label>
-                      <select
-                        value={projectType}
-                        onChange={(e) => setProjectType(e.target.value)}
-                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white transition-colors font-body"
-                      >
-                        <option value={t('form.type1')}>{t('form.type1')}</option>
-                        <option value={t('form.type2')}>{t('form.type2')}</option>
-                        <option value={t('form.type3')}>{t('form.type3')}</option>
-                      </select>
-                    </div>
-
-                    {/* Budget */}
-                    <div>
-                      <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                        {t('form.budget')} ({currencySymbol})
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 font-mono">{currencySymbol}</span>
-                        <input
-                          type="text"
-                          required
-                          maxLength={FIELD_LIMITS.budget}
-                          placeholder=""
-                          value={budget}
-                          onChange={(e) => setBudget(e.target.value)}
-                          className="w-full pl-8 pr-3.5 py-2.5 bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none text-base sm:text-sm text-white transition-colors font-mono"
-                        />
-                      </div>
-                    </div>
+                  <div className="space-y-1">
+                    <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
+                      {t('form.project')}
+                    </label>
+                    <select
+                      value={projectType}
+                      onChange={(e) => setProjectType(e.target.value)}
+                      className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white transition-colors font-body"
+                    >
+                      <option value={t('form.type1')}>{t('form.type1')}</option>
+                      <option value={t('form.type2')}>{t('form.type2')}</option>
+                      <option value={t('form.type3')}>{t('form.type3')}</option>
+                    </select>
                   </div>
 
                   {/* Message */}
