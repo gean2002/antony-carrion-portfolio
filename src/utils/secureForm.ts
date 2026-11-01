@@ -44,7 +44,7 @@ interface SubmitPayload {
   name: string;
   contact: string;
   projectType: string;
-  budget: string;
+  budget?: string;
   message: string;
   honeypot: string;
   startedAt: number;
@@ -69,7 +69,6 @@ export const submitContactForm = async (data: SubmitPayload): Promise<void> => {
   // 4. Sanitize & validate
   const name = sanitize(data.name, FIELD_LIMITS.name);
   const contact = sanitize(data.contact, FIELD_LIMITS.contact);
-  const budget = sanitize(data.budget, FIELD_LIMITS.budget);
   const message = sanitize(data.message, FIELD_LIMITS.message);
   const projectType = sanitize(data.projectType, 60);
 
@@ -86,7 +85,6 @@ export const submitContactForm = async (data: SubmitPayload): Promise<void> => {
         Nome: name,
         Contatto: contact,
         Progetto: projectType,
-        Budget: budget || 'Non specificato',
         Messaggio: message || 'Nessun messaggio aggiuntivo',
         'Consenso privacy': 'Sì',
         _subject: data.subject,
