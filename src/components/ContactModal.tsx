@@ -18,11 +18,9 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   initialService,
   onOpenPrivacy,
 }) => {
-  const { t, language } = useLanguage();
-  const currencySymbol = language === 'it' ? '€' : '$';
+  const { t } = useLanguage();
   
   const [projectType, setProjectType] = useState<string>(initialService || t('form.type1'));
-  const [budget, setBudget] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [contact, setContact] = useState<string>('');
   const [message, setMessage] = useState<string>('');
@@ -60,7 +58,6 @@ export const ContactModal: React.FC<ContactModalProps> = ({
         name,
         contact,
         projectType,
-        budget,
         message,
         honeypot,
         startedAt,
@@ -80,7 +77,6 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     setIsSubmitted(false);
     setName('');
     setContact('');
-    setBudget('');
     setMessage('');
     setPrivacyAccepted(false);
     setErrorKey(null);
@@ -169,25 +165,6 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                       {type}
                     </button>
                   ))}
-                </div>
-              </div>
-
-              {/* Budget Range */}
-              <div>
-                <label className="block text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider mb-2">
-                  {t('form.budget')} ({currencySymbol}):
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 font-mono">{currencySymbol}</span>
-                  <input
-                    type="text"
-                    required
-                    maxLength={FIELD_LIMITS.budget}
-                    placeholder=""
-                    value={budget}
-                    onChange={(e) => setBudget(e.target.value)}
-                    className="w-full pl-8 pr-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-base sm:text-sm font-mono"
-                  />
                 </div>
               </div>
 
