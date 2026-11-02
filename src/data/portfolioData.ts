@@ -205,14 +205,7 @@ const PORTFOLIO_DATA_IT = {
       duration: '1 giorno',
       details: 'Distribuiamo il progetto sul server di produzione, forniamo gli accessi e insegniamo come gestire i contenuti.'
     },
-    {
-      step: '06',
-      title: 'LANCIO',
-      description: '',
-      duration: '',
-      details: ''
-    }
-  ].slice(0, 5) as ProcessStep[],
+  ] as ProcessStep[],
   technologies: technologiesData,
 };
 

@@ -23,6 +23,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   const [projectType, setProjectType] = useState<string>(initialService || t('form.type1'));
   const [name, setName] = useState<string>('');
   const [contact, setContact] = useState<string>('');
+  const [website, setWebsite] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [privacyAccepted, setPrivacyAccepted] = useState<boolean>(false);
   const [honeypot, setHoneypot] = useState<string>('');
@@ -57,6 +58,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
       await submitContactForm({
         name,
         contact,
+        website,
         projectType,
         message,
         honeypot,
@@ -77,6 +79,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     setIsSubmitted(false);
     setName('');
     setContact('');
+    setWebsite('');
     setMessage('');
     setPrivacyAccepted(false);
     setErrorKey(null);
@@ -204,6 +207,21 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     className="w-full px-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-base sm:text-sm font-body"
                   />
                 </div>
+              </div>
+
+              {/* 4. Optional Website */}
+              <div>
+                <label className="block text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider mb-1.5">
+                  {t('form.website')}:
+                </label>
+                <input
+                  type="text"
+                  maxLength={FIELD_LIMITS.website}
+                  placeholder={t('form.websitePlaceholder')}
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-base sm:text-sm font-body"
+                />
               </div>
 
               {/* 5. Additional Message / Link */}

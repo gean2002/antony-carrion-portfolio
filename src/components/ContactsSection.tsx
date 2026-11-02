@@ -19,6 +19,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
   
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
+  const [website, setWebsite] = useState('');
   const [projectType, setProjectType] = useState(t('form.type1'));
   const [message, setMessage] = useState('');
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
@@ -38,6 +39,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
       await submitContactForm({
         name,
         contact,
+        website,
         projectType,
         message,
         honeypot,
@@ -178,6 +180,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
                         setIsSubmitted(false);
                         setName('');
                         setContact('');
+                        setWebsite('');
                         setMessage('');
                         setPrivacyAccepted(false);
                         setStartedAt(Date.now());
@@ -230,19 +233,37 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                      {t('form.project')}
-                    </label>
-                    <select
-                      value={projectType}
-                      onChange={(e) => setProjectType(e.target.value)}
-                      className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white transition-colors font-body"
-                    >
-                      <option value={t('form.type1')}>{t('form.type1')}</option>
-                      <option value={t('form.type2')}>{t('form.type2')}</option>
-                      <option value={t('form.type3')}>{t('form.type3')}</option>
-                    </select>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    {/* Project Type */}
+                    <div className="space-y-1">
+                      <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
+                        {t('form.project')}
+                      </label>
+                      <select
+                        value={projectType}
+                        onChange={(e) => setProjectType(e.target.value)}
+                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white transition-colors font-body"
+                      >
+                        <option value={t('form.type1')}>{t('form.type1')}</option>
+                        <option value={t('form.type2')}>{t('form.type2')}</option>
+                        <option value={t('form.type3')}>{t('form.type3')}</option>
+                      </select>
+                    </div>
+
+                    {/* Website (Optional) */}
+                    <div>
+                      <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
+                        {t('form.website')}
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={FIELD_LIMITS.website}
+                        placeholder={t('form.websitePlaceholder')}
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body"
+                      />
+                    </div>
                   </div>
 
                   {/* Message */}
