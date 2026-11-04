@@ -7,7 +7,7 @@ interface ProjectsSectionProps {
   onViewAllProjects?: () => void;
 }
 
-export const ProjectsSection: React.FC<ProjectsSectionProps> = () => {
+export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProject }) => {
   const { language, t } = useLanguage();
   const PORTFOLIO_DATA = getPortfolioData(language);
 
@@ -40,7 +40,8 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = () => {
             <div
               key={project.id}
               style={{ '--stagger': idx } as React.CSSProperties}
-              className="wow-project-card group relative flex flex-col bg-[#0a0a0d] border border-white/5 hover:border-red-600/60 rounded-none overflow-hidden"
+              onClick={() => onSelectProject?.(project)}
+              className="wow-project-card group relative flex flex-col bg-[#0a0a0d] border border-white/5 hover:border-red-600/60 rounded-none overflow-hidden cursor-pointer"
             >
               {/* Thumbnail with holographic sheen reflection */}
               <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/5">
@@ -62,7 +63,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = () => {
 
                 <div className="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-zinc-500 font-body">
                   <span className="group-hover:text-zinc-300 transition-colors">{project.year}</span>
-                  <span className="text-zinc-400 group-hover:text-red-400 transition-colors">{project.duration}</span>
+                  <span className="text-zinc-400 group-hover:text-red-400 transition-colors flex items-center gap-1 font-mono">
+                    <span>{language === 'it' ? 'Dettagli' : 'Details'}</span>
+                    <span className="text-red-500">→</span>
+                  </span>
                 </div>
               </div>
 

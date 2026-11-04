@@ -10,16 +10,19 @@ import { AboutAndServices } from './components/AboutAndServices';
 import { ProjectsSection } from './components/ProjectsSection';
 import { ProcessSection } from './components/ProcessSection';
 import { TechAndCtaSection } from './components/TechAndCtaSection';
+import { FaqSection } from './components/FaqSection';
 import { ContactsSection } from './components/ContactsSection';
 import { ParticleBackground } from './components/ParticleBackground';
 import { ContactModal } from './components/ContactModal';
 import { AboutModal } from './components/AboutModal';
+import { ProjectDetailModal } from './components/ProjectDetailModal';
+import { CyberGlowCursor } from './components/CyberGlowCursor';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { CookieBanner } from './components/CookieBanner';
 import { ScrollEffects } from './components/ScrollEffects';
 import { LegalModal, LegalTab } from './components/LegalModal';
 import { Analytics } from '@vercel/analytics/react';
-import { Service } from './data/portfolioData';
+import { Service, Project } from './data/portfolioData';
 import { getSoundEnabled, setSoundEnabled } from './utils/audio';
 import { ConsentState, getStoredConsent } from './utils/consent';
 
@@ -27,6 +30,7 @@ export default function App() {
   const [soundEnabled, setSound] = useState<boolean>(getSoundEnabled());
   const [isContactModalOpen, setIsContactModalOpen] = useState<boolean>(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState<boolean>(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [selectedServiceForBrief, setSelectedServiceForBrief] = useState<string | undefined>(undefined);
   const [legalTab, setLegalTab] = useState<LegalTab | null>(null);
   const [forceCookiePrefs, setForceCookiePrefs] = useState<boolean>(false);
@@ -53,6 +57,9 @@ export default function App() {
       {/* Subtle Atmospheric Digital Particle & Embers Canvas */}
       <ParticleBackground />
 
+      {/* Cyberpunk ambient laser glow cursor on desktop */}
+      <CyberGlowCursor />
+
       {/* Scroll progress bar + scroll-reveal fallbacks */}
       <ScrollEffects />
 
@@ -75,7 +82,7 @@ export default function App() {
         />
 
         {/* 3. PROJECTS (PROGETTI) */}
-        <ProjectsSection />
+        <ProjectsSection onSelectProject={(project) => setSelectedProject(project)} />
 
         {/* 4. WORK PROCESS (FASI DI LAVORO) */}
         <ProcessSection />
@@ -83,7 +90,10 @@ export default function App() {
         {/* 5. TECHNOLOGIES & CALL TO ACTION (TECNOLOGIE & CTA) */}
         <TechAndCtaSection onOpenContact={() => handleOpenContact()} />
 
-        {/* 6. CONTACTS (CONTATTI & LAPTOP MOCKUP) */}
+        {/* 6. FAQ (DOMANDE FREQUENTI & RISPOSTE CHIARE) */}
+        <FaqSection />
+
+        {/* 7. CONTACTS (CONTATTI & LAPTOP MOCKUP) */}
         <ContactsSection
           onOpenContactModal={() => handleOpenContact()}
           onOpenLegal={(tab) => setLegalTab(tab)}
@@ -92,6 +102,17 @@ export default function App() {
       </main>
 
       {/* MODALS */}
+      {/* Project Case Study / Detail Modal */}
+      <ProjectDetailModal
+        project={selectedProject}
+        isOpen={!!selectedProject}
+        onClose={() => setSelectedProject(null)}
+        onRequestSimilar={(title) => {
+          setSelectedProject(null);
+          handleOpenContact(title);
+        }}
+      />
+
       {/* Discuss Project & Brief Modal */}
       <ContactModal
         isOpen={isContactModalOpen}

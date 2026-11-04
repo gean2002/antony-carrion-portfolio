@@ -3,6 +3,7 @@ import { getPortfolioData } from '../data/portfolioData';
 import { playSubtleClick } from '../utils/audio';
 import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { AnimatedCounter } from './AnimatedCounter';
 
 interface HeroSectionProps {
   onOpenContact: () => void;
@@ -111,9 +112,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
                 style={{ '--delay': `${0.38 + idx * 0.12}s` } as React.CSSProperties}
                 className={`intro-fade-up text-left lg:py-3.5 ${idx !== 0 ? 'lg:border-t border-white/10' : ''}`}
               >
-                <div className="font-heading font-bold text-3xl xs:text-4xl sm:text-5xl text-red-600 leading-none">
-                  {stat.value}
-                </div>
+                <AnimatedCounter
+                  value={stat.value}
+                  className="font-heading font-bold text-3xl xs:text-4xl sm:text-5xl text-red-600 leading-none"
+                />
                 <div className="mt-1 text-[10px] sm:text-[11px] text-zinc-400 uppercase tracking-wider font-heading leading-snug max-w-[110px]">
                   {stat.label}
                 </div>
