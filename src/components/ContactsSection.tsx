@@ -273,7 +273,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                 <form onSubmit={handleSubmit} className="space-y-4 relative" noValidate={false}>
                   <HoneypotField value={honeypot} onChange={setHoneypot} />
 
-                  {/* Row 1: NOME E COGNOME * + EMAIL * */}
+                  {/* Row 1: NOME E COGNOME * + ATTIVITÀ O BRAND & CITTÀ * */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
                       <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
@@ -290,51 +290,8 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                         onChange={(e) => setFullName(e.target.value)}
                         className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
                       />
-                      <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
-                        {t('form.fullNameHelper')} <span className="text-red-500/80">*</span>
-                      </span>
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                        {t('form.emailLabel')} <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        maxLength={FIELD_LIMITS.email}
-                        autoComplete="email"
-                        placeholder={t('form.emailPlaceholder')}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
-                      />
-                      <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
-                        {t('form.emailHelper')} <span className="text-red-500/80">*</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Row 2: TELEFONO / WHATSAPP * + ATTIVITÀ E CITTÀ * */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div>
-                      <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                        {t('form.phoneLabel')} <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        maxLength={FIELD_LIMITS.phone}
-                        pattern="[+\d\s().\-]{6,45}"
-                        inputMode="tel"
-                        autoComplete="tel"
-                        placeholder={t('form.phonePlaceholder')}
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
-                      />
-                      <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
-                        {t('form.phoneHelper')} <span className="text-red-500/80">*</span>
+                      <span className="block text-[9px] font-mono text-zinc-500 mt-1">
+                        {t('form.fullNameHelper')}
                       </span>
                     </div>
 
@@ -351,8 +308,51 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                         onChange={(e) => setActivityCity(e.target.value)}
                         className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
                       />
-                      <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
-                        {t('form.activityCityHelper')} <span className="text-red-500/80">*</span>
+                      <span className="block text-[9px] font-mono text-zinc-500 mt-1">
+                        {t('form.activityCityHelper')}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Row 2: EMAIL * + WHATSAPP / TELEFONO * */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
+                        {t('form.emailLabel')} <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        maxLength={FIELD_LIMITS.email}
+                        autoComplete="email"
+                        placeholder={t('form.emailPlaceholder')}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
+                      />
+                      <span className="block text-[9px] font-mono text-zinc-500 mt-1">
+                        {t('form.emailHelper')}
+                      </span>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
+                        {t('form.phoneLabel')} <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        maxLength={FIELD_LIMITS.phone}
+                        pattern="[+\d\s().\-]{6,45}"
+                        inputMode="tel"
+                        autoComplete="tel"
+                        placeholder={t('form.phonePlaceholder')}
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
+                      />
+                      <span className="block text-[9px] font-mono text-zinc-500 mt-1">
+                        {t('form.phoneHelper')}
                       </span>
                     </div>
                   </div>
