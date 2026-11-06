@@ -20,11 +20,11 @@ interface ContactsSectionProps {
 }
 
 const INTEREST_OPTIONS = [
-  'Sito web',
-  'E-commerce',
-  'Software / App',
-  'AI e automazioni',
-  'Social & SEO',
+  { id: 'website', key: 'form.interest.website' },
+  { id: 'ecommerce', key: 'form.interest.ecommerce' },
+  { id: 'software', key: 'form.interest.software' },
+  { id: 'ai', key: 'form.interest.ai' },
+  { id: 'seo', key: 'form.interest.seo' },
 ];
 
 export const ContactsSection: React.FC<ContactsSectionProps> = ({
@@ -39,7 +39,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [activityCity, setActivityCity] = useState('');
-  const [selectedInterests, setSelectedInterests] = useState<string[]>(['Sito web', 'E-commerce']);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>(['website', 'ecommerce']);
   const [hasWebsite, setHasWebsite] = useState('');
   const [mainGoal, setMainGoal] = useState('');
 
@@ -56,10 +56,10 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const toggleInterest = (opt: string) => {
+  const toggleInterest = (id: string) => {
     playSubtleClick();
     setSelectedInterests((prev) =>
-      prev.includes(opt) ? prev.filter((i) => i !== opt) : [...prev, opt]
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
   };
 
@@ -78,23 +78,28 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
     setErrorKey(null);
 
     if (!isValidEmail(email)) {
-      setErrorKey('Inserisci un indirizzo email valido (es. nome@email.it)');
+      setErrorKey(t('form.err.email'));
       return;
     }
     if (!isValidPhone(phone)) {
-      setErrorKey('Inserisci un numero WhatsApp o telefono valido');
+      setErrorKey(t('form.err.phone'));
       return;
     }
 
     setIsSubmitting(true);
 
     try {
+      const interestsLocalized = selectedInterests.map((id) => {
+        const found = INTEREST_OPTIONS.find((o) => o.id === id);
+        return found ? t(found.key) : id;
+      });
+
       await submitContactForm({
         fullName,
         email,
         phone,
         activityCity,
-        interests: selectedInterests,
+        interests: interestsLocalized,
         hasWebsite,
         mainGoal,
         businessName,
@@ -102,16 +107,16 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
         logoLink,
         honeypot,
         startedAt,
-        subject: 'Nuova Richiesta Anteprima da antonycarrion.com!',
+        subject: `Nuova Richiesta Anteprima [${language.toUpperCase()}] da antonycarrion.com!`,
       });
       setIsSubmitted(true);
     } catch (error) {
       const code = error instanceof FormSubmitError ? error.code : 'network';
       if (code === 'spam') setIsSubmitted(true);
-      else if (code === 'tooFast') setErrorKey('Invio troppo rapido. Attendi qualche istante e riprova.');
-      else if (code === 'cooldown') setErrorKey('Hai già inviato una richiesta di recente. Ti risponderemo a breve!');
-      else if (code === 'invalid') setErrorKey('Controlla i campi obbligatori contrassegnati con l\'asterisco (*).');
-      else setErrorKey('Si è verificato un errore di rete. Riprova o scrivimi su WhatsApp.');
+      else if (code === 'tooFast') setErrorKey(t('form.err.tooFast'));
+      else if (code === 'cooldown') setErrorKey(t('form.err.cooldown'));
+      else if (code === 'invalid') setErrorKey(t('form.err.required'));
+      else setErrorKey(t('form.err.network'));
     } finally {
       setIsSubmitting(false);
     }
@@ -123,7 +128,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
     setEmail('');
     setPhone('');
     setActivityCity('');
-    setSelectedInterests(['Sito web', 'E-commerce']);
+    setSelectedInterests(['website', 'ecommerce']);
     setHasWebsite('');
     setMainGoal('');
     setBusinessName('');
@@ -240,7 +245,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
               <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/5">
                 <MessageSquare className="w-4 h-4 text-red-500" />
                 <h4 className="font-heading font-bold text-xs sm:text-sm tracking-wider text-white uppercase">
-                  RICHIEDI L'ANTEPRIMA DEL TUO SITO
+                  {t('form.previewTitle')}
                 </h4>
               </div>
 
@@ -250,17 +255,17 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                     <CheckCircle2 className="w-7 h-7 text-red-400" />
                   </div>
                   <h5 className="font-heading font-bold text-lg text-white uppercase">
-                    RICHIESTA ANTEPRIMA RICEVUTA!
+                    {t('form.successTitle')}
                   </h5>
                   <p className="text-xs sm:text-sm text-zinc-300 max-w-md mx-auto font-body">
-                    Grazie <strong className="text-white">{fullName}</strong>! Ti scriveremo per consegnarti l'anteprima gratuita entro 24 ore lavorative.
+                    {t('thanks')} <strong className="text-white">{fullName}</strong>! {t('form.successDesc')}
                   </p>
                   <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
                     <button
                       onClick={handleReset}
                       className="px-4 py-2.5 border border-white/20 hover:border-white/40 text-zinc-300 font-heading text-xs tracking-wider uppercase transition-colors cursor-pointer"
                     >
-                      INVIA UN'ALTRA RICHIESTA
+                      {t('form.sendAnother')}
                     </button>
                   </div>
                 </div>
@@ -272,7 +277,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
                       <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                        NOME E COGNOME <span className="text-red-500">*</span>
+                        {t('form.fullName')} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -280,32 +285,32 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                         minLength={2}
                         maxLength={FIELD_LIMITS.fullName}
                         autoComplete="name"
-                        placeholder="Es. Mario Rossi"
+                        placeholder={t('form.fullNamePlaceholder')}
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
                       />
                       <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
-                        INSERISCI NOME E COGNOME. <span className="text-red-500/80">*</span>
+                        {t('form.fullNameHelper')} <span className="text-red-500/80">*</span>
                       </span>
                     </div>
 
                     <div>
                       <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                        EMAIL <span className="text-red-500">*</span>
+                        {t('form.emailLabel')} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="email"
                         required
                         maxLength={FIELD_LIMITS.email}
                         autoComplete="email"
-                        placeholder="nome@email.it"
+                        placeholder={t('form.emailPlaceholder')}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
                       />
                       <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
-                        INSERISCI IL TUO INDIRIZZO EMAIL. <span className="text-red-500/80">*</span>
+                        {t('form.emailHelper')} <span className="text-red-500/80">*</span>
                       </span>
                     </div>
                   </div>
@@ -314,7 +319,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
                       <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                        TELEFONO / WHATSAPP <span className="text-red-500">*</span>
+                        {t('form.phoneLabel')} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="tel"
@@ -323,31 +328,31 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                         pattern="[+\d\s().\-]{6,45}"
                         inputMode="tel"
                         autoComplete="tel"
-                        placeholder="+39 351 000 0000"
+                        placeholder={t('form.phonePlaceholder')}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
                       />
                       <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
-                        INSERISCI IL TUO NUMERO WHATSAPP. <span className="text-red-500/80">*</span>
+                        {t('form.phoneHelper')} <span className="text-red-500/80">*</span>
                       </span>
                     </div>
 
                     <div>
                       <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                        ATTIVITÀ E CITTÀ <span className="text-red-500">*</span>
+                        {t('form.activityCity')} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
                         required
                         maxLength={FIELD_LIMITS.activityCity}
-                        placeholder="Es. ristorante a Napoli"
+                        placeholder={t('form.activityCityPlaceholder')}
                         value={activityCity}
                         onChange={(e) => setActivityCity(e.target.value)}
                         className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
                       />
                       <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
-                        INSERISCI ATTIVITÀ E CITTÀ. <span className="text-red-500/80">*</span>
+                        {t('form.activityCityHelper')} <span className="text-red-500/80">*</span>
                       </span>
                     </div>
                   </div>
@@ -355,23 +360,26 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                   {/* Row 3: COSA TI INTERESSA? (facoltativo, scegli quante vuoi) */}
                   <div className="pt-1">
                     <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-2">
-                      COSA TI INTERESSA? <span className="text-zinc-500 text-[10px] font-normal lowercase">(facoltativo, scegli quante vuoi)</span>
+                      {t('form.interestsTitle')}{' '}
+                      <span className="text-zinc-500 text-[10px] font-normal lowercase">
+                        {t('form.interestsOptional')}
+                      </span>
                     </label>
                     <div className="flex flex-wrap gap-2">
                       {INTEREST_OPTIONS.map((opt) => {
-                        const isSelected = selectedInterests.includes(opt);
+                        const isSelected = selectedInterests.includes(opt.id);
                         return (
                           <button
                             type="button"
-                            key={opt}
-                            onClick={() => toggleInterest(opt)}
+                            key={opt.id}
+                            onClick={() => toggleInterest(opt.id)}
                             className={`px-3.5 py-1.5 text-xs font-heading font-medium tracking-wide rounded-full border transition-all cursor-pointer ${
                               isSelected
                                 ? 'bg-red-600 text-white border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]'
                                 : 'bg-[#121318] text-zinc-400 border-white/10 hover:border-white/25 hover:text-white'
                             }`}
                           >
-                            {opt}
+                            {t(opt.key)}
                           </button>
                         );
                       })}
@@ -381,39 +389,39 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                   {/* Row 4: HAI GIÀ UN SITO? LINK OPPURE SCRIVI "NO" * */}
                   <div>
                     <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                      HAI GIÀ UN SITO? LINK OPPURE SCRIVI &quot;NO&quot; <span className="text-red-500">*</span>
+                      {t('form.hasSite')} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       required
                       maxLength={FIELD_LIMITS.hasWebsite}
-                      placeholder="https://... oppure: no"
+                      placeholder={t('form.hasSitePlaceholder')}
                       value={hasWebsite}
                       onChange={(e) => setHasWebsite(e.target.value)}
                       className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
                     />
                     <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
-                      INSERISCI IL LINK DEL SITO OPPURE SCRIVI NO. <span className="text-red-500/80">*</span>
+                      {t('form.hasSiteHelper')} <span className="text-red-500/80">*</span>
                     </span>
                   </div>
 
                   {/* Row 5: QUAL È L'OBIETTIVO PRINCIPALE DEL SITO? * */}
                   <div>
                     <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                      QUAL È L&apos;OBIETTIVO PRINCIPALE DEL SITO? <span className="text-red-500">*</span>
+                      {t('form.mainGoal')} <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       rows={3}
                       required
                       minLength={3}
                       maxLength={FIELD_LIMITS.mainGoal}
-                      placeholder="Es. ricevere più richieste di preventivo, vendere online, prenotazioni."
+                      placeholder={t('form.mainGoalPlaceholder')}
                       value={mainGoal}
                       onChange={(e) => setMainGoal(e.target.value)}
                       className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none p-3.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body resize-none rounded-sm"
                     />
                     <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
-                      DESCRIVI L&apos;OBIETTIVO PRINCIPALE DEL SITO. <span className="text-red-500/80">*</span>
+                      {t('form.mainGoalHelper')} <span className="text-red-500/80">*</span>
                     </span>
                   </div>
 
@@ -427,9 +435,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                       }}
                       className="flex items-center justify-between w-full text-left py-2 text-xs font-heading font-bold text-red-400 hover:text-red-300 transition-colors cursor-pointer uppercase tracking-wider"
                     >
-                      <span>
-                        ▼ HAI LOGO O INSTAGRAM? AGGIUNGILI PER UN&apos;ANTEPRIMA PIÙ TUA.
-                      </span>
+                      <span>{t('form.optionalBrandToggle')}</span>
                       <ChevronDown
                         className={`w-4 h-4 transition-transform duration-200 ${
                           showOptionalFields ? 'rotate-180' : ''
@@ -442,12 +448,15 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                           <div>
                             <label className="block text-[10px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                              NOME DEL BUSINESS <span className="text-zinc-500 font-normal lowercase">(facoltativo)</span>
+                              {t('form.businessName')}{' '}
+                              <span className="text-zinc-500 font-normal lowercase">
+                                {t('form.optionalLabel')}
+                              </span>
                             </label>
                             <input
                               type="text"
                               maxLength={FIELD_LIMITS.businessName}
-                              placeholder="Es. Trattoria da Mario"
+                              placeholder={t('form.businessNamePlaceholder')}
                               value={businessName}
                               onChange={(e) => setBusinessName(e.target.value)}
                               className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
@@ -456,12 +465,15 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
 
                           <div>
                             <label className="block text-[10px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                              INSTAGRAM DEL BUSINESS <span className="text-zinc-500 font-normal lowercase">(facoltativo)</span>
+                              {t('form.instagram')}{' '}
+                              <span className="text-zinc-500 font-normal lowercase">
+                                {t('form.optionalLabel')}
+                              </span>
                             </label>
                             <input
                               type="text"
                               maxLength={FIELD_LIMITS.instagram}
-                              placeholder="@iltuoprofilo"
+                              placeholder={t('form.instagramPlaceholder')}
                               value={instagram}
                               onChange={(e) => setInstagram(e.target.value)}
                               className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
@@ -471,12 +483,15 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
 
                         <div>
                           <label className="block text-[10px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                            LINK AL LOGO <span className="text-zinc-500 font-normal lowercase">(facoltativo)</span>
+                            {t('form.logoLink')}{' '}
+                            <span className="text-zinc-500 font-normal lowercase">
+                              {t('form.optionalLabel')}
+                            </span>
                           </label>
                           <input
                             type="text"
                             maxLength={FIELD_LIMITS.logoLink}
-                            placeholder="Link a Drive, sito o cartella con il logo"
+                            placeholder={t('form.logoLinkPlaceholder')}
                             value={logoLink}
                             onChange={(e) => setLogoLink(e.target.value)}
                             className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
@@ -497,7 +512,7 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                         className="mt-1 w-4 h-4 rounded border-white/20 bg-[#121318] text-red-600 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-red-600"
                       />
                       <span className="text-xs text-zinc-300 font-body leading-snug">
-                        HO LETTO L&apos;{' '}
+                        {t('form.privacyCheckboxPre')}
                         <button
                           type="button"
                           onClick={(e) => {
@@ -506,9 +521,9 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                           }}
                           className="text-red-400 hover:text-red-300 underline font-semibold cursor-pointer"
                         >
-                          INFORMATIVA PRIVACY
-                        </button>{' '}
-                        E CHIEDO DI ESSERE RICONTATTATO/A IN MERITO ALLA RICHIESTA. <span className="text-red-500">*</span>
+                          {t('form.privacyCheckboxLink')}
+                        </button>
+                        {t('form.privacyCheckboxPost')} <span className="text-red-500">*</span>
                       </span>
                     </label>
                   </div>
@@ -528,17 +543,17 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                         isSubmitting ? 'cursor-wait' : ''
                       }`}
                     >
-                      <span>{isSubmitting ? 'INVIO ANTEPRIMA IN CORSO...' : 'Richiedi l\'anteprima'}</span>
+                      <span>{isSubmitting ? t('form.submittingPreview') : t('form.submitPreview')}</span>
                       <ArrowUpRight className="w-4 h-4 text-white" />
                     </button>
 
                     <p className="text-[11px] text-zinc-400 font-body text-center">
-                      Ti scriviamo per consegnarti l&apos;anteprima in 24 ore lavorative.
+                      {t('form.previewReassurance')}
                     </p>
 
                     {!isFormValid && (
                       <p className="text-[10px] text-zinc-500 font-mono text-center">
-                        Compila i campi obbligatori per ricevere l&apos;anteprima.
+                        {t('form.requiredReminder')}
                       </p>
                     )}
                   </div>

@@ -19,11 +19,11 @@ interface ContactModalProps {
 }
 
 const INTEREST_OPTIONS = [
-  'Sito web',
-  'E-commerce',
-  'Software / App',
-  'AI e automazioni',
-  'Social & SEO',
+  { id: 'website', key: 'form.interest.website' },
+  { id: 'ecommerce', key: 'form.interest.ecommerce' },
+  { id: 'software', key: 'form.interest.software' },
+  { id: 'ai', key: 'form.interest.ai' },
+  { id: 'seo', key: 'form.interest.seo' },
 ];
 
 export const ContactModal: React.FC<ContactModalProps> = ({
@@ -32,14 +32,14 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   initialService,
   onOpenPrivacy,
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   // Form State matching the request exactly
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [activityCity, setActivityCity] = useState('');
-  const [selectedInterests, setSelectedInterests] = useState<string[]>(['Sito web', 'E-commerce']);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>(['website', 'ecommerce']);
   const [hasWebsite, setHasWebsite] = useState('');
   const [mainGoal, setMainGoal] = useState('');
 
@@ -61,19 +61,22 @@ export const ContactModal: React.FC<ContactModalProps> = ({
       setStartedAt(Date.now());
       setErrorKey(null);
       if (initialService) {
-        if (!selectedInterests.includes(initialService)) {
-          setSelectedInterests((prev) => [...prev, initialService]);
+        const match = INTEREST_OPTIONS.find(
+          (o) => o.id === initialService || t(o.key).toLowerCase() === initialService.toLowerCase()
+        );
+        if (match && !selectedInterests.includes(match.id)) {
+          setSelectedInterests((prev) => [...prev, match.id]);
         }
       }
     }
-  }, [isOpen, initialService]);
+  }, [isOpen, initialService, t]);
 
   if (!isOpen) return null;
 
-  const toggleInterest = (opt: string) => {
+  const toggleInterest = (id: string) => {
     playSubtleClick();
     setSelectedInterests((prev) =>
-      prev.includes(opt) ? prev.filter((i) => i !== opt) : [...prev, opt]
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
   };
 
@@ -92,23 +95,28 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     setErrorKey(null);
 
     if (!isValidEmail(email)) {
-      setErrorKey('Inserisci un indirizzo email valido (es. nome@email.it)');
+      setErrorKey(t('form.err.email'));
       return;
     }
     if (!isValidPhone(phone)) {
-      setErrorKey('Inserisci un numero WhatsApp o telefono valido');
+      setErrorKey(t('form.err.phone'));
       return;
     }
 
     setIsSubmitting(true);
 
     try {
+      const interestsLocalized = selectedInterests.map((id) => {
+        const found = INTEREST_OPTIONS.find((o) => o.id === id);
+        return found ? t(found.key) : id;
+      });
+
       await submitContactForm({
         fullName,
         email,
         phone,
         activityCity,
-        interests: selectedInterests,
+        interests: interestsLocalized,
         hasWebsite,
         mainGoal,
         businessName,
@@ -116,16 +124,16 @@ export const ContactModal: React.FC<ContactModalProps> = ({
         logoLink,
         honeypot,
         startedAt,
-        subject: 'Nuova Richiesta Anteprima (Pop-up) da antonycarrion.com!',
+        subject: `Nuova Richiesta Anteprima (Pop-up) [${language.toUpperCase()}] da antonycarrion.com!`,
       });
       setIsSubmitted(true);
     } catch (error) {
       const code = error instanceof FormSubmitError ? error.code : 'network';
       if (code === 'spam') setIsSubmitted(true);
-      else if (code === 'tooFast') setErrorKey('Invio troppo rapido. Attendi qualche istante e riprova.');
-      else if (code === 'cooldown') setErrorKey('Hai già inviato una richiesta di recente. Ti risponderemo a breve!');
-      else if (code === 'invalid') setErrorKey('Controlla i campi obbligatori contrassegnati con l\'asterisco (*).');
-      else setErrorKey('Si è verificato un errore di rete. Riprova o scrivimi su WhatsApp.');
+      else if (code === 'tooFast') setErrorKey(t('form.err.tooFast'));
+      else if (code === 'cooldown') setErrorKey(t('form.err.cooldown'));
+      else if (code === 'invalid') setErrorKey(t('form.err.required'));
+      else setErrorKey(t('form.err.network'));
     } finally {
       setIsSubmitting(false);
     }
@@ -137,7 +145,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     setEmail('');
     setPhone('');
     setActivityCity('');
-    setSelectedInterests(['Sito web', 'E-commerce']);
+    setSelectedInterests(['website', 'ecommerce']);
     setHasWebsite('');
     setMainGoal('');
     setBusinessName('');
@@ -161,10 +169,10 @@ export const ContactModal: React.FC<ContactModalProps> = ({
             <span className="w-1.5 h-6 bg-red-600 shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
             <div>
               <h2 className="font-heading font-black text-lg sm:text-xl text-white tracking-wide uppercase">
-                RICHIEDI L'ANTEPRIMA
+                {t('form.previewTitle')}
               </h2>
               <span className="text-xs font-body text-zinc-300">
-                Ti rispondiamo per consegnarti l'anteprima in 24 ore lavorative.
+                {t('form.previewSubtitle')}
               </span>
             </div>
           </div>
@@ -190,17 +198,17 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 <CheckCircle2 className="w-8 h-8 text-red-500" />
               </div>
               <h3 className="font-heading font-black text-xl text-white uppercase">
-                {t('thanks')}, {fullName || ''}! Richiesta ricevuta.
+                {t('thanks')}, {fullName || ''}! {t('form.successTitle')}
               </h3>
               <p className="text-sm text-zinc-300 max-w-md mx-auto font-body">
-                Ti scriveremo su WhatsApp o via email entro 24 ore lavorative per consegnarti l'anteprima dedicata al tuo business.
+                {t('form.successDesc')}
               </p>
               <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <button
                   onClick={handleReset}
                   className="w-full sm:w-auto px-5 py-3 border border-white/10 hover:border-white/30 text-zinc-300 text-xs font-heading font-semibold uppercase rounded cursor-pointer"
                 >
-                  Chiudi
+                  {t('legal.close')}
                 </button>
               </div>
             </div>
@@ -212,39 +220,39 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[11px] font-heading font-bold text-zinc-200 uppercase tracking-wider mb-1">
-                    NOME E COGNOME <span className="text-red-500">*</span>
+                    {t('form.fullName')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
                     maxLength={FIELD_LIMITS.fullName}
                     autoComplete="name"
-                    placeholder="Es. Mario Rossi"
+                    placeholder={t('form.fullNamePlaceholder')}
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="w-full px-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-sm font-body placeholder:text-zinc-600"
                   />
                   <span className="block mt-1 text-[10px] font-heading font-bold text-zinc-500 uppercase tracking-wider">
-                    INSERISCI NOME E COGNOME. <span className="text-red-400/80">*</span>
+                    {t('form.fullNameHelper')} <span className="text-red-400/80">*</span>
                   </span>
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-heading font-bold text-zinc-200 uppercase tracking-wider mb-1">
-                    EMAIL <span className="text-red-500">*</span>
+                    {t('form.emailLabel')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="email"
                     required
                     maxLength={FIELD_LIMITS.email}
                     autoComplete="email"
-                    placeholder="nome@email.it"
+                    placeholder={t('form.emailPlaceholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-sm font-body placeholder:text-zinc-600"
                   />
                   <span className="block mt-1 text-[10px] font-heading font-bold text-zinc-500 uppercase tracking-wider">
-                    INSERISCI IL TUO INDIRIZZO EMAIL. <span className="text-red-400/80">*</span>
+                    {t('form.emailHelper')} <span className="text-red-400/80">*</span>
                   </span>
                 </div>
               </div>
@@ -253,38 +261,38 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[11px] font-heading font-bold text-zinc-200 uppercase tracking-wider mb-1">
-                    TELEFONO / WHATSAPP <span className="text-red-500">*</span>
+                    {t('form.phoneLabel')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="tel"
                     required
                     maxLength={FIELD_LIMITS.phone}
                     autoComplete="tel"
-                    placeholder="+39 351 000 0000"
+                    placeholder={t('form.phonePlaceholder')}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full px-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-sm font-body placeholder:text-zinc-600"
                   />
                   <span className="block mt-1 text-[10px] font-heading font-bold text-zinc-500 uppercase tracking-wider">
-                    INSERISCI IL TUO NUMERO WHATSAPP. <span className="text-red-400/80">*</span>
+                    {t('form.phoneHelper')} <span className="text-red-400/80">*</span>
                   </span>
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-heading font-bold text-zinc-200 uppercase tracking-wider mb-1">
-                    ATTIVITÀ E CITTÀ <span className="text-red-500">*</span>
+                    {t('form.activityCity')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
                     maxLength={FIELD_LIMITS.activityCity}
-                    placeholder="Es. ristorante a Napoli"
+                    placeholder={t('form.activityCityPlaceholder')}
                     value={activityCity}
                     onChange={(e) => setActivityCity(e.target.value)}
                     className="w-full px-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-sm font-body placeholder:text-zinc-600"
                   />
                   <span className="block mt-1 text-[10px] font-heading font-bold text-zinc-500 uppercase tracking-wider">
-                    INSERISCI ATTIVITÀ E CITTÀ. <span className="text-red-400/80">*</span>
+                    {t('form.activityCityHelper')} <span className="text-red-400/80">*</span>
                   </span>
                 </div>
               </div>
@@ -292,23 +300,26 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               {/* Row 3: COSA TI INTERESSA? */}
               <div>
                 <label className="block text-[11px] font-heading font-bold text-zinc-200 uppercase tracking-wider mb-2">
-                  COSA TI INTERESSA? <span className="text-zinc-500 font-normal lowercase">(facoltativo, scegli quante vuoi)</span>
+                  {t('form.interestsTitle')}{' '}
+                  <span className="text-zinc-500 font-normal lowercase">
+                    {t('form.interestsOptional')}
+                  </span>
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {INTEREST_OPTIONS.map((opt) => {
-                    const isSelected = selectedInterests.includes(opt);
+                    const isSelected = selectedInterests.includes(opt.id);
                     return (
                       <button
-                        key={opt}
+                        key={opt.id}
                         type="button"
-                        onClick={() => toggleInterest(opt)}
+                        onClick={() => toggleInterest(opt.id)}
                         className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150 cursor-pointer ${
                           isSelected
                             ? 'bg-[#0055b8] text-white shadow-[0_0_12px_rgba(0,85,184,0.4)] border border-[#1e70d4]'
                             : 'bg-white/5 border border-white/15 text-zinc-300 hover:border-white/30 hover:text-white'
                         }`}
                       >
-                        {opt}
+                        {t(opt.key)}
                       </button>
                     );
                   })}
@@ -318,38 +329,38 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               {/* Row 4: HAI GIÀ UN SITO? */}
               <div>
                 <label className="block text-[11px] font-heading font-bold text-zinc-200 uppercase tracking-wider mb-1">
-                  HAI GIÀ UN SITO? LINK OPPURE SCRIVI "NO" <span className="text-red-500">*</span>
+                  {t('form.hasSite')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
                   maxLength={FIELD_LIMITS.hasWebsite}
-                  placeholder="https://... oppure: no"
+                  placeholder={t('form.hasSitePlaceholder')}
                   value={hasWebsite}
                   onChange={(e) => setHasWebsite(e.target.value)}
                   className="w-full px-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-sm font-body placeholder:text-zinc-600"
                 />
                 <span className="block mt-1 text-[10px] font-heading font-bold text-zinc-500 uppercase tracking-wider">
-                  INSERISCI IL LINK DEL SITO OPPURE SCRIVI NO. <span className="text-red-400/80">*</span>
+                  {t('form.hasSiteHelper')} <span className="text-red-400/80">*</span>
                 </span>
               </div>
 
               {/* Row 5: QUAL È L'OBIETTIVO PRINCIPALE DEL SITO? */}
               <div>
                 <label className="block text-[11px] font-heading font-bold text-zinc-200 uppercase tracking-wider mb-1">
-                  QUAL È L'OBIETTIVO PRINCIPALE DEL SITO? <span className="text-red-500">*</span>
+                  {t('form.mainGoal')} <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   required
                   rows={3}
                   maxLength={FIELD_LIMITS.mainGoal}
-                  placeholder="Es. ricevere più richieste di preventivo, vendere online, prenotazioni."
+                  placeholder={t('form.mainGoalPlaceholder')}
                   value={mainGoal}
                   onChange={(e) => setMainGoal(e.target.value)}
                   className="w-full px-3.5 py-2.5 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-sm font-body placeholder:text-zinc-600 resize-none"
                 />
                 <span className="block mt-1 text-[10px] font-heading font-bold text-zinc-500 uppercase tracking-wider">
-                  DESCRIVI L'OBIETTIVO PRINCIPALE DEL SITO. <span className="text-red-400/80">*</span>
+                  {t('form.mainGoalHelper')} <span className="text-red-400/80">*</span>
                 </span>
               </div>
 
@@ -365,7 +376,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                       showOptionalFields ? 'rotate-180' : ''
                     }`}
                   />
-                  <span>HAI LOGO O INSTAGRAM? AGGIUNGILI PER UN'ANTEPRIMA PIÙ TUA.</span>
+                  <span>{t('form.optionalBrandToggle')}</span>
                 </button>
 
                 {showOptionalFields && (
@@ -373,12 +384,13 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-[11px] font-heading font-semibold text-zinc-300 uppercase tracking-wider mb-1">
-                          NOME DEL BUSINESS <span className="text-zinc-500 lowercase">(facoltativo)</span>
+                          {t('form.businessName')}{' '}
+                          <span className="text-zinc-500 lowercase">{t('form.optionalLabel')}</span>
                         </label>
                         <input
                           type="text"
                           maxLength={FIELD_LIMITS.businessName}
-                          placeholder="Es. Trattoria da Mario"
+                          placeholder={t('form.businessNamePlaceholder')}
                           value={businessName}
                           onChange={(e) => setBusinessName(e.target.value)}
                           className="w-full px-3 py-2 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-sm font-body placeholder:text-zinc-600"
@@ -387,12 +399,13 @@ export const ContactModal: React.FC<ContactModalProps> = ({
 
                       <div>
                         <label className="block text-[11px] font-heading font-semibold text-zinc-300 uppercase tracking-wider mb-1">
-                          INSTAGRAM DEL BUSINESS <span className="text-zinc-500 lowercase">(facoltativo)</span>
+                          {t('form.instagram')}{' '}
+                          <span className="text-zinc-500 lowercase">{t('form.optionalLabel')}</span>
                         </label>
                         <input
                           type="text"
                           maxLength={FIELD_LIMITS.instagram}
-                          placeholder="@iltuoprofilo"
+                          placeholder={t('form.instagramPlaceholder')}
                           value={instagram}
                           onChange={(e) => setInstagram(e.target.value)}
                           className="w-full px-3 py-2 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-sm font-body placeholder:text-zinc-600"
@@ -402,12 +415,13 @@ export const ContactModal: React.FC<ContactModalProps> = ({
 
                     <div>
                       <label className="block text-[11px] font-heading font-semibold text-zinc-300 uppercase tracking-wider mb-1">
-                        LINK AL LOGO <span className="text-zinc-500 lowercase">(facoltativo)</span>
+                        {t('form.logoLink')}{' '}
+                        <span className="text-zinc-500 lowercase">{t('form.optionalLabel')}</span>
                       </label>
                       <input
                         type="text"
                         maxLength={FIELD_LIMITS.logoLink}
-                        placeholder="Link a Drive, sito o cartella con il logo"
+                        placeholder={t('form.logoLinkPlaceholder')}
                         value={logoLink}
                         onChange={(e) => setLogoLink(e.target.value)}
                         className="w-full px-3 py-2 bg-zinc-950 border border-white/10 rounded focus:border-red-500 focus:outline-none text-zinc-200 text-sm font-body placeholder:text-zinc-600"
@@ -426,15 +440,15 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                   onOpenPrivacy={onOpenPrivacy}
                   customLabel={
                     <span>
-                      HO LETTO L'{' '}
+                      {t('form.privacyCheckboxPre')}
                       <button
                         type="button"
                         onClick={onOpenPrivacy}
                         className="underline font-bold text-zinc-200 hover:text-white inline"
                       >
-                        INFORMATIVA PRIVACY
-                      </button>{' '}
-                      E CHIEDO DI ESSERE RICONTATTATO/A IN MERITO ALLA RICHIESTA.{' '}
+                        {t('form.privacyCheckboxLink')}
+                      </button>
+                      {t('form.privacyCheckboxPost')}{' '}
                       <span className="text-red-400">*</span>
                     </span>
                   }
@@ -459,7 +473,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                   }`}
                 >
                   <span className="text-[#0055b8] font-black text-sm">
-                    {isSubmitting ? 'Invio in corso...' : "Richiedi l'anteprima"}
+                    {isSubmitting ? t('form.submittingPreview') : t('form.submitPreview')}
                   </span>
                   <ArrowUpRight className="w-5 h-5 text-[#0055b8]" />
                 </button>
@@ -468,11 +482,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               {/* Footer reassurance */}
               <div className="space-y-1 text-center pt-2">
                 <p className="text-[11px] text-zinc-400 font-body">
-                  Ti scriviamo per consegnarti l'anteprima in 24 ore lavorative.
+                  {t('form.previewReassurance')}
                 </p>
                 {!isFormValid && (
                   <p className="text-[11px] text-zinc-500 font-body">
-                    Compila i campi obbligatori per ricevere l'anteprima.
+                    {t('form.requiredReminder')}
                   </p>
                 )}
               </div>
