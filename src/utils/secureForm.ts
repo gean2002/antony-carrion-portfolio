@@ -61,10 +61,42 @@ export interface NewContactFormData {
   businessName?: string;
   instagram?: string;
   logoLink?: string;
+  attachedFileUrl?: string;
+  attachedFileName?: string;
   honeypot: string;
   startedAt: number;
   subject?: string;
 }
+
+/** Uploads an optional logo/attachment file to public Supabase Storage bucket */
+export const uploadLeadAttachment = async (file: File): Promise<string> => {
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error('FILE_TOO_LARGE');
+  }
+
+  // Create clean safe filename
+  const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const path = `leads/${Date.now()}-${Math.random().toString(36).substring(2, 8)}-${cleanName}`;
+
+  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/lead-attachments/${path}`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': file.type || 'application/octet-stream',
+    },
+    body: file,
+  });
+
+  if (!res.ok) {
+    const errorDetails = await res.text().catch(() => '');
+    console.error('[Supabase Storage Upload Error]', res.status, errorDetails);
+    throw new Error('UPLOAD_FAILED');
+  }
+
+  return `${SUPABASE_URL}/storage/v1/object/public/lead-attachments/${path}`;
+};
 
 export const submitContactForm = async (data: NewContactFormData): Promise<void> => {
   // 1. Honeypot check
@@ -135,6 +167,7 @@ export const submitContactForm = async (data: NewContactFormData): Promise<void>
           businessName ? `Nome Business: ${businessName}` : null,
           instagram ? `Instagram: ${instagram}` : null,
           logoLink ? `Link Logo: ${logoLink}` : null,
+          data.attachedFileUrl ? `File Allegato: ${data.attachedFileUrl}` : null,
         ]
           .filter(Boolean)
           .join('\n'),
@@ -166,6 +199,7 @@ export const submitContactForm = async (data: NewContactFormData): Promise<void>
         'Nome del Business (opzionale)': businessName || '-',
         'Instagram del Business (opzionale)': instagram || '-',
         'Link al Logo (opzionale)': logoLink || '-',
+        'File Caricato (opzionale)': data.attachedFileUrl || '-',
         'Consenso Privacy': 'Sì, accettato',
         _subject: data.subject || 'Nuova Richiesta Anteprima dal Portfolio!',
         _template: 'box',

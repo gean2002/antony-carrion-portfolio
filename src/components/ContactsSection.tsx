@@ -1,10 +1,24 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle2, MessageSquare, Copyright, ArrowUpRight, ChevronDown } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  CheckCircle2,
+  MessageSquare,
+  Copyright,
+  ArrowUpRight,
+  ChevronDown,
+  UploadCloud,
+  FileText,
+  Trash2,
+} from 'lucide-react';
 import { getPortfolioData } from '../data/portfolioData';
 import { playSubtleClick } from '../utils/audio';
 import { useLanguage } from '../context/LanguageContext';
 import {
   submitContactForm,
+  uploadLeadAttachment,
   FormSubmitError,
   FIELD_LIMITS,
   isValidEmail,
@@ -49,12 +63,48 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
   const [instagram, setInstagram] = useState('');
   const [logoLink, setLogoLink] = useState('');
 
+  // Optional File Upload state
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [honeypot, setHoneypot] = useState('');
   const [startedAt, setStartedAt] = useState(() => Date.now());
   const [errorKey, setErrorKey] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleValidateAndSetFile = (file: File) => {
+    const MAX_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      setFileError(t('form.err.fileSize'));
+      setSelectedFile(null);
+      return;
+    }
+    setFileError(null);
+    setSelectedFile(file);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleValidateAndSetFile(file);
+  };
+
+  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleValidateAndSetFile(file);
+  };
+
+  const handleRemoveFile = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedFile(null);
+    setFileError(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
 
   const toggleInterest = (id: string) => {
     playSubtleClick();
@@ -89,6 +139,20 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
     setIsSubmitting(true);
 
     try {
+      let attachedFileUrl: string | undefined = undefined;
+      if (selectedFile) {
+        try {
+          attachedFileUrl = await uploadLeadAttachment(selectedFile);
+        } catch (uploadErr: any) {
+          console.error('[Upload Note]', uploadErr);
+          if (uploadErr?.message === 'FILE_TOO_LARGE') {
+            setErrorKey(t('form.err.fileSize'));
+            setIsSubmitting(false);
+            return;
+          }
+        }
+      }
+
       const interestsLocalized = selectedInterests.map((id) => {
         const found = INTEREST_OPTIONS.find((o) => o.id === id);
         return found ? t(found.key) : id;
@@ -105,6 +169,8 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
         businessName,
         instagram,
         logoLink,
+        attachedFileUrl,
+        attachedFileName: selectedFile?.name,
         honeypot,
         startedAt,
         subject: `Nuova Richiesta Anteprima [${language.toUpperCase()}] da antonycarrion.com!`,
@@ -134,6 +200,9 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
     setBusinessName('');
     setInstagram('');
     setLogoLink('');
+    setSelectedFile(null);
+    setFileError(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
     setPrivacyAccepted(false);
     setStartedAt(Date.now());
     setErrorKey(null);
@@ -481,9 +550,81 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
                           </div>
                         </div>
 
+                        {/* Upload File Zone (Optional) */}
                         <div>
                           <label className="block text-[10px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
-                            {t('form.logoLink')}{' '}
+                            {t('form.uploadLabel')}{' '}
+                            <span className="text-zinc-500 font-normal lowercase">
+                              {t('form.optionalLabel')}
+                            </span>
+                          </label>
+
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/png,image/jpeg,image/webp,image/svg+xml,.pdf,.zip,application/pdf,application/zip"
+                            onChange={handleFileChange}
+                            className="hidden"
+                          />
+
+                          {!selectedFile ? (
+                            <div
+                              onDragOver={(e) => {
+                                e.preventDefault();
+                                setIsDragging(true);
+                              }}
+                              onDragLeave={() => setIsDragging(false)}
+                              onDrop={handleFileDrop}
+                              onClick={() => fileInputRef.current?.click()}
+                              className={`border border-dashed transition-all p-3.5 rounded-sm text-center cursor-pointer flex flex-col items-center justify-center gap-1.5 ${
+                                isDragging
+                                  ? 'border-red-500 bg-red-950/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]'
+                                  : 'border-white/15 bg-[#121318]/70 hover:border-red-500/50 hover:bg-[#121318]'
+                              }`}
+                            >
+                              <UploadCloud className="w-5 h-5 text-red-400" />
+                              <span className="text-xs text-zinc-300 font-medium">
+                                {t('form.uploadHint')}
+                              </span>
+                              <span className="text-[10px] text-zinc-500 font-mono">
+                                PNG, JPG, WEBP, SVG, PDF, ZIP (max 10MB)
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center justify-between p-3 bg-red-950/20 border border-red-500/40 rounded-sm">
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <FileText className="w-5 h-5 text-red-400 shrink-0" />
+                                <div className="min-w-0">
+                                  <div className="text-xs text-white font-medium truncate">
+                                    {selectedFile.name}
+                                  </div>
+                                  <div className="text-[10px] font-mono text-zinc-400">
+                                    {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {t('form.uploadSelected')}
+                                  </div>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={handleRemoveFile}
+                                className="p-1.5 text-zinc-400 hover:text-red-400 hover:bg-white/5 rounded transition-colors cursor-pointer"
+                                title={t('form.uploadRemove')}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          )}
+
+                          {fileError && (
+                            <p className="text-[11px] text-red-400 mt-1 font-mono">
+                              {fileError}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Alternative Drive / Dropbox Link */}
+                        <div>
+                          <label className="block text-[10px] font-heading font-bold tracking-wider text-zinc-400 uppercase mb-1">
+                            {t('form.uploadOrLink')}{' '}
                             <span className="text-zinc-500 font-normal lowercase">
                               {t('form.optionalLabel')}
                             </span>
