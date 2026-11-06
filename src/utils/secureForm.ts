@@ -11,15 +11,19 @@ const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanZ0bHJ4d3dzd2tuYWpjYWduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NTIyMTUsImV4cCI6MjEwOTAyODIxNX0.TF0JdFC1yOEyBJpBI5UqNrDBAHepdubzVlky7gfdIcQ';
 
 const COOLDOWN_MS = 60 * 1000;     // 1 submission per minute
-const MIN_FILL_TIME_MS = 3000;     // humans need at least 3s to fill the form
+const MIN_FILL_TIME_MS = 2500;     // humans need at least 2.5s to fill the form
 const LAST_SUBMIT_KEY = 'ac_last_submit';
 
 export const FIELD_LIMITS = {
-  name: 80,
-  contact: 40,
-  website: 120,
-  budget: 30,
-  message: 1500,
+  fullName: 90,
+  email: 120,
+  phone: 45,
+  activityCity: 120,
+  hasWebsite: 160,
+  mainGoal: 1500,
+  businessName: 100,
+  instagram: 100,
+  logoLink: 300,
 } as const;
 
 export type SubmitError = 'spam' | 'tooFast' | 'cooldown' | 'invalid' | 'network';
@@ -40,48 +44,72 @@ export const sanitize = (value: string, maxLength: number): string =>
     .trim()
     .slice(0, maxLength);
 
-/** Allows only digits, spaces, +, -, (, ), . in phone/WhatsApp field. */
-const PHONE_REGEX = /^[+\d\s().-]{6,40}$/;
+const PHONE_REGEX = /^[+\d\s().-]{6,45}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const isValidPhone = (value: string) => PHONE_REGEX.test(value.trim());
+export const isValidEmail = (value: string) => EMAIL_REGEX.test(value.trim());
 
-interface SubmitPayload {
-  name: string;
-  contact: string;
-  projectType: string;
-  website?: string;
-  budget?: string;
-  message: string;
+export interface NewContactFormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  activityCity: string;
+  interests: string[];
+  hasWebsite: string;
+  mainGoal: string;
+  businessName?: string;
+  instagram?: string;
+  logoLink?: string;
   honeypot: string;
   startedAt: number;
-  subject: string;
+  subject?: string;
 }
 
-export const submitContactForm = async (data: SubmitPayload): Promise<void> => {
-  // 1. Honeypot: real users never see/fill this field
-  if (data.honeypot.trim() !== '') throw new FormSubmitError('spam');
+export const submitContactForm = async (data: NewContactFormData): Promise<void> => {
+  // 1. Honeypot check
+  if (data.honeypot && data.honeypot.trim() !== '') {
+    throw new FormSubmitError('spam');
+  }
 
   // 2. Too fast = bot
-  if (Date.now() - data.startedAt < MIN_FILL_TIME_MS) throw new FormSubmitError('tooFast');
+  if (Date.now() - data.startedAt < MIN_FILL_TIME_MS) {
+    throw new FormSubmitError('tooFast');
+  }
 
-  // 3. Rate limit
+  // 3. Rate limit check
   try {
     const last = Number(localStorage.getItem(LAST_SUBMIT_KEY) || 0);
-    if (Date.now() - last < COOLDOWN_MS) throw new FormSubmitError('cooldown');
+    if (Date.now() - last < COOLDOWN_MS) {
+      throw new FormSubmitError('cooldown');
+    }
   } catch (e) {
     if (e instanceof FormSubmitError) throw e;
   }
 
-  // 4. Sanitize & validate
-  const name = sanitize(data.name, FIELD_LIMITS.name);
-  const contact = sanitize(data.contact, FIELD_LIMITS.contact);
-  const website = data.website ? sanitize(data.website, FIELD_LIMITS.website) : '';
-  const message = sanitize(data.message, FIELD_LIMITS.message);
-  const projectType = sanitize(data.projectType, 60);
+  // 4. Sanitize
+  const fullName = sanitize(data.fullName, FIELD_LIMITS.fullName);
+  const email = sanitize(data.email, FIELD_LIMITS.email);
+  const phone = sanitize(data.phone, FIELD_LIMITS.phone);
+  const activityCity = sanitize(data.activityCity, FIELD_LIMITS.activityCity);
+  const hasWebsite = sanitize(data.hasWebsite, FIELD_LIMITS.hasWebsite);
+  const mainGoal = sanitize(data.mainGoal, FIELD_LIMITS.mainGoal);
+  const businessName = data.businessName ? sanitize(data.businessName, FIELD_LIMITS.businessName) : '';
+  const instagram = data.instagram ? sanitize(data.instagram, FIELD_LIMITS.instagram) : '';
+  const logoLink = data.logoLink ? sanitize(data.logoLink, FIELD_LIMITS.logoLink) : '';
+  const interestsList = (data.interests || []).map((i) => sanitize(i, 50)).filter(Boolean);
 
-  if (name.length < 2 || !isValidPhone(contact)) throw new FormSubmitError('invalid');
+  // Validation
+  if (fullName.length < 2) throw new FormSubmitError('invalid');
+  if (!isValidEmail(email)) throw new FormSubmitError('invalid');
+  if (!isValidPhone(phone)) throw new FormSubmitError('invalid');
+  if (activityCity.length < 2) throw new FormSubmitError('invalid');
+  if (hasWebsite.length < 1) throw new FormSubmitError('invalid');
+  if (mainGoal.length < 3) throw new FormSubmitError('invalid');
 
-  // 5. Send to Supabase (Instant Lead Ingestion for Jarvis & Agency DB)
+  const interestsText = interestsList.length > 0 ? interestsList.join(', ') : 'Nessuna indicata';
+
+  // 5. Send to Supabase (Leads Table)
   let supabaseOk = false;
   try {
     const supaRes = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
@@ -93,14 +121,24 @@ export const submitContactForm = async (data: SubmitPayload): Promise<void> => {
         Prefer: 'return=minimal',
       },
       body: JSON.stringify({
-        name,
-        contact,
-        phone: contact,
-        email: contact.includes('@') ? contact : null,
-        service_needed: projectType,
-        website: website || null,
-        message: message || 'Nessun messaggio aggiuntivo',
-        source: 'antonycarrion.com',
+        name: fullName,
+        contact: phone,
+        phone: phone,
+        email: email,
+        service_needed: interestsText,
+        website: hasWebsite,
+        message: [
+          `Attività e Città: ${activityCity}`,
+          `Interessi: ${interestsText}`,
+          `Sito Attuale: ${hasWebsite}`,
+          `Obiettivo Principale: ${mainGoal}`,
+          businessName ? `Nome Business: ${businessName}` : null,
+          instagram ? `Instagram: ${instagram}` : null,
+          logoLink ? `Link Logo: ${logoLink}` : null,
+        ]
+          .filter(Boolean)
+          .join('\n'),
+        source: 'antonycarrion.com (Richiesta Anteprima)',
         status: 'new',
         alerted: false,
       }),
@@ -110,7 +148,7 @@ export const submitContactForm = async (data: SubmitPayload): Promise<void> => {
     console.warn('[Supabase Ingestion Note]', err);
   }
 
-  // 6. Send to FormSubmit (Email Notification Backup)
+  // 6. Send to FormSubmit (Email Backup)
   let emailOk = false;
   try {
     const res = await fetch(FORM_ENDPOINT, {
@@ -118,13 +156,18 @@ export const submitContactForm = async (data: SubmitPayload): Promise<void> => {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       referrerPolicy: 'strict-origin-when-cross-origin',
       body: JSON.stringify({
-        Nome: name,
-        Contatto: contact,
-        Progetto: projectType,
-        'Sito Attuale': website || 'Nessun sito indicato (da zero)',
-        Messaggio: message || 'Nessun messaggio aggiuntivo',
-        'Consenso privacy': 'Sì',
-        _subject: data.subject,
+        'Nome e Cognome': fullName,
+        Email: email,
+        'Telefono / WhatsApp': phone,
+        'Attività e Città': activityCity,
+        'Cosa ti interessa': interestsText,
+        'Hai già un sito?': hasWebsite,
+        'Obiettivo Principale': mainGoal,
+        'Nome del Business (opzionale)': businessName || '-',
+        'Instagram del Business (opzionale)': instagram || '-',
+        'Link al Logo (opzionale)': logoLink || '-',
+        'Consenso Privacy': 'Sì, accettato',
+        _subject: data.subject || 'Nuova Richiesta Anteprima dal Portfolio!',
         _template: 'box',
         _captcha: 'false',
         _honey: '',
@@ -132,7 +175,7 @@ export const submitContactForm = async (data: SubmitPayload): Promise<void> => {
     });
     emailOk = res.ok;
   } catch {
-    /* If Supabase succeeded, email failure shouldn't block the user */
+    /* ignore email network failure if Supabase worked */
   }
 
   if (!supabaseOk && !emailOk) {

@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Send, CheckCircle2, MessageSquare, Copyright, ArrowUpRight, ChevronDown } from 'lucide-react';
 import { getPortfolioData } from '../data/portfolioData';
-import { Mail, MapPin, Send, CheckCircle2, MessageSquare, Copyright } from 'lucide-react';
 import { playSubtleClick } from '../utils/audio';
 import { useLanguage } from '../context/LanguageContext';
-import { submitContactForm, FormSubmitError, FIELD_LIMITS } from '../utils/secureForm';
+import {
+  submitContactForm,
+  FormSubmitError,
+  FIELD_LIMITS,
+  isValidEmail,
+  isValidPhone,
+} from '../utils/secureForm';
 import { PrivacyConsentField, HoneypotField } from './FormSecurityFields';
 import { Highlight } from './Highlight';
 
@@ -13,15 +19,36 @@ interface ContactsSectionProps {
   onOpenCookiePreferences: () => void;
 }
 
-export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, onOpenCookiePreferences }) => {
+const INTEREST_OPTIONS = [
+  'Sito web',
+  'E-commerce',
+  'Software / App',
+  'AI e automazioni',
+  'Social & SEO',
+];
+
+export const ContactsSection: React.FC<ContactsSectionProps> = ({
+  onOpenLegal,
+  onOpenCookiePreferences,
+}) => {
   const { t, language } = useLanguage();
   const PORTFOLIO_DATA = getPortfolioData(language);
-  
-  const [name, setName] = useState('');
-  const [contact, setContact] = useState('');
-  const [website, setWebsite] = useState('');
-  const [projectType, setProjectType] = useState(t('form.type1'));
-  const [message, setMessage] = useState('');
+
+  // Form State matching the user request
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [activityCity, setActivityCity] = useState('');
+  const [selectedInterests, setSelectedInterests] = useState<string[]>(['Sito web', 'E-commerce']);
+  const [hasWebsite, setHasWebsite] = useState('');
+  const [mainGoal, setMainGoal] = useState('');
+
+  // Optional business section
+  const [showOptionalFields, setShowOptionalFields] = useState(false);
+  const [businessName, setBusinessName] = useState('');
+  const [instagram, setInstagram] = useState('');
+  const [logoLink, setLogoLink] = useState('');
+
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [honeypot, setHoneypot] = useState('');
   const [startedAt, setStartedAt] = useState(() => Date.now());
@@ -29,39 +56,89 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const toggleInterest = (opt: string) => {
+    playSubtleClick();
+    setSelectedInterests((prev) =>
+      prev.includes(opt) ? prev.filter((i) => i !== opt) : [...prev, opt]
+    );
+  };
+
+  const isFormValid =
+    fullName.trim().length >= 2 &&
+    isValidEmail(email) &&
+    isValidPhone(phone) &&
+    activityCity.trim().length >= 2 &&
+    hasWebsite.trim().length >= 1 &&
+    mainGoal.trim().length >= 3 &&
+    privacyAccepted;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     playSubtleClick();
     setErrorKey(null);
+
+    if (!isValidEmail(email)) {
+      setErrorKey('Inserisci un indirizzo email valido (es. nome@email.it)');
+      return;
+    }
+    if (!isValidPhone(phone)) {
+      setErrorKey('Inserisci un numero WhatsApp o telefono valido');
+      return;
+    }
+
     setIsSubmitting(true);
-    
+
     try {
       await submitContactForm({
-        name,
-        contact,
-        website,
-        projectType,
-        message,
+        fullName,
+        email,
+        phone,
+        activityCity,
+        interests: selectedInterests,
+        hasWebsite,
+        mainGoal,
+        businessName,
+        instagram,
+        logoLink,
         honeypot,
         startedAt,
-        subject: 'Nuovo messaggio dal Portfolio!',
+        subject: 'Nuova Richiesta Anteprima da antonycarrion.com!',
       });
       setIsSubmitted(true);
     } catch (error) {
       const code = error instanceof FormSubmitError ? error.code : 'network';
-      // Silently "succeed" for bots so they don't retry
       if (code === 'spam') setIsSubmitted(true);
-      else setErrorKey(`form.err.${code}`);
+      else if (code === 'tooFast') setErrorKey('Invio troppo rapido. Attendi qualche istante e riprova.');
+      else if (code === 'cooldown') setErrorKey('Hai già inviato una richiesta di recente. Ti risponderemo a breve!');
+      else if (code === 'invalid') setErrorKey('Controlla i campi obbligatori contrassegnati con l\'asterisco (*).');
+      else setErrorKey('Si è verificato un errore di rete. Riprova o scrivimi su WhatsApp.');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleReset = () => {
+    setIsSubmitted(false);
+    setFullName('');
+    setEmail('');
+    setPhone('');
+    setActivityCity('');
+    setSelectedInterests(['Sito web', 'E-commerce']);
+    setHasWebsite('');
+    setMainGoal('');
+    setBusinessName('');
+    setInstagram('');
+    setLogoLink('');
+    setPrivacyAccepted(false);
+    setStartedAt(Date.now());
+    setErrorKey(null);
   };
 
   return (
     <section id="contacts" className="relative py-7 sm:py-9 bg-[#040404] border-t border-white/5">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         
-        {/* Single large bordered card enclosing contacts, form, laptop, and copyright */}
+        {/* Single large bordered card enclosing contacts, new form, laptop, and copyright */}
         <div className="reveal reveal-scale border border-white/10 bg-[#060608] relative overflow-hidden p-5 sm:p-8 lg:p-10">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
@@ -79,7 +156,11 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
 
                 {/* Slogan */}
                 <h3 className="font-heading font-bold text-2xl sm:text-3xl text-white uppercase leading-tight tracking-wide">
-                  <Highlight text={t('contacts.subtitle')} phrases={['PER IL TUO BUSINESS', 'PARA TU NEGOCIO']} className="text-red-600" />
+                  <Highlight
+                    text={t('contacts.subtitle')}
+                    phrases={['PER IL TUO BUSINESS', 'PARA TU NEGOCIO']}
+                    className="text-red-600"
+                  />
                 </h3>
 
                 <p className="mt-2 text-xs sm:text-sm text-zinc-400 font-body leading-relaxed max-w-sm">
@@ -151,15 +232,15 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
               </div>
             </div>
 
-            {/* RIGHT: Inline Cyberpunk Contact Form */}
-            <div className="lg:col-span-7 bg-[#0a0b0e] border border-white/10 p-5 sm:p-7 relative w-full">
+            {/* RIGHT: New Requested Form Layout */}
+            <div className="lg:col-span-7 bg-[#0a0b0e] border border-white/10 p-5 sm:p-7 relative w-full rounded-sm shadow-xl">
               {/* Corner accent */}
               <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-red-600/70 pointer-events-none" />
 
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/5">
                 <MessageSquare className="w-4 h-4 text-red-500" />
                 <h4 className="font-heading font-bold text-xs sm:text-sm tracking-wider text-white uppercase">
-                  {t('contacts.write')}
+                  RICHIEDI L'ANTEPRIMA DEL TUO SITO
                 </h4>
               </div>
 
@@ -169,146 +250,297 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({ onOpenLegal, o
                     <CheckCircle2 className="w-7 h-7 text-red-400" />
                   </div>
                   <h5 className="font-heading font-bold text-lg text-white uppercase">
-                    {t('form.success')}
+                    RICHIESTA ANTEPRIMA RICEVUTA!
                   </h5>
-                  <p className="text-xs sm:text-sm text-zinc-400 max-w-md mx-auto font-body">
-                    {t('thanks')} <strong className="text-white">{name || ''}</strong>, {t('form.successSub')}
+                  <p className="text-xs sm:text-sm text-zinc-300 max-w-md mx-auto font-body">
+                    Grazie <strong className="text-white">{fullName}</strong>! Ti scriveremo per consegnarti l'anteprima gratuita entro 24 ore lavorative.
                   </p>
                   <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
                     <button
-                      onClick={() => {
-                        setIsSubmitted(false);
-                        setName('');
-                        setContact('');
-                        setWebsite('');
-                        setMessage('');
-                        setPrivacyAccepted(false);
-                        setStartedAt(Date.now());
-                      }}
+                      onClick={handleReset}
                       className="px-4 py-2.5 border border-white/20 hover:border-white/40 text-zinc-300 font-heading text-xs tracking-wider uppercase transition-colors cursor-pointer"
                     >
-                      {t('form.sendNew')}
+                      INVIA UN'ALTRA RICHIESTA
                     </button>
                   </div>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4 relative" noValidate={false}>
                   <HoneypotField value={honeypot} onChange={setHoneypot} />
+
+                  {/* Row 1: NOME E COGNOME * + EMAIL * */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    {/* Name */}
                     <div>
-                      <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                        {t('form.name')}
+                      <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
+                        NOME E COGNOME <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
                         required
                         minLength={2}
-                        maxLength={FIELD_LIMITS.name}
+                        maxLength={FIELD_LIMITS.fullName}
                         autoComplete="name"
-                        placeholder={t('form.namePlaceholder')}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body"
+                        placeholder="Es. Mario Rossi"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
                       />
+                      <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
+                        INSERISCI NOME E COGNOME. <span className="text-red-500/80">*</span>
+                      </span>
                     </div>
 
-                    {/* Contact (WhatsApp or Phone) */}
                     <div>
-                      <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                        {t('form.contact')}
+                      <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
+                        EMAIL <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        maxLength={FIELD_LIMITS.email}
+                        autoComplete="email"
+                        placeholder="nome@email.it"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
+                      />
+                      <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
+                        INSERISCI IL TUO INDIRIZZO EMAIL. <span className="text-red-500/80">*</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Row 2: TELEFONO / WHATSAPP * + ATTIVITÀ E CITTÀ * */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
+                        TELEFONO / WHATSAPP <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="tel"
                         required
-                        maxLength={FIELD_LIMITS.contact}
-                        pattern="[+\d\s().\-]{6,40}"
+                        maxLength={FIELD_LIMITS.phone}
+                        pattern="[+\d\s().\-]{6,45}"
                         inputMode="tel"
                         autoComplete="tel"
-                        placeholder={t('form.contactPlaceholder')}
-                        value={contact}
-                        onChange={(e) => setContact(e.target.value)}
-                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body"
+                        placeholder="+39 351 000 0000"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
                       />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    {/* Project Type */}
-                    <div className="space-y-1">
-                      <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                        {t('form.project')}
-                      </label>
-                      <select
-                        value={projectType}
-                        onChange={(e) => setProjectType(e.target.value)}
-                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white transition-colors font-body"
-                      >
-                        <option value={t('form.type1')}>{t('form.type1')}</option>
-                        <option value={t('form.type2')}>{t('form.type2')}</option>
-                        <option value={t('form.type3')}>{t('form.type3')}</option>
-                      </select>
+                      <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
+                        INSERISCI IL TUO NUMERO WHATSAPP. <span className="text-red-500/80">*</span>
+                      </span>
                     </div>
 
-                    {/* Website (Optional) */}
                     <div>
-                      <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                        {t('form.website')}
+                      <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
+                        ATTIVITÀ E CITTÀ <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
-                        maxLength={FIELD_LIMITS.website}
-                        placeholder={t('form.websitePlaceholder')}
-                        value={website}
-                        onChange={(e) => setWebsite(e.target.value)}
-                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body"
+                        required
+                        maxLength={FIELD_LIMITS.activityCity}
+                        placeholder="Es. ristorante a Napoli"
+                        value={activityCity}
+                        onChange={(e) => setActivityCity(e.target.value)}
+                        className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
                       />
+                      <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
+                        INSERISCI ATTIVITÀ E CITTÀ. <span className="text-red-500/80">*</span>
+                      </span>
                     </div>
                   </div>
 
-                  {/* Message */}
+                  {/* Row 3: COSA TI INTERESSA? (facoltativo, scegli quante vuoi) */}
+                  <div className="pt-1">
+                    <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-2">
+                      COSA TI INTERESSA? <span className="text-zinc-500 text-[10px] font-normal lowercase">(facoltativo, scegli quante vuoi)</span>
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {INTEREST_OPTIONS.map((opt) => {
+                        const isSelected = selectedInterests.includes(opt);
+                        return (
+                          <button
+                            type="button"
+                            key={opt}
+                            onClick={() => toggleInterest(opt)}
+                            className={`px-3.5 py-1.5 text-xs font-heading font-medium tracking-wide rounded-full border transition-all cursor-pointer ${
+                              isSelected
+                                ? 'bg-red-600 text-white border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]'
+                                : 'bg-[#121318] text-zinc-400 border-white/10 hover:border-white/25 hover:text-white'
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Row 4: HAI GIÀ UN SITO? LINK OPPURE SCRIVI "NO" * */}
                   <div>
-                    <label className="block text-[10px] sm:text-[11px] font-heading font-medium tracking-wider text-zinc-400 uppercase mb-1">
-                      {t('form.message')}
+                    <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
+                      HAI GIÀ UN SITO? LINK OPPURE SCRIVI &quot;NO&quot; <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      maxLength={FIELD_LIMITS.hasWebsite}
+                      placeholder="https://... oppure: no"
+                      value={hasWebsite}
+                      onChange={(e) => setHasWebsite(e.target.value)}
+                      className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
+                    />
+                    <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
+                      INSERISCI IL LINK DEL SITO OPPURE SCRIVI NO. <span className="text-red-500/80">*</span>
+                    </span>
+                  </div>
+
+                  {/* Row 5: QUAL È L'OBIETTIVO PRINCIPALE DEL SITO? * */}
+                  <div>
+                    <label className="block text-[10px] sm:text-[11px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
+                      QUAL È L&apos;OBIETTIVO PRINCIPALE DEL SITO? <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       rows={3}
-                      maxLength={FIELD_LIMITS.message}
-                      placeholder={t('form.messagePlaceholder')}
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none p-3.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body resize-none"
+                      required
+                      minLength={3}
+                      maxLength={FIELD_LIMITS.mainGoal}
+                      placeholder="Es. ricevere più richieste di preventivo, vendere online, prenotazioni."
+                      value={mainGoal}
+                      onChange={(e) => setMainGoal(e.target.value)}
+                      className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none p-3.5 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body resize-none rounded-sm"
                     />
+                    <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-1">
+                      DESCRIVI L&apos;OBIETTIVO PRINCIPALE DEL SITO. <span className="text-red-500/80">*</span>
+                    </span>
                   </div>
 
-                  {/* GDPR consent */}
-                  <PrivacyConsentField
-                    id="privacy-inline"
-                    checked={privacyAccepted}
-                    onChange={setPrivacyAccepted}
-                    onOpenPrivacy={() => onOpenLegal('privacy')}
-                  />
+                  {/* Collapsible / Optional Business & Brand Fields */}
+                  <div className="pt-2 border-t border-white/5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playSubtleClick();
+                        setShowOptionalFields(!showOptionalFields);
+                      }}
+                      className="flex items-center justify-between w-full text-left py-2 text-xs font-heading font-bold text-red-400 hover:text-red-300 transition-colors cursor-pointer uppercase tracking-wider"
+                    >
+                      <span>
+                        ▼ HAI LOGO O INSTAGRAM? AGGIUNGILI PER UN&apos;ANTEPRIMA PIÙ TUA.
+                      </span>
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          showOptionalFields ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+
+                    {showOptionalFields && (
+                      <div className="space-y-3.5 pt-2 animate-in fade-in duration-200">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                          <div>
+                            <label className="block text-[10px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
+                              NOME DEL BUSINESS <span className="text-zinc-500 font-normal lowercase">(facoltativo)</span>
+                            </label>
+                            <input
+                              type="text"
+                              maxLength={FIELD_LIMITS.businessName}
+                              placeholder="Es. Trattoria da Mario"
+                              value={businessName}
+                              onChange={(e) => setBusinessName(e.target.value)}
+                              className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
+                              INSTAGRAM DEL BUSINESS <span className="text-zinc-500 font-normal lowercase">(facoltativo)</span>
+                            </label>
+                            <input
+                              type="text"
+                              maxLength={FIELD_LIMITS.instagram}
+                              placeholder="@iltuoprofilo"
+                              value={instagram}
+                              onChange={(e) => setInstagram(e.target.value)}
+                              className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-heading font-bold tracking-wider text-zinc-300 uppercase mb-1">
+                            LINK AL LOGO <span className="text-zinc-500 font-normal lowercase">(facoltativo)</span>
+                          </label>
+                          <input
+                            type="text"
+                            maxLength={FIELD_LIMITS.logoLink}
+                            placeholder="Link a Drive, sito o cartella con il logo"
+                            value={logoLink}
+                            onChange={(e) => setLogoLink(e.target.value)}
+                            className="w-full bg-[#121318] border border-white/10 focus:border-red-600 focus:outline-none px-3.5 py-2 text-base sm:text-sm text-white placeholder-zinc-600 transition-colors font-body rounded-sm"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* GDPR Consent */}
+                  <div className="pt-1">
+                    <label className="flex items-start gap-2.5 cursor-pointer select-none group">
+                      <input
+                        type="checkbox"
+                        required
+                        checked={privacyAccepted}
+                        onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                        className="mt-1 w-4 h-4 rounded border-white/20 bg-[#121318] text-red-600 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-red-600"
+                      />
+                      <span className="text-xs text-zinc-300 font-body leading-snug">
+                        HO LETTO L&apos;{' '}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onOpenLegal('privacy');
+                          }}
+                          className="text-red-400 hover:text-red-300 underline font-semibold cursor-pointer"
+                        >
+                          INFORMATIVA PRIVACY
+                        </button>{' '}
+                        E CHIEDO DI ESSERE RICONTATTATO/A IN MERITO ALLA RICHIESTA. <span className="text-red-500">*</span>
+                      </span>
+                    </label>
+                  </div>
 
                   {errorKey && (
-                    <p role="alert" className="text-xs text-red-400 font-body bg-red-950/30 border border-red-700/40 px-3 py-2">
-                      {t(errorKey)}
+                    <p role="alert" className="text-xs text-red-400 font-body bg-red-950/30 border border-red-700/40 px-3 py-2 rounded">
+                      {errorKey}
                     </p>
                   )}
 
-                  {/* Submit Button */}
-                  <div className="pt-1 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  {/* Submit Button & Subtext */}
+                  <div className="pt-2 space-y-2">
                     <button
                       type="submit"
-                      disabled={isSubmitting || !privacyAccepted}
-                      className={`btn-shimmer w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-[#c81919] hover:bg-[#b01414] text-white font-heading font-bold text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer shadow-lg shadow-red-950/40 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isSubmitting ? 'cursor-wait' : ''}`}
+                      disabled={isSubmitting || !isFormValid}
+                      className={`btn-shimmer w-full inline-flex items-center justify-between px-6 py-3.5 bg-red-600 hover:bg-red-700 text-white font-heading font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 cursor-pointer shadow-lg shadow-red-950/50 rounded-sm active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed ${
+                        isSubmitting ? 'cursor-wait' : ''
+                      }`}
                     >
-                      <span>{isSubmitting ? t('form.submitting') : t('form.submit')}</span>
-                      <Send className="w-3.5 h-3.5" />
+                      <span>{isSubmitting ? 'INVIO ANTEPRIMA IN CORSO...' : 'Richiedi l\'anteprima'}</span>
+                      <ArrowUpRight className="w-4 h-4 text-white" />
                     </button>
 
-                    <span className="text-[11px] text-zinc-500 font-body text-center sm:text-right">
-                      🔒 {t('tech.response')}
-                    </span>
+                    <p className="text-[11px] text-zinc-400 font-body text-center">
+                      Ti scriviamo per consegnarti l&apos;anteprima in 24 ore lavorative.
+                    </p>
+
+                    {!isFormValid && (
+                      <p className="text-[10px] text-zinc-500 font-mono text-center">
+                        Compila i campi obbligatori per ricevere l&apos;anteprima.
+                      </p>
+                    )}
                   </div>
                 </form>
               )}
