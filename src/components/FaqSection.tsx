@@ -23,8 +23,8 @@ export const FaqSection: React.FC = () => {
         a: 'Lavoriamo con la massima trasparenza: 50% di anticipo all\'avvio dei lavori (dopo aver definito brief e specifiche) e 50% solo a progetto completato, testato su tutti i dispositivi e pronto per la pubblicazione online.',
       },
       {
-        q: 'Potrò modificare testi, immagini e prodotti da solo dopo il lancio?',
-        a: 'Assolutamente sì. Tutti i siti ed e-commerce che sviluppo includono un pannello di controllo intuitivo (Shopify o CMS moderno). Inoltre, al momento della consegna ti fornisco una formazione dedicata per gestire tutto in totale autonomia.',
+        q: 'Chi si occupa di modificare testi, immagini e prodotti dopo il lancio?',
+        a: 'Me ne occupo direttamente io al 100%: non dovrai preoccuparti di nulla né perdere tempo con pannelli complicati. Ti basterà inviarmi i nuovi testi, foto o aggiornamenti via WhatsApp o email e applicherò le modifiche tempestivamente per te. In questo modo il tuo sito resta sempre perfetto, veloce e senza rischi di errori tecnici o grafici.',
       },
       {
         q: 'Cosa include la garanzia di supporto tecnico di 30 giorni?',
@@ -45,8 +45,8 @@ export const FaqSection: React.FC = () => {
         a: 'Trabajamos con total transparencia: un 50% de anticipo al inicio de los trabajos y el 50% restante solo tras la entrega final, comprobada en todos los dispositivos y lista para su publicación.',
       },
       {
-        q: '¿Podré editar textos, fotos y productos por mi cuenta?',
-        a: 'Por supuesto. Cada sitio incluye un panel de control intuitivo. Al momento de la entrega, te brindo una breve capacitación práctica para que puedas gestionar tu contenido con total libertad.',
+        q: '¿Quién se encarga de modificar textos, fotos y productos tras el lanzamiento?',
+        a: 'Me encargo yo directamente al 100%: no tendrás que preocuparte de nada ni perder tiempo con paneles complicados. Solo tendrás que enviarme los nuevos textos, imágenes o actualizaciones por WhatsApp o email y aplicaré los cambios rápidamente por ti. Así tu web se mantiene siempre impecable, rápida y sin riesgo de errores técnicos.',
       },
       {
         q: '¿Qué incluye la garantía de soporte técnico de 30 días?',
@@ -97,7 +97,8 @@ export const FaqSection: React.FC = () => {
             return (
               <div
                 key={idx}
-                className={`transition-all duration-300 border rounded-sm overflow-hidden ${
+                style={{ '--stagger': idx } as React.CSSProperties}
+                className={`wow-faq-item transition-all duration-300 border rounded-sm overflow-hidden ${
                   isOpen
                     ? 'bg-[#0a0a0e] border-red-600/60 shadow-lg shadow-red-950/25'
                     : 'bg-[#070709] border-white/5 hover:border-white/15'
