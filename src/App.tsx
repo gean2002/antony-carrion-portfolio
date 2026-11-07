@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { AboutAndServices } from './components/AboutAndServices';
 import { ProjectsSection } from './components/ProjectsSection';
+import { AllProjectsPage } from './components/AllProjectsPage';
 import { ProcessSection } from './components/ProcessSection';
 import { TechAndCtaSection } from './components/TechAndCtaSection';
 import { FaqSection } from './components/FaqSection';
@@ -35,6 +36,45 @@ export default function App() {
   const [legalTab, setLegalTab] = useState<LegalTab | null>(null);
   const [forceCookiePrefs, setForceCookiePrefs] = useState<boolean>(false);
   const [consent, setConsent] = useState<ConsentState | null>(() => getStoredConsent());
+  const [currentPage, setCurrentPage] = useState<'home' | 'portfolio'>(() => {
+    if (typeof window !== 'undefined') {
+      const p = window.location.pathname.toLowerCase();
+      if (p === '/portfolio' || p === '/progetti') return 'portfolio';
+    }
+    return 'home';
+  });
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const p = window.location.pathname.toLowerCase();
+      if (p === '/portfolio' || p === '/progetti') {
+        setCurrentPage('portfolio');
+      } else {
+        setCurrentPage('home');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigateTo = (page: 'home' | 'portfolio', targetSection?: string) => {
+    if (page === 'portfolio') {
+      window.history.pushState({}, '', '/portfolio');
+      setCurrentPage('portfolio');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.history.pushState({}, '', '/');
+      setCurrentPage('home');
+      if (targetSection) {
+        setTimeout(() => {
+          const el = document.getElementById(targetSection);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  };
 
   const handleToggleSound = () => {
     const next = !soundEnabled;
@@ -68,41 +108,52 @@ export default function App() {
         onOpenContact={() => handleOpenContact()}
         soundEnabled={soundEnabled}
         onToggleSound={handleToggleSound}
+        currentPage={currentPage}
+        onNavigate={navigateTo}
       />
 
-      {/* Main Single Long Scroll Webpage Canvas */}
-      <main className="relative z-10 flex flex-col">
-        {/* 1. HERO SECTION */}
-        <HeroSection onOpenContact={() => handleOpenContact()} />
-
-        {/* 2. ABOUT & SERVICES (CHI SONO / SERVIZI) */}
-        <AboutAndServices
-          onOpenAboutModal={() => setIsAboutModalOpen(true)}
-          onSelectService={handleSelectService}
-        />
-
-        {/* 3. PROJECTS (PORTFOLIO) */}
-        <ProjectsSection
+      {currentPage === 'portfolio' ? (
+        <AllProjectsPage
           onSelectProject={(project) => setSelectedProject(project)}
           onOpenContact={() => handleOpenContact()}
+          onBackToHome={() => navigateTo('home')}
         />
+      ) : (
+        /* Main Single Long Scroll Webpage Canvas */
+        <main className="relative z-10 flex flex-col">
+          {/* 1. HERO SECTION */}
+          <HeroSection onOpenContact={() => handleOpenContact()} />
 
-        {/* 4. WORK PROCESS (FASI DI LAVORO) */}
-        <ProcessSection />
+          {/* 2. ABOUT & SERVICES (CHI SONO / SERVIZI) */}
+          <AboutAndServices
+            onOpenAboutModal={() => setIsAboutModalOpen(true)}
+            onSelectService={handleSelectService}
+          />
 
-        {/* 5. TECHNOLOGIES & CALL TO ACTION (TECNOLOGIE & CTA) */}
-        <TechAndCtaSection onOpenContact={() => handleOpenContact()} />
+          {/* 3. PROJECTS (PORTFOLIO - 3 in primo piano) */}
+          <ProjectsSection
+            onSelectProject={(project) => setSelectedProject(project)}
+            onViewAllProjects={() => navigateTo('portfolio')}
+            onOpenContact={() => handleOpenContact()}
+          />
 
-        {/* 6. FAQ (DOMANDE FREQUENTI & RISPOSTE CHIARE) */}
-        <FaqSection />
+          {/* 4. WORK PROCESS (FASI DI LAVORO) */}
+          <ProcessSection />
 
-        {/* 7. CONTACTS (CONTATTI & LAPTOP MOCKUP) */}
-        <ContactsSection
-          onOpenContactModal={() => handleOpenContact()}
-          onOpenLegal={(tab) => setLegalTab(tab)}
-          onOpenCookiePreferences={() => setForceCookiePrefs(true)}
-        />
-      </main>
+          {/* 5. TECHNOLOGIES & CALL TO ACTION (TECNOLOGIE & CTA) */}
+          <TechAndCtaSection onOpenContact={() => handleOpenContact()} />
+
+          {/* 6. FAQ (DOMANDE FREQUENTI & RISPOSTE CHIARE) */}
+          <FaqSection />
+
+          {/* 7. CONTACTS (CONTATTI & LAPTOP MOCKUP) */}
+          <ContactsSection
+            onOpenContactModal={() => handleOpenContact()}
+            onOpenLegal={(tab) => setLegalTab(tab)}
+            onOpenCookiePreferences={() => setForceCookiePrefs(true)}
+          />
+        </main>
+      )}
 
       {/* MODALS */}
       {/* Project Case Study / Detail Modal */}

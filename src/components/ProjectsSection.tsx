@@ -11,27 +11,23 @@ interface ProjectsSectionProps {
   onOpenContact?: () => void;
 }
 
-type FilterType = 'all' | 'hospitality' | 'food' | 'services';
-
 export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   onSelectProject,
+  onViewAllProjects,
   onOpenContact,
 }) => {
   const { language, t } = useLanguage();
   const PORTFOLIO_DATA = getPortfolioData(language);
-  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
 
-  const filterTabs: { id: FilterType; labelKey: string }[] = [
-    { id: 'all', labelKey: 'portfolio.filter.all' },
-    { id: 'hospitality', labelKey: 'portfolio.filter.hospitality' },
-    { id: 'food', labelKey: 'portfolio.filter.food' },
-    { id: 'services', labelKey: 'portfolio.filter.services' },
-  ];
-
-  const filteredProjects =
-    activeFilter === 'all'
-      ? PORTFOLIO_DATA.projects
-      : PORTFOLIO_DATA.projects.filter((p) => p.filterGroup === activeFilter);
+  // Top 3 featured projects for Home Page:
+  // 1. Corte Pietranova (Salento Luxury Residence)
+  // 2. Q Sushi Bar (Torino Food & Poke)
+  // 3. JM Barber Club (Torino Dark Luxury Barbershop)
+  const homeProjects = [
+    PORTFOLIO_DATA.projects.find((p) => p.id === 'p1') || PORTFOLIO_DATA.projects[0],
+    PORTFOLIO_DATA.projects.find((p) => p.id === 'p2') || PORTFOLIO_DATA.projects[1],
+    PORTFOLIO_DATA.projects.find((p) => p.id === 'p5') || PORTFOLIO_DATA.projects[2],
+  ].filter(Boolean);
 
   return (
     <section
@@ -51,33 +47,23 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
             </div>
             <p className="text-xs sm:text-sm text-zinc-400 font-body max-w-xl">
               {language === 'it'
-                ? 'Esplora i progetti realizzati e distribuiti in produzione su Vercel. Clicca su "Vedi Live" per testarli direttamente.'
-                : 'Explora los proyectos reales desplegados en producción en Vercel. Haz clic en "Ver Live" para probarlos en directo.'}
+                ? 'Una selezione dei migliori progetti realizzati e pubblicati live in produzione su Vercel. Clicca per esplorarli direttamente.'
+                : 'Una selección de los mejores proyectos realizados y publicados en vivo en Vercel. Haz clic para explorarlos directamente.'}
             </p>
           </div>
 
-          {/* Interactive Category Filter Pills */}
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 self-start md:self-auto bg-white/[0.03] p-1 rounded-sm border border-white/10">
-            {filterTabs.map((tab) => {
-              const isActive = activeFilter === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    playSubtleClick();
-                    setActiveFilter(tab.id);
-                  }}
-                  className={`px-3 py-1.5 text-[11px] font-heading font-bold uppercase tracking-wider rounded-sm transition-all duration-200 cursor-pointer ${
-                    isActive
-                      ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(220,38,38,0.5)]'
-                      : 'text-zinc-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {t(tab.labelKey)}
-                </button>
-              );
-            })}
-          </div>
+          {/* Quick "Vedi Tutti (7)" Header Button */}
+          <button
+            onClick={() => {
+              playSubtleClick();
+              onViewAllProjects?.();
+            }}
+            className="btn-shimmer inline-flex items-center gap-2 px-4 py-2 rounded bg-white/[0.04] hover:bg-red-600 border border-white/10 hover:border-red-500 text-xs font-heading font-bold uppercase tracking-wider text-zinc-300 hover:text-white transition-all cursor-pointer shadow-md group active:scale-95 self-start md:self-auto"
+          >
+            <Layers className="w-3.5 h-3.5 text-red-500 group-hover:text-white transition-colors" />
+            <span>{language === 'it' ? 'Tutti i Progetti (7)' : 'Todos los Proyectos (7)'}</span>
+            <ArrowRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-white group-hover:translate-x-0.5 transition-transform" />
+          </button>
 
           {/* Animated horizontal divider line */}
           <div
@@ -86,9 +72,9 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
           />
         </div>
 
-        {/* Real Vercel Projects Grid */}
+        {/* 3 Featured Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project, idx) => {
+          {homeProjects.map((project, idx) => {
             const domainName = project.liveUrl.replace('https://', '');
 
             return (
@@ -233,6 +219,38 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
               </div>
             );
           })}
+        </div>
+
+        {/* Explore All Projects Banner (Transition to All Projects Page) */}
+        <div className="mt-10 p-5 sm:p-7 bg-gradient-to-r from-[#0c0d12] via-[#090a0d] to-[#12080a] border border-white/10 hover:border-red-500/40 rounded-sm flex flex-col md:flex-row items-center justify-between gap-5 shadow-2xl transition-all">
+          <div className="space-y-1.5 text-center md:text-left">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-red-600/15 border border-red-500/30 text-red-400 text-[10px] font-mono font-bold uppercase tracking-widest">
+              <Sparkles className="w-3 h-3" />
+              <span>{language === 'it' ? 'ARCHIVIO COMPLETO · 7 SITI IN PRODUZIONE' : 'ARCHIVO COMPLETO · 7 SITIOS EN PRODUCCIÓN'}</span>
+            </div>
+            <h3 className="font-heading font-black text-base sm:text-lg text-white uppercase tracking-wide">
+              {language === 'it' 
+                ? 'Vuoi vedere tutti i 7 progetti realizzati?' 
+                : '¿Quieres ver los 7 proyectos realizados?'}
+            </h3>
+            <p className="text-xs text-zinc-400 font-body max-w-xl leading-relaxed">
+              {language === 'it'
+                ? 'Esplora anche le ville di Olbia Luxury Stays, lo street food di CupCup\'s Chicken e gli studi clinici della Dott.ssa Elena Moretti e Dott.ssa Chiara Rinaldi.'
+                : 'Explora también las villas de Olbia Luxury Stays, el street food de CupCup\'s Chicken y los gabinetes médicos de la Dra. Moretti y Dra. Rinaldi.'}
+            </p>
+          </div>
+
+          <button
+            onClick={() => {
+              playSubtleClick();
+              onViewAllProjects?.();
+            }}
+            className="btn-shimmer px-6 py-3.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-heading font-bold uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(220,38,38,0.4)] flex items-center gap-2 cursor-pointer shrink-0 active:scale-95"
+          >
+            <Layers className="w-4 h-4" />
+            <span>{language === 'it' ? 'Apri Tutti i Progetti (7)' : 'Abrir Todos los Proyectos (7)'}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Bottom Conversion Banner */}

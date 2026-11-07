@@ -8,12 +8,16 @@ interface NavbarProps {
   onOpenContact: () => void;
   soundEnabled: boolean;
   onToggleSound: () => void;
+  currentPage?: 'home' | 'portfolio';
+  onNavigate?: (page: 'home' | 'portfolio', targetSection?: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenContact,
   soundEnabled,
   onToggleSound,
+  currentPage = 'home',
+  onNavigate,
 }) => {
   const { language, setLanguage, t } = useLanguage();
   const PORTFOLIO_DATA = getPortfolioData(language);
@@ -70,6 +74,16 @@ export const Navbar: React.FC<NavbarProps> = ({
   const scrollTo = (id: string) => {
     playSubtleClick();
     setMobileMenuOpen(false);
+
+    if (currentPage === 'portfolio') {
+      if (id === 'projects') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      onNavigate?.('home', id === 'hero' ? undefined : id);
+      return;
+    }
+
     setActiveSection(id);
 
     isManualScrolling.current = true;
@@ -111,7 +125,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Center Zone: Nav Links */}
         <nav className="hidden lg:flex items-center gap-8 text-[13px] font-semibold tracking-wider font-heading">
           {navLinks.map((link) => {
-            const isActive = activeSection === link.id;
+            const isActive =
+              currentPage === 'portfolio' ? link.id === 'projects' : activeSection === link.id;
             return (
               <button
                 key={link.id}
@@ -190,7 +205,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={link.id}
                 onClick={() => scrollTo(link.id)}
                 className={`text-left py-2 border-b border-white/5 transition-colors ${
-                  activeSection === link.id ? 'text-red-500 font-bold' : 'text-zinc-300 hover:text-white'
+                  (currentPage === 'portfolio' ? link.id === 'projects' : activeSection === link.id)
+                    ? 'text-red-500 font-bold'
+                    : 'text-zinc-300 hover:text-white'
                 }`}
               >
                 {link.label}
