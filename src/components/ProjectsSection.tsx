@@ -1,37 +1,84 @@
+import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import React from 'react';
 import { getPortfolioData, Project } from '../data/portfolioData';
 import { ProjectCardPreview } from './ProjectCardPreview';
-import { ExternalLink, ArrowRight } from 'lucide-react';
+import { ExternalLink, ArrowRight, Sparkles, Globe, Eye, Layers } from 'lucide-react';
+import { playSubtleClick } from '../utils/audio';
 
 interface ProjectsSectionProps {
   onSelectProject?: (project: Project) => void;
   onViewAllProjects?: () => void;
+  onOpenContact?: () => void;
 }
 
-export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProject }) => {
+type FilterType = 'all' | 'hospitality' | 'food' | 'services';
+
+export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
+  onSelectProject,
+  onOpenContact,
+}) => {
   const { language, t } = useLanguage();
   const PORTFOLIO_DATA = getPortfolioData(language);
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+
+  const filterTabs: { id: FilterType; labelKey: string }[] = [
+    { id: 'all', labelKey: 'portfolio.filter.all' },
+    { id: 'hospitality', labelKey: 'portfolio.filter.hospitality' },
+    { id: 'food', labelKey: 'portfolio.filter.food' },
+    { id: 'services', labelKey: 'portfolio.filter.services' },
+  ];
+
+  const filteredProjects =
+    activeFilter === 'all'
+      ? PORTFOLIO_DATA.projects
+      : PORTFOLIO_DATA.projects.filter((p) => p.filterGroup === activeFilter);
 
   return (
     <section
       id="projects"
       data-wow="projects"
-      className="relative py-8 sm:py-12 bg-[#030303] border-t border-white/5"
+      className="relative py-10 sm:py-16 bg-[#030303] border-t border-white/5"
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        
         {/* Section Header */}
-        <div className="relative flex items-center justify-between mb-6 pb-2">
-          <div className="flex items-center gap-2.5">
-            <span className="wow-accent-bar w-[3px] h-4 bg-red-700" />
-            <h2 className="font-heading font-bold text-base sm:text-lg tracking-widest text-white uppercase">
-              <span className="wow-title-text">{t('nav.projects')}</span>
-            </h2>
-            <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-widest ml-2 hidden sm:inline">
-              (6 {language === 'it' ? 'Progetti Live su Vercel' : 'Proyectos Live en Vercel'})
-            </span>
+        <div className="relative flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-3">
+          <div>
+            <div className="flex items-center gap-2.5 mb-1.5">
+              <span className="wow-accent-bar w-[3px] h-4 bg-red-700" />
+              <h2 className="font-heading font-black text-lg sm:text-2xl tracking-widest text-white uppercase">
+                <span className="wow-title-text">{t('nav.projects')}</span>
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-zinc-400 font-body max-w-xl">
+              {language === 'it'
+                ? 'Esplora i progetti realizzati e distribuiti in produzione su Vercel. Clicca su "Vedi Live" per testarli direttamente.'
+                : 'Explora los proyectos reales desplegados en producción en Vercel. Haz clic en "Ver Live" para probarlos en directo.'}
+            </p>
           </div>
+
+          {/* Interactive Category Filter Pills */}
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 self-start md:self-auto bg-white/[0.03] p-1 rounded-sm border border-white/10">
+            {filterTabs.map((tab) => {
+              const isActive = activeFilter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    playSubtleClick();
+                    setActiveFilter(tab.id);
+                  }}
+                  className={`px-3 py-1.5 text-[11px] font-heading font-bold uppercase tracking-wider rounded-sm transition-all duration-200 cursor-pointer ${
+                    isActive
+                      ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(220,38,38,0.5)]'
+                      : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  {t(tab.labelKey)}
+                </button>
+              );
+            })}
+          </div>
+
           {/* Animated horizontal divider line */}
           <div
             aria-hidden="true"
@@ -39,89 +86,187 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
           />
         </div>
 
-        {/* 6 Real Vercel Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {PORTFOLIO_DATA.projects.map((project, idx) => (
-            <div
-              key={project.id}
-              style={{ '--stagger': idx } as React.CSSProperties}
-              onClick={() => onSelectProject?.(project)}
-              className="wow-project-card group relative flex flex-col bg-[#0a0a0d] border border-white/5 hover:border-red-600/60 rounded-none overflow-hidden cursor-pointer transition-all duration-300 shadow-lg hover:shadow-[0_10px_30px_rgba(220,38,38,0.15)]"
-            >
-              {/* Thumbnail with holographic sheen reflection */}
-              <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/5">
-                <div aria-hidden="true" className="wow-project-sheen" />
-                <ProjectCardPreview
-                  type={project.previewType}
-                  title={project.title}
-                  image={project.image}
-                />
-              </div>
+        {/* Real Vercel Projects Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProjects.map((project, idx) => {
+            const domainName = project.liveUrl.replace('https://', '');
 
-              {/* Meta Content */}
-              <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between relative bg-[#09090c]">
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <span className="text-[10px] font-mono text-red-500 uppercase tracking-widest font-semibold">
-                      {project.category}
-                    </span>
-                    <span className="text-[10px] font-mono text-zinc-500">
-                      {project.year}
-                    </span>
+            return (
+              <div
+                key={project.id}
+                style={{ '--stagger': idx } as React.CSSProperties}
+                className="wow-project-card group relative flex flex-col bg-[#090a0d] border border-white/10 hover:border-red-600/70 rounded-sm overflow-hidden transition-all duration-300 shadow-xl hover:shadow-[0_12px_35px_rgba(220,38,38,0.22)]"
+              >
+                {/* Browser-style Top Navigation Bar */}
+                <div className="flex items-center justify-between px-3.5 py-2 bg-[#0c0d12] border-b border-white/10 select-none">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]/80 group-hover:bg-[#ff5f56] transition-colors" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]/80 group-hover:bg-[#ffbd2e] transition-colors" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]/80 group-hover:bg-[#27c93f] transition-colors" />
                   </div>
 
-                  <h3 className="font-heading font-black text-sm sm:text-base tracking-wider text-white group-hover:text-red-400 transition-colors uppercase">
-                    {project.title}
-                  </h3>
-
-                  <p className="mt-1.5 text-xs text-zinc-400 group-hover:text-zinc-300 font-body leading-relaxed line-clamp-2 transition-colors">
-                    {project.subtitle}
-                  </p>
-
-                  {/* Tech stack tags */}
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {project.tags.slice(0, 3).map((tag, tIdx) => (
-                      <span
-                        key={tIdx}
-                        className="px-2 py-0.5 text-[10px] font-mono text-zinc-400 bg-white/[0.04] border border-white/5 rounded"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Card Actions: Live link + Details */}
-                <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between gap-2">
                   <a
                     href={project.liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-600/15 hover:bg-red-600 border border-red-500/40 hover:border-red-500 text-red-400 hover:text-white rounded text-[11px] font-mono font-medium tracking-wider transition-all duration-200 cursor-pointer shadow-sm group/btn"
-                    title={project.liveUrl}
+                    className="flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-black/60 border border-white/10 hover:border-red-500/40 text-[10px] font-mono text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                    title={`Apri ${project.liveUrl}`}
                   >
-                    <span>{language === 'it' ? 'Vedi Live' : 'Ver Live'}</span>
-                    <ExternalLink className="w-3 h-3 text-red-400 group-hover/btn:text-white transition-colors" />
+                    <Globe className="w-2.5 h-2.5 text-zinc-500" />
+                    <span className="truncate max-w-[160px] sm:max-w-[200px]">{domainName}</span>
                   </a>
 
-                  <button
-                    type="button"
-                    onClick={() => onSelectProject?.(project)}
-                    className="text-zinc-400 hover:text-white text-[11px] font-mono flex items-center gap-1 transition-colors cursor-pointer"
-                  >
-                    <span>{language === 'it' ? 'Scheda Progetto' : 'Detalles'}</span>
-                    <span className="text-red-500 group-hover:translate-x-1 transition-transform">→</span>
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-[9px] font-mono font-bold text-emerald-400 tracking-wider">
+                      LIVE
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Glowing bottom laser line on hover */}
-              <div className="h-[2px] w-0 group-hover:w-full bg-gradient-to-r from-red-700 via-red-500 to-red-400 shadow-[0_0_12px_rgba(239,68,68,0.9)] transition-all duration-500" />
-            </div>
-          ))}
+                {/* Thumbnail Visual */}
+                <div
+                  onClick={() => onSelectProject?.(project)}
+                  className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/5 cursor-pointer bg-black"
+                >
+                  <div aria-hidden="true" className="wow-project-sheen" />
+                  <ProjectCardPreview
+                    type={project.previewType}
+                    title={project.title}
+                    image={project.image}
+                  />
+
+                  {/* Key Metric Pill */}
+                  {project.metric && (
+                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-sm bg-black/85 border border-red-500/60 backdrop-blur-md text-[10px] font-mono font-bold text-red-300 shadow-lg pointer-events-none z-10 flex items-center gap-1.5">
+                      <Sparkles className="w-3 h-3 text-red-400" />
+                      <span>{project.metric}</span>
+                    </div>
+                  )}
+
+                  {/* Hover Quick Overlay */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 pointer-events-none">
+                    <span className="px-3 py-1.5 rounded bg-black/85 border border-white/20 text-xs font-heading font-bold text-white uppercase tracking-wider backdrop-blur-md flex items-center gap-1.5 shadow-xl">
+                      <Eye className="w-3.5 h-3.5 text-red-400" />
+                      <span>{language === 'it' ? 'Esplora' : 'Explorar'}</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content Details */}
+                <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between relative bg-[#090a0d]">
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <span className="text-[10px] font-mono text-red-500 uppercase tracking-widest font-semibold">
+                        {project.category}
+                      </span>
+                      <span className="text-[10px] font-mono text-zinc-500">
+                        {project.year}
+                      </span>
+                    </div>
+
+                    <h3
+                      onClick={() => onSelectProject?.(project)}
+                      className="font-heading font-black text-sm sm:text-base tracking-wider text-white group-hover:text-red-400 transition-colors uppercase cursor-pointer"
+                    >
+                      {project.title}
+                    </h3>
+
+                    <p className="mt-1.5 text-xs text-zinc-400 group-hover:text-zinc-300 font-body leading-relaxed line-clamp-2 transition-colors">
+                      {project.subtitle}
+                    </p>
+
+                    {/* Tech stack badges */}
+                    <div className="mt-3.5 flex flex-wrap gap-1.5">
+                      {project.tags.map((tag, tIdx) => (
+                        <span
+                          key={tIdx}
+                          className="px-2 py-0.5 text-[10px] font-mono text-zinc-400 bg-white/[0.04] border border-white/10 rounded"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Dual Actions: Primary Live Button + Secondary Details */}
+                  <div className="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-between gap-3">
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-shimmer flex-1 inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-heading font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(220,38,38,0.35)] active:scale-95 group/btn"
+                    >
+                      <span>{language === 'it' ? 'Vedi Live' : 'Ver Live'}</span>
+                      <ExternalLink className="w-3.5 h-3.5 text-white group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                    </a>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playSubtleClick();
+                        onSelectProject?.(project);
+                      }}
+                      className="px-3.5 py-2 text-zinc-400 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 rounded text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1"
+                    >
+                      <span>{language === 'it' ? 'Scheda' : 'Ficha'}</span>
+                      <ArrowRight className="w-3 h-3 text-red-500" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Laser Glowing Border Bottom */}
+                <div className="h-[2px] w-0 group-hover:w-full bg-gradient-to-r from-red-700 via-red-500 to-red-400 shadow-[0_0_12px_rgba(239,68,68,0.9)] transition-all duration-500" />
+              </div>
+            );
+          })}
         </div>
 
+        {/* Bottom Conversion Banner */}
+        <div className="mt-12 p-6 sm:p-8 bg-gradient-to-r from-red-950/40 via-[#0d090c] to-[#0a0a0d] border border-red-500/30 rounded-sm flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="space-y-1.5 text-center md:text-left relative z-10">
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-mono text-red-400 uppercase tracking-widest font-bold">
+              <Sparkles className="w-3 h-3" />
+              <span>{language === 'it' ? 'PRONTO A FARE IL SALTO DI QUALITÀ?' : '¿LISTO PARA DAR EL SALTO?'}</span>
+            </span>
+            <h3 className="font-heading font-black text-base sm:text-xl text-white uppercase tracking-wide">
+              {t('portfolio.ctaTitle')}
+            </h3>
+            <p className="text-xs sm:text-sm text-zinc-400 font-body max-w-xl">
+              {t('portfolio.ctaSub')}
+            </p>
+          </div>
+
+          <div className="relative z-10 shrink-0 w-full md:w-auto">
+            {onOpenContact ? (
+              <button
+                type="button"
+                onClick={() => {
+                  playSubtleClick();
+                  onOpenContact();
+                }}
+                className="btn-shimmer w-full md:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-heading font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-[0_0_25px_rgba(220,38,38,0.45)] cursor-pointer active:scale-95"
+              >
+                <span>{t('portfolio.ctaBtn')}</span>
+                <ArrowRight className="w-4 h-4 text-white" />
+              </button>
+            ) : (
+              <a
+                href="#contacts"
+                onClick={() => playSubtleClick()}
+                className="btn-shimmer w-full md:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-heading font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-[0_0_25px_rgba(220,38,38,0.45)] cursor-pointer active:scale-95"
+              >
+                <span>{t('portfolio.ctaBtn')}</span>
+                <ArrowRight className="w-4 h-4 text-white" />
+              </a>
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );

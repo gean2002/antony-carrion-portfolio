@@ -81,8 +81,11 @@ export default function App() {
           onSelectService={handleSelectService}
         />
 
-        {/* 3. PROJECTS (PROGETTI) */}
-        <ProjectsSection onSelectProject={(project) => setSelectedProject(project)} />
+        {/* 3. PROJECTS (PORTFOLIO) */}
+        <ProjectsSection
+          onSelectProject={(project) => setSelectedProject(project)}
+          onOpenContact={() => handleOpenContact()}
+        />
 
         {/* 4. WORK PROCESS (FASI DI LAVORO) */}
         <ProcessSection />
