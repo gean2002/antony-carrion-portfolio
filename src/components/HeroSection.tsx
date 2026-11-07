@@ -39,6 +39,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
 
           {/* LEFT: Name + CTA */}
           <div className="lg:col-span-6 flex flex-col justify-center">
+            {/* Live Availability Badge */}
+            <div
+              style={{ '--delay': '0.15s' } as React.CSSProperties}
+              className="intro-fade-up inline-flex items-center gap-2 px-3 py-1 mb-3.5 sm:mb-4 rounded-full border border-emerald-500/30 bg-emerald-950/30 backdrop-blur-sm self-start"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="font-heading text-[10px] sm:text-[11px] font-medium tracking-wider text-emerald-400 uppercase">
+                {t('hero.badge')}
+              </span>
+            </div>
+
             {/* Big name */}
             <h1 className="font-heading font-bold leading-none select-none uppercase">
               <span className="intro-mask">
@@ -53,37 +67,54 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
               </span>
             </h1>
 
-            {/* Role */}
+            {/* Role / High-conversion specialty */}
             <p
               style={{ '--delay': '0.34s' } as React.CSSProperties}
-              className="intro-fade-up mt-2.5 sm:mt-3 font-heading text-xs sm:text-sm tracking-[0.25em] text-zinc-300 uppercase"
+              className="intro-fade-up mt-2.5 sm:mt-3 font-heading text-xs sm:text-sm tracking-[0.22em] text-zinc-300 uppercase flex flex-wrap items-center gap-1.5"
             >
-              {t('hero.title1')} {t('hero.title2')}
+              <span>{t('hero.title1')}</span>
+              <span className="text-red-500 font-semibold">{t('hero.title2')}</span>
             </p>
 
-            {/* Subtitle */}
+            {/* Subtitle / Direct Value Proposition */}
             <p
               style={{ '--delay': '0.44s' } as React.CSSProperties}
-              className="intro-fade-up mt-2 text-zinc-400 text-xs sm:text-sm leading-relaxed max-w-sm font-body"
+              className="intro-fade-up mt-2.5 text-zinc-300 text-xs sm:text-sm sm:text-[13.5px] leading-relaxed max-w-lg font-body"
             >
               {t('hero.subtitle')}
             </p>
 
-            {/* CTA Button */}
+            {/* Dual CTA Buttons (CRO: Primary + Secondary) */}
             <div
               style={{ '--delay': '0.54s' } as React.CSSProperties}
-              className="intro-fade-up mt-5 sm:mt-6"
+              className="intro-fade-up mt-5 sm:mt-6 flex flex-wrap items-center gap-3 sm:gap-3.5"
             >
               <button
                 onClick={() => {
                   playSubtleClick();
                   onOpenContact();
                 }}
-                className="btn-shimmer group inline-flex items-center gap-2.5 px-5 py-2.5 bg-transparent border border-red-700/60 hover:border-red-600 hover:bg-red-600/10 text-zinc-200 hover:text-white font-heading font-medium text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer active:scale-95"
+                className="btn-shimmer group inline-flex items-center gap-2.5 px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white font-heading font-medium text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer active:scale-95 shadow-[0_0_25px_rgba(220,38,38,0.35)] hover:shadow-[0_0_35px_rgba(220,38,38,0.55)] border border-red-500/80"
               >
                 <span>{t('hero.cta')}</span>
-                <ArrowRight className="w-3.5 h-3.5 text-red-600 transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight className="w-3.5 h-3.5 text-white transition-transform duration-300 group-hover:translate-x-1" />
               </button>
+
+              <a
+                href="#projects"
+                onClick={() => playSubtleClick()}
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-white/25 text-zinc-300 hover:text-white font-heading font-medium text-xs tracking-widest uppercase transition-all duration-300 active:scale-95 cursor-pointer"
+              >
+                <span>{t('hero.secondaryCta')}</span>
+              </a>
+            </div>
+
+            {/* Micro-trust indicators / Friction Reducers */}
+            <div
+              style={{ '--delay': '0.62s' } as React.CSSProperties}
+              className="intro-fade-up mt-3.5 text-[10.5px] sm:text-[11.5px] text-zinc-400 font-body flex items-center gap-1.5"
+            >
+              <span>{t('hero.trustBadge')}</span>
             </div>
 
             {/* MOBILE ONLY: Cyberpunk Hero Portrait */}

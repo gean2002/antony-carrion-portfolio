@@ -13,14 +13,17 @@ export const WhatsAppButton: React.FC = () => {
     <div className="fixed bottom-6 right-6 z-50 flex items-center select-none">
       {/* Tooltip on hover (desktop) */}
       <div
-        className={`hidden sm:flex items-center mr-3 px-3.5 py-1.5 rounded-full bg-zinc-900/95 border border-white/10 text-white text-xs font-heading font-medium tracking-wide shadow-xl backdrop-blur-md transition-all duration-300 pointer-events-none ${
+        className={`hidden sm:flex items-center mr-3 px-3.5 py-1.5 rounded-full bg-zinc-950/95 border border-emerald-500/40 text-white text-xs font-heading font-medium tracking-wide shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-md transition-all duration-300 pointer-events-none ${
           isHovered
             ? 'opacity-100 translate-x-0'
             : 'opacity-0 translate-x-2'
         }`}
       >
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-2" />
-        <span>{t('whatsapp.tooltip')}</span>
+        <span className="relative flex h-2 w-2 mr-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span className="text-zinc-200">{t('whatsapp.tooltip')}</span>
       </div>
 
       {/* Floating Button / Pallino */}

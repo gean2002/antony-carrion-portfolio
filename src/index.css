@@ -735,6 +735,65 @@
   .wow-step-arrow {
     animation: arrow-wave 2s ease-in-out calc(var(--stagger, 0) * 0.3s) infinite;
   }
+
+  /* --- 4. TECNOLOGIE & CTA (TechAndCtaSection) --- */
+  .wow-tech-item {
+    transition:
+      opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(0.06s + var(--stagger, 0) * 0.08s),
+      translate 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(0.06s + var(--stagger, 0) * 0.08s),
+      scale 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(0.06s + var(--stagger, 0) * 0.08s);
+  }
+
+  html.wow-ready [data-wow]:not(.is-inview) .wow-tech-item {
+    opacity: 0;
+    translate: 0 24px;
+    scale: 0.92;
+  }
+
+  .wow-cta-banner {
+    transition:
+      opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s,
+      translate 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s,
+      border-color 0.4s ease;
+  }
+
+  html.wow-ready [data-wow]:not(.is-inview) .wow-cta-banner {
+    opacity: 0;
+    translate: 32px 0;
+  }
+
+  /* --- 5. DOMANDE FREQUENTI (FaqSection) --- */
+  .wow-faq-item {
+    transition:
+      opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(0.06s + var(--stagger, 0) * 0.09s),
+      translate 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(0.06s + var(--stagger, 0) * 0.09s),
+      scale 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(0.06s + var(--stagger, 0) * 0.09s);
+  }
+
+  html.wow-ready [data-wow]:not(.is-inview) .wow-faq-item {
+    opacity: 0;
+    translate: 0 22px;
+    scale: 0.98;
+  }
+
+  /* --- 6. CONTATTI (ContactsSection) --- */
+  .wow-contacts-card {
+    transition:
+      opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.05s,
+      translate 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.05s,
+      scale 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.05s,
+      box-shadow 0.6s ease;
+  }
+
+  html.wow-ready [data-wow]:not(.is-inview) .wow-contacts-card {
+    opacity: 0;
+    translate: 0 36px;
+    scale: 0.96;
+  }
+
+  [data-wow="contacts"].is-inview .wow-contacts-card {
+    box-shadow: 0 20px 60px -20px rgba(220, 38, 38, 0.25);
+  }
 }
 
 .scroll-progress {

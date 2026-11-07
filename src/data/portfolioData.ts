@@ -40,7 +40,7 @@ export interface TechItem {
 const contactsData = {
   whatsapp: '+39 345 418 4481',
   whatsappNumber: '393454184481',
-  whatsappUrl: `https://wa.me/393454184481?text=${encodeURIComponent('Ciao Antony! Vorrei maggiori informazioni e capire come possiamo realizzare un sito web moderno ed efficace per la mia attività. Sei disponibile per parlarne?')}`,
+  whatsappUrl: `https://wa.me/393454184481?text=${encodeURIComponent('Ciao Antony! Ho visto il tuo portfolio e vorrei informazioni/preventivo per un nuovo progetto per la mia attività. Sei disponibile per parlarne?')}`,
   phone: '+39 345 418 4481',
   phoneUrl: 'tel:+393454184481',
   email: 'antonycarrion.dev@gmail.com',
@@ -52,7 +52,7 @@ const contactsData = {
 const contactsDataES = {
   ...contactsData,
   location: 'Turín / Remoto',
-  whatsappUrl: `https://wa.me/393454184481?text=${encodeURIComponent('¡Hola Antony! Quisiera más información y entender cómo podemos crear un sitio web moderno y eficaz para mi negocio. ¿Estás disponible para hablar?')}`,
+  whatsappUrl: `https://wa.me/393454184481?text=${encodeURIComponent('¡Hola Antony! Vi tu portfolio y quisiera información/presupuesto para un nuevo proyecto para mi negocio. ¿Estás disponible para hablar?')}`,
 };
 
 const technologiesData = [

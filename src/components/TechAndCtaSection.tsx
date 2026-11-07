@@ -14,29 +14,34 @@ export const TechAndCtaSection: React.FC<TechAndCtaSectionProps> = ({ onOpenCont
   const PORTFOLIO_DATA = getPortfolioData(language);
 
   return (
-    <section className="relative py-6 sm:py-8 bg-[#040404] border-t border-white/5">
+    <section id="tech" data-wow="tech" className="relative py-6 sm:py-8 bg-[#040404] border-t border-white/5">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
 
           {/* LEFT: Technologies (Clean icons on dark background, no grey box cards) */}
-          <div className="reveal reveal-from-left lg:col-span-5 flex flex-col justify-between py-2">
+          <div className="lg:col-span-5 flex flex-col justify-between py-2">
             <div>
-              <div className="flex items-center gap-2.5 mb-6">
-                <span className="w-[3px] h-5 bg-red-700" />
+              <div className="relative flex items-center gap-2.5 mb-6 pb-2">
+                <span className="wow-accent-bar w-[3px] h-5 bg-red-700" />
                 <h2 className="font-heading font-bold text-base tracking-widest text-white uppercase">
-                  {t('tech.title')}
+                  <span className="wow-title-text">{t('tech.title')}</span>
                 </h2>
+                <div
+                  aria-hidden="true"
+                  className="wow-divider-line absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-red-600/60 via-white/10 to-transparent"
+                />
               </div>
 
               {/* 3-col x 2-row clean icons */}
-              <div className="reveal-group grid grid-cols-3 gap-y-6 gap-x-4 sm:gap-y-7 sm:gap-x-6">
-                {PORTFOLIO_DATA.technologies.map((tech) => (
+              <div className="grid grid-cols-3 gap-y-6 gap-x-4 sm:gap-y-7 sm:gap-x-6">
+                {PORTFOLIO_DATA.technologies.map((tech, idx) => (
                   <div
                     key={tech.id}
+                    style={{ '--stagger': idx } as React.CSSProperties}
                     onMouseEnter={() => playTechBlip()}
-                    className="group flex flex-col items-center justify-center cursor-pointer transition-transform duration-200 hover:-translate-y-0.5 active:scale-95"
+                    className="wow-tech-item group flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-95"
                   >
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                       <TechLogo type={tech.iconType} className="w-9 h-9 sm:w-10 sm:h-10" />
                     </div>
                     <span className="mt-2.5 text-xs sm:text-sm font-heading font-medium tracking-wider text-zinc-300 group-hover:text-white transition-colors text-center">
@@ -49,7 +54,7 @@ export const TechAndCtaSection: React.FC<TechAndCtaSectionProps> = ({ onOpenCont
           </div>
 
           {/* RIGHT: CTA Card - responsive layout per mobile, tablet e desktop */}
-          <div className="reveal reveal-from-right lg:col-span-7 relative overflow-hidden border border-white/10 rounded-none min-h-[220px] sm:min-h-[240px] flex items-center bg-[#070709] shadow-xl">
+          <div className="wow-cta-banner lg:col-span-7 relative overflow-hidden border border-white/10 rounded-none min-h-[220px] sm:min-h-[240px] flex items-center bg-[#070709] shadow-xl">
             {/* The artwork: copre la metà destra su schermi grandi, con fade morbido */}
             <div className="absolute top-0 right-0 bottom-0 w-2/5 sm:w-1/2 overflow-hidden pointer-events-none opacity-40 sm:opacity-90 lg:opacity-100">
               <img

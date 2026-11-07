@@ -209,11 +209,11 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
   };
 
   return (
-    <section id="contacts" className="relative py-7 sm:py-9 bg-[#040404] border-t border-white/5">
+    <section id="contacts" data-wow="contacts" className="relative py-7 sm:py-9 bg-[#040404] border-t border-white/5">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         
         {/* Single large bordered card enclosing contacts, new form, laptop, and copyright */}
-        <div className="reveal reveal-scale border border-white/10 bg-[#060608] relative overflow-hidden p-5 sm:p-8 lg:p-10">
+        <div className="wow-contacts-card border border-white/10 bg-[#060608] relative overflow-hidden p-5 sm:p-8 lg:p-10">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
 
@@ -221,10 +221,10 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
             <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
               <div>
                 {/* Section header */}
-                <div className="flex items-center gap-2.5 mb-4">
-                  <span className="w-[3px] h-5 bg-red-600" />
+                <div className="relative flex items-center gap-2.5 mb-4 pb-1">
+                  <span className="wow-accent-bar w-[3px] h-5 bg-red-600" />
                   <h2 className="font-heading font-bold text-base tracking-widest text-white uppercase">
-                    {t('contacts.title')}
+                    <span className="wow-title-text">{t('contacts.title')}</span>
                   </h2>
                 </div>
 
@@ -341,6 +341,29 @@ export const ContactsSection: React.FC<ContactsSectionProps> = ({
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4 relative" noValidate={false}>
                   <HoneypotField value={honeypot} onChange={setHoneypot} />
+
+                  {/* Fast Track WhatsApp (CRO: friction killer) */}
+                  <div className="p-3 sm:p-3.5 rounded bg-emerald-950/20 border border-emerald-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="relative flex h-2 w-2 shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      </span>
+                      <div className="text-xs text-zinc-300 font-body">
+                        <span className="font-semibold text-white">{t('form.quickWaTitle')}</span>{' '}
+                        <span className="hidden sm:inline text-zinc-400">{t('form.quickWaDesc')}</span>
+                      </div>
+                    </div>
+                    <a
+                      href={PORTFOLIO_DATA.contacts.whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="self-start sm:self-auto shrink-0 px-3.5 py-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white text-[11px] font-heading font-bold uppercase tracking-wider rounded transition-all active:scale-95 flex items-center gap-1.5 shadow-[0_0_14px_rgba(37,211,102,0.35)] cursor-pointer"
+                    >
+                      <span>WhatsApp</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
 
                   {/* Row 1: NOME E COGNOME * + ATTIVITÀ O BRAND & CITTÀ * */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">

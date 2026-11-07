@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { playSubtleClick } from '../utils/audio';
 import { X, CheckCircle2, ArrowUpRight, ChevronDown, UploadCloud, FileText, Trash2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { getPortfolioData } from '../data/portfolioData';
 import {
   submitContactForm,
   uploadLeadAttachment,
@@ -34,6 +35,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   onOpenPrivacy,
 }) => {
   const { t, language } = useLanguage();
+  const PORTFOLIO_DATA = getPortfolioData(language);
 
   // Form State matching the request exactly
   const [fullName, setFullName] = useState('');
@@ -272,6 +274,29 @@ export const ContactModal: React.FC<ContactModalProps> = ({
             <form onSubmit={handleSubmit} className="space-y-4" noValidate={false}>
               <HoneypotField value={honeypot} onChange={setHoneypot} />
 
+              {/* Fast Track WhatsApp (CRO: friction killer) */}
+              <div className="p-3 sm:p-3.5 rounded bg-emerald-950/20 border border-emerald-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="relative flex h-2 w-2 shrink-0">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  <div className="text-xs text-zinc-300 font-body">
+                    <span className="font-semibold text-white">{t('form.quickWaTitle')}</span>{' '}
+                    <span className="hidden sm:inline text-zinc-400">{t('form.quickWaDesc')}</span>
+                  </div>
+                </div>
+                <a
+                  href={PORTFOLIO_DATA.contacts.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="self-start sm:self-auto shrink-0 px-3.5 py-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white text-[11px] font-heading font-bold uppercase tracking-wider rounded transition-all active:scale-95 flex items-center gap-1.5 shadow-[0_0_14px_rgba(37,211,102,0.35)] cursor-pointer"
+                >
+                  <span>WhatsApp</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
+
               {/* Row 1: NOME E COGNOME + ATTIVITÀ O BRAND & CITTÀ */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -371,7 +396,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                         onClick={() => toggleInterest(opt.id)}
                         className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150 cursor-pointer ${
                           isSelected
-                            ? 'bg-[#0055b8] text-white shadow-[0_0_12px_rgba(0,85,184,0.4)] border border-[#1e70d4]'
+                            ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(220,38,38,0.45)] border border-red-500'
                             : 'bg-white/5 border border-white/15 text-zinc-300 hover:border-white/30 hover:text-white'
                         }`}
                       >
@@ -592,16 +617,16 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting || !isFormValid}
-                  className={`w-full py-3.5 px-6 rounded font-heading font-bold text-sm tracking-wide transition-all duration-200 flex items-center justify-between cursor-pointer ${
+                  className={`btn-shimmer w-full py-3.5 px-6 rounded font-heading font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 flex items-center justify-between cursor-pointer ${
                     isFormValid && !isSubmitting
-                      ? 'bg-white hover:bg-zinc-100 text-[#0055b8] shadow-lg hover:shadow-xl'
+                      ? 'bg-red-600 hover:bg-red-500 text-white shadow-[0_0_25px_rgba(220,38,38,0.45)] hover:shadow-[0_0_35px_rgba(220,38,38,0.65)] active:scale-[0.99]'
                       : 'bg-white/10 text-zinc-500 cursor-not-allowed border border-white/5'
                   }`}
                 >
-                  <span className="text-[#0055b8] font-black text-sm">
+                  <span className="font-heading font-bold tracking-wider uppercase">
                     {isSubmitting ? t('form.submittingPreview') : t('form.submitPreview')}
                   </span>
-                  <ArrowUpRight className="w-5 h-5 text-[#0055b8]" />
+                  <ArrowUpRight className="w-5 h-5 text-white" />
                 </button>
               </div>
 
