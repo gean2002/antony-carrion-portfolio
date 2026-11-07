@@ -38,6 +38,10 @@ export const ProjectCardPreview: React.FC<ProjectCardPreviewProps> = ({ type, ti
     imgSrc = '/project-corp.png';
     badgeLabel = 'STUDIO MEDICO · CLEAN UI';
     dotColor = 'bg-blue-400';
+  } else if (type === 'rinaldi') {
+    imgSrc = '/project-rinaldi.jpg';
+    badgeLabel = 'PSICOTERAPIA · TORINO';
+    dotColor = 'bg-teal-400';
   } else if (type === 'villa') {
     imgSrc = '/project-landing.png';
     badgeLabel = 'LANDING PAGE · 4K ULTRA HD';

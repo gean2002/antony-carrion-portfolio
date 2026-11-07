@@ -17,7 +17,7 @@ export interface Project {
   duration: string;
   client: string;
   results: string;
-  previewType: 'villa' | 'shop' | 'corp' | 'studio' | 'pietranova' | 'sushi' | 'chickencup' | 'olbia' | 'barber' | 'moretti';
+  previewType: 'villa' | 'shop' | 'corp' | 'studio' | 'pietranova' | 'sushi' | 'chickencup' | 'olbia' | 'barber' | 'moretti' | 'rinaldi';
   liveUrl: string;
   image?: string;
   filterGroup?: 'hospitality' | 'food' | 'services';
@@ -215,6 +215,22 @@ const PORTFOLIO_DATA_IT = {
       image: '/project-corp.png',
       filterGroup: 'services',
     },
+    {
+      id: 'p7',
+      category: 'STUDIO DI PSICOTERAPIA & BENESSERE',
+      title: 'DOTT.SSA CHIARA RINALDI',
+      subtitle: 'Psicologa e Psicoterapeuta a Torino · Terapia individuale, di coppia e supporto',
+      description: 'Piattaforma sanitaria professionale ad orientamento Sistemico-Relazionale a Torino: presentazione percorsi terapeutici, test di autovalutazione emotiva, conformità GDPR/Privacy e contatto diretto WhatsApp.',
+      tags: ['Psicoterapia Torino', 'Clean Medical UI', 'GDPR Sanitari', 'Mobile First'],
+      year: '2026',
+      duration: '8 giorni',
+      client: 'Studio Dott.ssa Chiara Rinaldi',
+      results: 'Oltre 40 richieste di primo colloquio ricevute nel primo mese e posizionamento Google Maps',
+      previewType: 'rinaldi',
+      liveUrl: 'https://dott-ssa-chiara-rinaldi.vercel.app',
+      image: '/project-rinaldi.jpg',
+      filterGroup: 'services',
+    },
   ] as Project[],
   processSteps: [
     {
@@ -402,6 +418,22 @@ const PORTFOLIO_DATA_ES = {
       previewType: 'moretti',
       liveUrl: 'https://dott-ssa-elena-moretti.vercel.app',
       image: '/project-corp.png',
+      filterGroup: 'services',
+    },
+    {
+      id: 'p7',
+      category: 'GABINETE DE PSICOLOGÍA Y BIENESTAR',
+      title: 'DOTT.SSA CHIARA RINALDI',
+      subtitle: 'Psicóloga y Psicoterapeuta en Turín · Terapia individual, de pareja y soporte',
+      description: 'Plataforma sanitaria profesional con orientación Sistémico-Relacional en Turín: presentación de itinerarios terapéuticos, autoevaluación, cumplimiento RGPD y contacto directo por WhatsApp.',
+      tags: ['Psicoterapia Turín', 'Diseño Médico', 'Cumplimiento RGPD', 'Mobile First'],
+      year: '2026',
+      duration: '8 días',
+      client: 'Gabinete Dott.ssa Chiara Rinaldi',
+      results: 'Más de 40 solicitudes de consulta en el primer mes y posicionamiento en Google Maps',
+      previewType: 'rinaldi',
+      liveUrl: 'https://dott-ssa-chiara-rinaldi.vercel.app',
+      image: '/project-rinaldi.jpg',
       filterGroup: 'services',
     },
   ] as Project[],
