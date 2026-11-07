@@ -105,7 +105,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
             </div>
             <div>
               <div className="text-[10px] font-mono text-red-400 uppercase tracking-widest">
-                {language === 'it' ? 'RISULTATO CHIAVE OTTENUTO' : 'KEY RESULT ACHIEVED'}
+                {language === 'it' ? 'RISULTATO CHIAVE OTTENUTO' : 'RESULTADO CLAVE OBTENIDO'}
               </div>
               <div className="text-xs sm:text-sm font-heading font-bold text-white uppercase mt-0.5">
                 {project.results}

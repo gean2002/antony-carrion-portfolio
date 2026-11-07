@@ -21,7 +21,6 @@ export interface Project {
   liveUrl: string;
   image?: string;
   filterGroup?: 'hospitality' | 'food' | 'services';
-  metric?: string;
 }
 
 export interface ProcessStep {
@@ -135,7 +134,6 @@ const PORTFOLIO_DATA_IT = {
       liveUrl: 'https://corte-pietranova.vercel.app',
       image: '/project-pietranova.jpg',
       filterGroup: 'hospitality',
-      metric: '+65% Prenotazioni Dirette',
     },
     {
       id: 'p2',
@@ -152,7 +150,6 @@ const PORTFOLIO_DATA_IT = {
       liveUrl: 'https://q-sushi-bar.vercel.app',
       image: '/project-sushi.jpg',
       filterGroup: 'food',
-      metric: '15.000+ Visite Menu/Mese',
     },
     {
       id: 'p3',
@@ -169,7 +166,6 @@ const PORTFOLIO_DATA_IT = {
       liveUrl: 'https://chickencup-demo.vercel.app',
       image: '/project-chickencup.png',
       filterGroup: 'food',
-      metric: '9.2% Conversione Mobile',
     },
     {
       id: 'p4',
@@ -186,7 +182,6 @@ const PORTFOLIO_DATA_IT = {
       liveUrl: 'https://olbia-luxury-stays.vercel.app',
       image: '/project-olbia.jpg',
       filterGroup: 'hospitality',
-      metric: '1° Pagina Google Search',
     },
     {
       id: 'p5',
@@ -203,7 +198,6 @@ const PORTFOLIO_DATA_IT = {
       liveUrl: 'https://jm-barber.vercel.app',
       image: '/project-barber-final.png',
       filterGroup: 'services',
-      metric: '75% Appuntamenti Online',
     },
     {
       id: 'p6',
@@ -220,7 +214,6 @@ const PORTFOLIO_DATA_IT = {
       liveUrl: 'https://dott-ssa-elena-moretti.vercel.app',
       image: '/project-corp.png',
       filterGroup: 'services',
-      metric: 'Top 3 Locale & GDPR',
     },
   ] as Project[],
   processSteps: [
@@ -330,7 +323,6 @@ const PORTFOLIO_DATA_ES = {
       liveUrl: 'https://corte-pietranova.vercel.app',
       image: '/project-pietranova.jpg',
       filterGroup: 'hospitality',
-      metric: '+65% Reservas Directas',
     },
     {
       id: 'p2',
@@ -347,7 +339,6 @@ const PORTFOLIO_DATA_ES = {
       liveUrl: 'https://q-sushi-bar.vercel.app',
       image: '/project-sushi.jpg',
       filterGroup: 'food',
-      metric: '15.000+ Visitas Menú/Mes',
     },
     {
       id: 'p3',
@@ -364,7 +355,6 @@ const PORTFOLIO_DATA_ES = {
       liveUrl: 'https://chickencup-demo.vercel.app',
       image: '/project-chickencup.png',
       filterGroup: 'food',
-      metric: '9.2% Conversión Móvil',
     },
     {
       id: 'p4',
@@ -381,7 +371,6 @@ const PORTFOLIO_DATA_ES = {
       liveUrl: 'https://olbia-luxury-stays.vercel.app',
       image: '/project-olbia.jpg',
       filterGroup: 'hospitality',
-      metric: '1ª Página Google Search',
     },
     {
       id: 'p5',
@@ -398,7 +387,6 @@ const PORTFOLIO_DATA_ES = {
       liveUrl: 'https://jm-barber.vercel.app',
       image: '/project-barber-final.png',
       filterGroup: 'services',
-      metric: '75% Citas Online',
     },
     {
       id: 'p6',
@@ -415,7 +403,6 @@ const PORTFOLIO_DATA_ES = {
       liveUrl: 'https://dott-ssa-elena-moretti.vercel.app',
       image: '/project-corp.png',
       filterGroup: 'services',
-      metric: 'Top 3 Local & RGPD',
     },
   ] as Project[],
   processSteps: [

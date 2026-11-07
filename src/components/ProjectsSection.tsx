@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { getPortfolioData, Project } from '../data/portfolioData';
 import { ProjectCardPreview } from './ProjectCardPreview';
-import { ExternalLink, ArrowRight, Sparkles, Globe, Eye, Layers } from 'lucide-react';
+import { ExternalLink, ArrowRight, Sparkles, Globe, Layers } from 'lucide-react';
 import { playSubtleClick } from '../utils/audio';
 
 interface ProjectsSectionProps {
@@ -127,10 +127,13 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                   </div>
                 </div>
 
-                {/* Thumbnail Visual */}
-                <div
-                  onClick={() => onSelectProject?.(project)}
-                  className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/5 cursor-pointer bg-black"
+                {/* Thumbnail Visual - Direct Live Link */}
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/5 block cursor-pointer bg-black group/thumb"
+                  title={language === 'it' ? `Apri il sito live ${project.title}` : `Abrir el sitio live ${project.title}`}
                 >
                   <div aria-hidden="true" className="wow-project-sheen" />
                   <ProjectCardPreview
@@ -139,22 +142,14 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                     image={project.image}
                   />
 
-                  {/* Key Metric Pill */}
-                  {project.metric && (
-                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-sm bg-black/85 border border-red-500/60 backdrop-blur-md text-[10px] font-mono font-bold text-red-300 shadow-lg pointer-events-none z-10 flex items-center gap-1.5">
-                      <Sparkles className="w-3 h-3 text-red-400" />
-                      <span>{project.metric}</span>
-                    </div>
-                  )}
-
-                  {/* Hover Quick Overlay */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 pointer-events-none">
-                    <span className="px-3 py-1.5 rounded bg-black/85 border border-white/20 text-xs font-heading font-bold text-white uppercase tracking-wider backdrop-blur-md flex items-center gap-1.5 shadow-xl">
-                      <Eye className="w-3.5 h-3.5 text-red-400" />
-                      <span>{language === 'it' ? 'Esplora' : 'Explorar'}</span>
+                  {/* Clean Hover Overlay */}
+                  <div className="absolute inset-0 bg-black/45 opacity-0 group-hover/thumb:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 pointer-events-none">
+                    <span className="px-3.5 py-1.5 rounded-sm bg-red-600/90 border border-red-400 text-xs font-heading font-bold text-white uppercase tracking-wider backdrop-blur-md flex items-center gap-2 shadow-xl">
+                      <span>{language === 'it' ? 'Apri Sito Live' : 'Abrir Sitio Live'}</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
                     </span>
                   </div>
-                </div>
+                </a>
 
                 {/* Content Details */}
                 <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between relative bg-[#090a0d]">
@@ -178,11 +173,17 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                       )}
                     </div>
 
-                    <h3
-                      onClick={() => onSelectProject?.(project)}
-                      className="font-heading font-black text-sm sm:text-base tracking-wider text-white group-hover:text-red-400 transition-colors uppercase cursor-pointer"
-                    >
-                      {project.title}
+                    <h3 className="font-heading font-black text-sm sm:text-base tracking-wider text-white hover:text-red-400 transition-colors uppercase">
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 hover:underline"
+                        title={language === 'it' ? `Visita ${project.title}` : `Visitar ${project.title}`}
+                      >
+                        <span>{project.title}</span>
+                        <ExternalLink className="w-3 h-3 text-red-500 opacity-70 group-hover:opacity-100 transition-opacity shrink-0" />
+                      </a>
                     </h3>
 
                     <p className="mt-1.5 text-xs text-zinc-400 group-hover:text-zinc-300 font-body leading-relaxed line-clamp-2 transition-colors">
@@ -202,16 +203,15 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                     </div>
                   </div>
 
-                  {/* Dual Actions: Primary Live Button + Secondary Details */}
+                  {/* Actions: Direct Live Button + Details */}
                   <div className="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-between gap-3">
                     <a
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-shimmer flex-1 inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-heading font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(220,38,38,0.35)] active:scale-95 group/btn"
+                      className="btn-shimmer flex-1 inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-heading font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(220,38,38,0.35)] active:scale-95 group/btn"
                     >
-                      <span>{language === 'it' ? 'Vedi Live' : 'Ver Live'}</span>
-                      <ExternalLink className="w-3.5 h-3.5 text-white group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                      <span>{language === 'it' ? 'Vedi Live ↗' : 'Ver Live ↗'}</span>
                     </a>
 
                     <button
@@ -220,7 +220,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                         playSubtleClick();
                         onSelectProject?.(project);
                       }}
-                      className="px-3.5 py-2 text-zinc-400 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 rounded text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1"
+                      className="px-3.5 py-2.5 text-zinc-400 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 rounded text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 shrink-0"
                     >
                       <span>{language === 'it' ? 'Scheda' : 'Ficha'}</span>
                       <ArrowRight className="w-3 h-3 text-red-500" />
