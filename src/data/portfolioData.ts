@@ -212,7 +212,7 @@ const PORTFOLIO_DATA_IT = {
       results: 'Posizionamento top 3 a Torino e flusso costante di nuovi pazienti settimanali',
       previewType: 'moretti',
       liveUrl: 'https://dott-ssa-elena-moretti.vercel.app',
-      image: '/project-moretti-hero.jpg',
+      image: '/project-moretti.jpg',
       filterGroup: 'services',
     },
     {
@@ -417,7 +417,7 @@ const PORTFOLIO_DATA_ES = {
       results: 'Posicionamiento top 3 en Turín y flujo constante de nuevos pacientes semanales',
       previewType: 'moretti',
       liveUrl: 'https://dott-ssa-elena-moretti.vercel.app',
-      image: '/project-moretti-hero.jpg',
+      image: '/project-moretti.jpg',
       filterGroup: 'services',
     },
     {
