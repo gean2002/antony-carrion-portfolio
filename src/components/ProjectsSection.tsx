@@ -33,7 +33,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
     <section
       id="projects"
       data-wow="projects"
-      className="relative py-10 sm:py-16 bg-[#030303] border-t border-white/5"
+      className="relative pt-10 sm:pt-14 pb-6 sm:pb-8 bg-[#030303] border-t border-white/5"
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Header */}
@@ -222,8 +222,8 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
         </div>
 
         {/* Explore All Projects Banner (Transition to All Projects Page) */}
-        <div className="mt-10 p-5 sm:p-7 bg-gradient-to-r from-[#0c0d12] via-[#090a0d] to-[#12080a] border border-white/10 hover:border-red-500/40 rounded-sm flex flex-col md:flex-row items-center justify-between gap-5 shadow-2xl transition-all">
-          <div className="space-y-1.5 text-center md:text-left">
+        <div className="mt-8 p-5 sm:p-6 bg-gradient-to-r from-[#0c0d12] via-[#090a0d] to-[#12080a] border border-white/10 hover:border-red-500/40 rounded-sm flex flex-col md:flex-row items-center justify-between gap-5 shadow-xl transition-all">
+          <div className="space-y-1 text-center md:text-left">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-red-600/15 border border-red-500/30 text-red-400 text-[10px] font-mono font-bold uppercase tracking-widest">
               <Sparkles className="w-3 h-3" />
               <span>{language === 'it' ? 'ARCHIVIO COMPLETO · 7 SITI IN PRODUZIONE' : 'ARCHIVO COMPLETO · 7 SITIOS EN PRODUCCIÓN'}</span>
@@ -245,55 +245,12 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
               playSubtleClick();
               onViewAllProjects?.();
             }}
-            className="btn-shimmer px-6 py-3.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-heading font-bold uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(220,38,38,0.4)] flex items-center gap-2 cursor-pointer shrink-0 active:scale-95"
+            className="btn-shimmer px-6 py-3 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-heading font-bold uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(220,38,38,0.4)] flex items-center gap-2 cursor-pointer shrink-0 active:scale-95"
           >
             <Layers className="w-4 h-4" />
             <span>{language === 'it' ? 'Apri Tutti i Progetti (7)' : 'Abrir Todos los Proyectos (7)'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
-        </div>
-
-        {/* Bottom Conversion Banner */}
-        <div className="mt-12 p-6 sm:p-8 bg-gradient-to-r from-red-950/40 via-[#0d090c] to-[#0a0a0d] border border-red-500/30 rounded-sm flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="space-y-1.5 text-center md:text-left relative z-10">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-mono text-red-400 uppercase tracking-widest font-bold">
-              <Sparkles className="w-3 h-3" />
-              <span>{language === 'it' ? 'PRONTO A FARE IL SALTO DI QUALITÀ?' : '¿LISTO PARA DAR EL SALTO?'}</span>
-            </span>
-            <h3 className="font-heading font-black text-base sm:text-xl text-white uppercase tracking-wide">
-              {t('portfolio.ctaTitle')}
-            </h3>
-            <p className="text-xs sm:text-sm text-zinc-400 font-body max-w-xl">
-              {t('portfolio.ctaSub')}
-            </p>
-          </div>
-
-          <div className="relative z-10 shrink-0 w-full md:w-auto">
-            {onOpenContact ? (
-              <button
-                type="button"
-                onClick={() => {
-                  playSubtleClick();
-                  onOpenContact();
-                }}
-                className="btn-shimmer w-full md:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-heading font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-[0_0_25px_rgba(220,38,38,0.45)] cursor-pointer active:scale-95"
-              >
-                <span>{t('portfolio.ctaBtn')}</span>
-                <ArrowRight className="w-4 h-4 text-white" />
-              </button>
-            ) : (
-              <a
-                href="#contacts"
-                onClick={() => playSubtleClick()}
-                className="btn-shimmer w-full md:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-heading font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-[0_0_25px_rgba(220,38,38,0.45)] cursor-pointer active:scale-95"
-              >
-                <span>{t('portfolio.ctaBtn')}</span>
-                <ArrowRight className="w-4 h-4 text-white" />
-              </a>
-            )}
-          </div>
         </div>
       </div>
     </section>

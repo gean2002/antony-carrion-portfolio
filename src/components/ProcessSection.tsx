@@ -24,7 +24,7 @@ export const ProcessSection: React.FC = () => {
     <section
       id="process"
       data-wow="process"
-      className="relative py-10 sm:py-14 bg-[#040404] border-t border-white/5"
+      className="relative pt-8 sm:pt-10 pb-10 sm:pb-14 bg-[#040404] border-t border-white/5"
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
 
