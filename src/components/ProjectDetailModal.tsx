@@ -36,9 +36,21 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
           <div className="flex items-center gap-3 min-w-0">
             <span className="w-1.5 h-6 bg-red-600 shadow-[0_0_10px_rgba(239,68,68,0.9)] shrink-0" />
             <div className="min-w-0">
-              <span className="text-[10px] font-mono text-red-500 uppercase tracking-widest block truncate">
-                {project.category} · {project.year}
-              </span>
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-[10px] font-mono text-red-500 uppercase tracking-widest block truncate font-semibold">
+                  {project.category}
+                </span>
+                {project.year === '2026' ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-600/20 border border-red-500/50 text-red-300 text-[9px] font-mono font-bold tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                    2026
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-zinc-400 text-[9px] font-mono">
+                    2025
+                  </span>
+                )}
+              </div>
               <h2 className="font-heading font-black text-base sm:text-lg text-white tracking-wide uppercase truncate">
                 {project.title}
               </h2>
