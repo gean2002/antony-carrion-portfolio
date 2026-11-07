@@ -113,7 +113,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                     title={`Apri ${project.liveUrl}`}
                   >
                     <Globe className="w-2.5 h-2.5 text-zinc-500" />
-                    <span className="truncate max-w-[160px] sm:max-w-[200px]">{domainName}</span>
+                    <span className="truncate max-w-[210px] sm:max-w-[270px]">{domainName}</span>
                   </a>
 
                   <div className="flex items-center gap-1.5">

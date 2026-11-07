@@ -34,8 +34,12 @@ export const ProjectCardPreview: React.FC<ProjectCardPreviewProps> = ({ type, ti
     imgSrc = '/project-barber-final.png';
     badgeLabel = 'BARBERSHOP · DARK LUXURY';
     dotColor = 'bg-red-500';
-  } else if (type === 'moretti' || type === 'corp') {
-    imgSrc = '/project-corp.png';
+  } else if (type === 'moretti') {
+    imgSrc = '/project-moretti-hero.jpg';
+    badgeLabel = 'PSICOLOGIA CLINICA · TORINO';
+    dotColor = 'bg-emerald-400';
+  } else if (type === 'corp') {
+    imgSrc = '/project-moretti-hero.jpg';
     badgeLabel = 'STUDIO MEDICO · CLEAN UI';
     dotColor = 'bg-blue-400';
   } else if (type === 'rinaldi') {
