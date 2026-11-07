@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { getPortfolioData, Project } from '../data/portfolioData';
 import { ProjectCardPreview } from './ProjectCardPreview';
-import { ExternalLink, ArrowRight, ArrowLeft, Globe, Layers, Sparkles } from 'lucide-react';
+import { ExternalLink, ArrowRight, ArrowLeft, Layers, Sparkles } from 'lucide-react';
 import { playSubtleClick } from '../utils/audio';
 
 interface AllProjectsPageProps {
@@ -131,44 +131,12 @@ export const AllProjectsPage: React.FC<AllProjectsPageProps> = ({
         {/* 7 Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project, idx) => {
-            const domainName = project.liveUrl.replace('https://', '');
-
             return (
               <div
                 key={project.id}
                 style={{ '--stagger': idx } as React.CSSProperties}
                 className="wow-project-card group relative flex flex-col bg-[#090a0d] border border-white/10 hover:border-red-600/70 rounded-sm overflow-hidden transition-all duration-300 shadow-xl hover:shadow-[0_12px_35px_rgba(220,38,38,0.22)]"
               >
-                {/* Browser-style Top Navigation Bar */}
-                <div className="flex items-center justify-between px-3.5 py-2 bg-[#0c0d12] border-b border-white/10 select-none">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]/80 group-hover:bg-[#ff5f56] transition-colors" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]/80 group-hover:bg-[#ffbd2e] transition-colors" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]/80 group-hover:bg-[#27c93f] transition-colors" />
-                  </div>
-
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-black/60 border border-white/10 hover:border-red-500/40 text-[10px] font-mono text-zinc-400 hover:text-white transition-colors cursor-pointer"
-                    title={`Apri ${project.liveUrl}`}
-                  >
-                    <Globe className="w-2.5 h-2.5 text-zinc-500" />
-                    <span className="truncate max-w-[210px] sm:max-w-[270px]">{domainName}</span>
-                  </a>
-
-                  <div className="flex items-center gap-1.5">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    <span className="text-[9px] font-mono font-bold text-emerald-400 tracking-wider">
-                      LIVE
-                    </span>
-                  </div>
-                </div>
-
                 {/* Thumbnail Visual - Direct Live Link */}
                 <a
                   href={project.liveUrl}
