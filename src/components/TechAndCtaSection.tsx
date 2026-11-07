@@ -33,18 +33,18 @@ export const TechAndCtaSection: React.FC<TechAndCtaSectionProps> = ({ onOpenCont
               </div>
 
               {/* 3-col x 2-row clean icons */}
-              <div className="grid grid-cols-3 gap-y-6 gap-x-4 sm:gap-y-7 sm:gap-x-6">
+              <div className="grid grid-cols-3 gap-3 sm:gap-4">
                 {PORTFOLIO_DATA.technologies.map((tech, idx) => (
                   <div
                     key={tech.id}
                     style={{ '--stagger': idx } as React.CSSProperties}
                     onMouseEnter={() => playTechBlip()}
-                    className="wow-tech-item group flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-95"
+                    className="wow-tech-item group flex flex-col items-center justify-center p-3 sm:p-3.5 rounded bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 hover:border-red-500/40 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_20px_-8px_rgba(239,68,68,0.35)] active:scale-95"
                   >
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <TechLogo type={tech.iconType} className="w-9 h-9 sm:w-10 sm:h-10" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                      <TechLogo type={tech.iconType} className="w-8 h-8 sm:w-10 sm:h-10" />
                     </div>
-                    <span className="mt-2.5 text-xs sm:text-sm font-heading font-medium tracking-wider text-zinc-300 group-hover:text-white transition-colors text-center">
+                    <span className="mt-2 text-[11px] sm:text-xs font-heading font-medium tracking-wider text-zinc-300 group-hover:text-white transition-colors text-center">
                       {tech.name}
                     </span>
                   </div>

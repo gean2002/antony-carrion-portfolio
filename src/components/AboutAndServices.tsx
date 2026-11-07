@@ -158,22 +158,33 @@ export const AboutAndServices: React.FC<AboutAndServicesProps> = ({
                   <div
                     key={service.id}
                     style={{ '--stagger': idx } as React.CSSProperties}
-                    onClick={() => playTechBlip()}
-                    className={`wow-service-row group flex items-start gap-4 py-3 sm:py-3.5 cursor-default -mx-2 px-3 rounded-sm ${idx !== 0 ? 'border-t border-white/5' : ''}`}
+                    onClick={() => {
+                      playTechBlip();
+                      onSelectService?.(service);
+                    }}
+                    className={`wow-service-row group flex items-center justify-between gap-4 py-3 sm:py-3.5 cursor-pointer -mx-2 px-3 rounded-sm hover:bg-white/[0.03] transition-all duration-200 ${idx !== 0 ? 'border-t border-white/5' : ''}`}
+                    title={language === 'it' ? `Richiedi info per ${service.title}` : `Solicitar info sobre ${service.title}`}
                   >
-                    {/* Icon badge */}
-                    <div className="w-10 h-10 shrink-0 bg-[#20070a] border border-red-700/60 group-hover:border-red-400 group-hover:bg-[#2c090d] group-hover:scale-110 group-hover:shadow-[0_0_18px_rgba(239,68,68,0.45)] flex items-center justify-center transition-all duration-300 rounded-sm shadow-sm shadow-red-950/40 mt-0.5">
-                      {getServiceIcon(service.icon)}
+                    <div className="flex items-start gap-4 flex-1 min-w-0">
+                      {/* Icon badge */}
+                      <div className="w-10 h-10 shrink-0 bg-[#20070a] border border-red-700/60 group-hover:border-red-400 group-hover:bg-[#2c090d] group-hover:scale-110 group-hover:shadow-[0_0_18px_rgba(239,68,68,0.45)] flex items-center justify-center transition-all duration-300 rounded-sm shadow-sm shadow-red-950/40 mt-0.5">
+                        {getServiceIcon(service.icon)}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-heading font-bold text-xs sm:text-[13px] tracking-wider text-white group-hover:text-red-400 transition-colors uppercase flex items-center gap-2">
+                          <span>{service.title}</span>
+                          <span className="text-[10px] text-red-500 font-mono opacity-0 group-hover:opacity-100 transition-opacity hidden sm:inline">
+                            →
+                          </span>
+                        </h3>
+                        <p className="mt-1 text-xs text-zinc-400 group-hover:text-zinc-300 font-body leading-relaxed line-clamp-2 transition-colors">
+                          {service.description}
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-heading font-bold text-xs sm:text-[13px] tracking-wider text-white group-hover:text-red-400 transition-colors uppercase">
-                        {service.title}
-                      </h3>
-                      <p className="mt-1 text-xs text-zinc-400 group-hover:text-zinc-300 font-body leading-relaxed line-clamp-2 transition-colors">
-                        {service.description}
-                      </p>
-                    </div>
+                    <ArrowRight className="w-4 h-4 text-zinc-600 group-hover:text-red-500 group-hover:translate-x-1 transition-all shrink-0 hidden sm:block" />
                   </div>
                 ))}
               </div>

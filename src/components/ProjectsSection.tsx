@@ -160,12 +160,22 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                 <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between relative bg-[#090a0d]">
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <span className="text-[10px] font-mono text-red-500 uppercase tracking-widest font-semibold">
+                      <span className="text-[10px] font-mono text-red-500 uppercase tracking-widest font-semibold truncate">
                         {project.category}
                       </span>
-                      <span className="text-[10px] font-mono text-zinc-500">
-                        {project.year}
-                      </span>
+                      {project.year === '2026' ? (
+                        <span className="shrink-0 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-600/20 border border-red-500/50 text-red-300 text-[10px] font-mono font-bold tracking-wider shadow-[0_0_10px_rgba(239,68,68,0.25)]">
+                          <span className="relative flex h-1.5 w-1.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
+                          </span>
+                          2026
+                        </span>
+                      ) : (
+                        <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/10 text-zinc-400 text-[10px] font-mono font-medium tracking-wider">
+                          2025
+                        </span>
+                      )}
                     </div>
 
                     <h3
