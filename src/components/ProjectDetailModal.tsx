@@ -33,37 +33,56 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
       >
         {/* Header Bar */}
         <div className="sticky top-0 z-20 flex items-center justify-between p-4 sm:p-5 bg-[#090a0d]/95 backdrop-blur-md border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <span className="w-1.5 h-6 bg-red-600 shadow-[0_0_10px_rgba(239,68,68,0.9)]" />
-            <div>
-              <span className="text-[10px] font-mono text-red-500 uppercase tracking-widest block">
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="w-1.5 h-6 bg-red-600 shadow-[0_0_10px_rgba(239,68,68,0.9)] shrink-0" />
+            <div className="min-w-0">
+              <span className="text-[10px] font-mono text-red-500 uppercase tracking-widest block truncate">
                 {project.category} · {project.year}
               </span>
-              <h2 className="font-heading font-black text-base sm:text-lg text-white tracking-wide uppercase">
+              <h2 className="font-heading font-black text-base sm:text-lg text-white tracking-wide uppercase truncate">
                 {project.title}
               </h2>
             </div>
           </div>
 
-          <button
-            onClick={() => {
-              playSubtleClick();
-              onClose();
-            }}
-            className="p-2 text-zinc-300 hover:text-white hover:bg-white/5 rounded transition-colors focus:outline-none cursor-pointer"
-            aria-label="Chiudi"
-          >
-            <X className="w-5 h-5 text-zinc-300 hover:text-red-400" />
-          </button>
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-heading font-bold uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(220,38,38,0.4)] cursor-pointer"
+              >
+                <span>{language === 'it' ? 'Vedi Live' : 'Ver Live'}</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
+
+            <button
+              onClick={() => {
+                playSubtleClick();
+                onClose();
+              }}
+              className="p-2 text-zinc-300 hover:text-white hover:bg-white/5 rounded transition-colors focus:outline-none cursor-pointer"
+              aria-label="Chiudi"
+            >
+              <X className="w-5 h-5 text-zinc-300 hover:text-red-400" />
+            </button>
+          </div>
         </div>
 
         {/* Content Body */}
         <div className="p-5 sm:p-7 space-y-6">
-          {/* Visual Showcase with preview scroll */}
+          {/* Visual Showcase */}
           <div className="relative aspect-[16/9] w-full overflow-hidden border border-white/10 rounded-sm bg-black group">
-            <ProjectCardPreview type={project.previewType} title={project.title} isModal={true} />
+            <ProjectCardPreview
+              type={project.previewType}
+              title={project.title}
+              isModal={true}
+              image={project.image}
+            />
             <div className="absolute top-3 right-3 px-2.5 py-1 bg-black/80 backdrop-blur-md border border-white/15 rounded text-[10px] font-mono text-zinc-300 pointer-events-none">
-              {language === 'it' ? 'Scorri col mouse sull\'immagine per esplorare' : 'Hover over image to preview scroll'}
+              Preview 4K Ultra HD
             </div>
           </div>
 
@@ -163,17 +182,31 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
               </span>
             </div>
 
-            <button
-              onClick={() => {
-                playSubtleClick();
-                onClose();
-                onRequestSimilar(project.title);
-              }}
-              className="btn-shimmer w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-heading font-bold text-xs tracking-widest uppercase transition-all shadow-lg shadow-red-950/60 cursor-pointer active:scale-95"
-            >
-              <span>{language === 'it' ? 'RICHIEDI UN PROGETTO SIMILE' : 'REQUEST SIMILAR PROJECT'}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+              {project.liveUrl && (
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-white/5 hover:bg-white/10 border border-white/15 hover:border-white/30 text-white font-heading font-bold text-xs tracking-widest uppercase transition-all rounded-sm cursor-pointer"
+                >
+                  <span>{language === 'it' ? 'APRI SITO LIVE' : 'ABRIR SITIO EN VIVO'}</span>
+                  <ExternalLink className="w-4 h-4 text-red-500" />
+                </a>
+              )}
+
+              <button
+                onClick={() => {
+                  playSubtleClick();
+                  onClose();
+                  onRequestSimilar(project.title);
+                }}
+                className="btn-shimmer w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-heading font-bold text-xs tracking-widest uppercase transition-all shadow-lg shadow-red-950/60 cursor-pointer active:scale-95"
+              >
+                <span>{language === 'it' ? 'RICHIEDI UN PROGETTO SIMILE' : 'REQUEST SIMILAR PROJECT'}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

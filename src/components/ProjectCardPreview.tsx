@@ -5,87 +5,68 @@ interface ProjectCardPreviewProps {
   type: Project['previewType'];
   title: string;
   isModal?: boolean;
+  image?: string;
 }
 
-export const ProjectCardPreview: React.FC<ProjectCardPreviewProps> = ({ type, isModal = false }) => {
-  // 1. Landing Page Showcase (Luméra Skincare - 4K High Definition)
-  if (type === 'villa') {
-    return (
-      <div className="relative w-full h-full bg-[#070709] overflow-hidden flex items-start justify-center">
-        <img
-          src="/project-landing.png"
-          alt="Landing Page Luméra Skincare 4K"
-          className="w-full h-auto block select-none pointer-events-none project-scroll-preview contrast-[1.03] brightness-[1.01]"
-          loading="lazy"
-          decoding="async"
-        />
+export const ProjectCardPreview: React.FC<ProjectCardPreviewProps> = ({ type, title, isModal = false, image }) => {
+  // Config per-type
+  let imgSrc = image || '/project-pietranova.jpg';
+  let badgeLabel = 'LIVE DEMO · VERCEL';
+  let dotColor = 'bg-red-500';
 
-        {/* Badge */}
-        <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 bg-black/85 backdrop-blur-sm border border-white/10 rounded text-xs text-zinc-300 font-mono shadow-md pointer-events-none z-10 flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-          <span>LANDING PAGE · 4K ULTRA HD</span>
-        </div>
-      </div>
-    );
+  if (type === 'pietranova') {
+    imgSrc = '/project-pietranova.jpg';
+    badgeLabel = 'RESIDENCE & SUITES · NEXT.JS';
+    dotColor = 'bg-amber-400';
+  } else if (type === 'sushi') {
+    imgSrc = '/project-sushi.jpg';
+    badgeLabel = 'RESTAURANT · POKE & SUSHI';
+    dotColor = 'bg-emerald-400';
+  } else if (type === 'chickencup') {
+    imgSrc = '/project-chickencup.png';
+    badgeLabel = 'STREET FOOD · E-COMMERCE';
+    dotColor = 'bg-orange-400';
+  } else if (type === 'olbia') {
+    imgSrc = '/project-olbia.jpg';
+    badgeLabel = 'LUXURY STAYS · NEXT.JS 14';
+    dotColor = 'bg-cyan-400';
+  } else if (type === 'barber' || type === 'studio') {
+    imgSrc = '/project-barber-final.png';
+    badgeLabel = 'BARBERSHOP · DARK LUXURY';
+    dotColor = 'bg-red-500';
+  } else if (type === 'moretti' || type === 'corp') {
+    imgSrc = '/project-corp.png';
+    badgeLabel = 'STUDIO MEDICO · CLEAN UI';
+    dotColor = 'bg-blue-400';
+  } else if (type === 'villa') {
+    imgSrc = '/project-landing.png';
+    badgeLabel = 'LANDING PAGE · 4K ULTRA HD';
+    dotColor = 'bg-amber-400';
+  } else if (type === 'shop') {
+    imgSrc = '/project-urbanx.png';
+    badgeLabel = 'E-COMMERCE · SHOPIFY';
+    dotColor = 'bg-emerald-400';
   }
 
-  // 2. E-Commerce Store (URBANX Shopify)
-  if (type === 'shop') {
-    return (
-      <div className="relative w-full h-full bg-[#070709] overflow-hidden flex items-start justify-center">
-        <img
-          src="/project-urbanx.png"
-          alt="URBANX Shopify Store"
-          className="w-full h-auto block select-none pointer-events-none project-scroll-preview"
-          loading="lazy"
-          decoding="async"
-        />
-
-        {/* Badge */}
-        <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 bg-black/85 backdrop-blur-sm border border-white/10 rounded text-xs text-zinc-300 font-mono shadow-md pointer-events-none z-10 flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-          <span>E-COMMERCE · SHOPIFY</span>
-        </div>
-      </div>
-    );
-  }
-
-  // 3. Corporate Law / Legal Firm (Atorn Law)
-  if (type === 'corp') {
-    return (
-      <div className="relative w-full h-full bg-[#070709] overflow-hidden flex items-start justify-center">
-        <img
-          src="/project-corp.png"
-          alt="Sito Aziendale Studio Legale"
-          className="w-full h-auto block select-none pointer-events-none project-scroll-preview"
-          loading="lazy"
-          decoding="async"
-        />
-
-        {/* Badge */}
-        <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 bg-black/85 backdrop-blur-sm border border-white/10 rounded text-xs text-zinc-300 font-mono shadow-md pointer-events-none z-10 flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-          <span>CORPORATE · MULTIPAGE</span>
-        </div>
-      </div>
-    );
-  }
-
-  // 4. Studio di Design / Luxury Brand (JM Barber Club Torino - 4K)
   return (
-    <div className="relative w-full h-full bg-[#070709] overflow-hidden flex items-start justify-center">
+    <div className="relative w-full h-full bg-[#070709] overflow-hidden flex items-start justify-center group">
       <img
-        src="/project-barber-final.png"
-        alt="JM Barber Club Torino 4K"
-        className="w-full h-auto block select-none pointer-events-none project-scroll-deep"
+        src={imgSrc}
+        alt={title}
+        className={`w-full h-full object-cover block select-none pointer-events-none transition-transform duration-700 ease-out group-hover:scale-105 ${
+          isModal ? 'max-h-[460px] object-cover' : 'aspect-[16/10]'
+        }`}
         loading="lazy"
         decoding="async"
       />
 
+      {/* Gradient Vignette overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
+
       {/* Badge */}
-      <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 bg-black/85 backdrop-blur-sm border border-white/10 rounded text-xs text-zinc-300 font-mono shadow-md pointer-events-none z-10 flex items-center gap-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-        <span>STUDIO DI DESIGN · 4K</span>
+      <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 bg-black/85 backdrop-blur-sm border border-white/10 rounded text-[10px] text-zinc-300 font-mono shadow-md pointer-events-none z-10 flex items-center gap-1.5">
+        <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
+        <span>{badgeLabel}</span>
       </div>
     </div>
   );
