@@ -3,7 +3,6 @@ import { getPortfolioData } from '../data/portfolioData';
 import { playSubtleClick } from '../utils/audio';
 import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { AnimatedCounter } from './AnimatedCounter';
 
 interface HeroSectionProps {
   onOpenContact: () => void;
@@ -17,8 +16,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
       id="hero"
       className="relative min-h-[480px] sm:min-h-[520px] lg:min-h-[560px] pt-20 pb-8 sm:pt-24 sm:pb-10 flex items-center overflow-hidden bg-[#030303]"
     >
-      {/* DESKTOP Atmospheric Hero Image: centered with seamless dissolving edge gradients */}
-      <div className="hidden lg:flex absolute inset-0 pointer-events-none overflow-hidden items-center justify-center translate-x-8 bg-[#030303]">
+      {/* DESKTOP Atmospheric Hero Image: beautifully positioned on the right half with seamless dissolving edge gradients */}
+      <div className="hidden lg:flex absolute inset-0 pointer-events-none overflow-hidden items-center justify-center translate-x-12 xl:translate-x-16 bg-[#030303]">
         <div className="relative h-full max-h-[520px] w-auto aspect-[1466/1073] flex items-center justify-center">
           <img
             src="/hero-cyberpunk.jpg"
@@ -38,7 +37,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
 
           {/* LEFT: Name + CTA */}
-          <div className="lg:col-span-6 flex flex-col justify-center">
+          <div className="lg:col-span-7 flex flex-col justify-center">
             {/* Live Availability Badge */}
             <div
               style={{ '--delay': '0.15s' } as React.CSSProperties}
@@ -132,27 +131,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
             </div>
           </div>
 
-          {/* CENTER: empty space on desktop so background portrait is clearly visible */}
-          <div className="lg:col-span-3 hidden lg:block" />
-
-          {/* RIGHT: Stats - responsive layout for phones & tablets */}
-          <div className="lg:col-span-3 grid grid-cols-3 lg:flex lg:flex-col justify-between sm:justify-start gap-3 sm:gap-6 lg:gap-0 mt-6 lg:mt-0 lg:self-center pt-5 lg:pt-0 border-t border-white/5 lg:border-t-0">
-            {PORTFOLIO_DATA.stats.map((stat, idx) => (
-              <div
-                key={idx}
-                style={{ '--delay': `${0.38 + idx * 0.12}s` } as React.CSSProperties}
-                className={`intro-fade-up text-left lg:py-3.5 ${idx !== 0 ? 'lg:border-t border-white/10' : ''}`}
-              >
-                <AnimatedCounter
-                  value={stat.value}
-                  className="font-heading font-bold text-3xl xs:text-4xl sm:text-5xl text-red-600 leading-none"
-                />
-                <div className="mt-1 text-[10px] sm:text-[11px] text-zinc-400 uppercase tracking-wider font-heading leading-snug max-w-[110px]">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* RIGHT: empty space on desktop so background portrait is unobstructed */}
+          <div className="lg:col-span-5 hidden lg:block" />
 
         </div>
       </div>
