@@ -71,8 +71,8 @@ const PORTFOLIO_DATA_IT = {
   name: 'ANTONY CARRION',
   firstName: 'ANTONY',
   lastName: 'CARRION',
-  role: 'SVILUPPO WEB',
-  roleDescription: 'Creo siti web moderni e funzionali chiavi in mano',
+  role: 'WEB DESIGN & VIBE CODING',
+  roleDescription: 'Siti web d\'élite, estetica magnetica e vibe coding di nuova generazione',
   tagline: 'CREO SITI CHE LAVORANO PER IL TUO BUSINESS',
   experienceYears: '2+',
   completedProjects: '10+',
@@ -83,9 +83,9 @@ const PORTFOLIO_DATA_IT = {
     { value: '100%', label: 'responsabilità e qualità', sub: 'rispetto delle scadenze e codice pulito' },
   ],
   bio: [
-    'Sono uno sviluppatore web e Shopify specialist con base in Italia.',
-    'Diplomato presso l\'Istituto Superiore Ettore Majorana di Grugliasco, ho solide basi tecniche e logiche applicate allo sviluppo web ad alte prestazioni.',
-    'Aiuto aziende e professionisti a scalare su internet con e-commerce, landing page e portali web moderni orientati alla conversione.'
+    'Sono un Web Designer e Vibe Coder freelance con base a Torino, operativo per clienti in tutta Italia ed estero.',
+    'Diplomato presso l\'Istituto Superiore Ettore Majorana di Grugliasco, fondo sensibilità visiva d\'élite, velocità del vibe coding ed ingegneria moderna.',
+    'Creo siti web, landing page strategiche ed e-commerce su misura: progettati per catturare subito l\'attenzione e convertire visitatori in fatturato.'
   ],
   contacts: contactsData,
   services: [
@@ -276,8 +276,8 @@ const PORTFOLIO_DATA_ES = {
   name: 'ANTONY CARRION',
   firstName: 'ANTONY',
   lastName: 'CARRION',
-  role: 'DESARROLLO WEB',
-  roleDescription: 'Creo sitios web modernos y funcionales llave en mano',
+  role: 'WEB DESIGN & VIBE CODING',
+  roleDescription: 'Sitios web de élite, estética magnética y vibe coding de nueva generación',
   tagline: 'CREO SITIOS QUE TRABAJAN PARA TU NEGOCIO',
   experienceYears: '2+',
   completedProjects: '10+',
@@ -288,9 +288,9 @@ const PORTFOLIO_DATA_ES = {
     { value: '100%', label: 'responsabilidad y calidad', sub: 'cumplimiento de plazos y código limpio' },
   ],
   bio: [
-    'Soy un desarrollador web y especialista en Shopify basado en Italia.',
-    'Graduado del Instituto Superior Ettore Majorana de Grugliasco, tengo sólidas bases técnicas y lógicas aplicadas al desarrollo web de alto rendimiento.',
-    'Ayudo a empresas y profesionales a escalar en internet con e-commerce, landing pages y portales web modernos orientados a la conversión.'
+    'Soy un Web Designer y Vibe Coder freelance basado en Turín, activo para proyectos en toda Italia y el extranjero.',
+    'Graduado del Instituto Superior Ettore Majorana de Grugliasco, fusiono sensibilidad visual de élite, velocidad de vibe coding e ingeniería web moderna.',
+    'Creo sitios web, landing pages estratégicas y e-commerce a medida: diseñados para captar la atención de inmediato y convertir visitantes en clientes reales.'
   ],
   contacts: contactsDataES,
   services: [

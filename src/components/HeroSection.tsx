@@ -21,7 +21,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
         <div className="relative h-full max-h-[520px] w-auto aspect-[1466/1073] flex items-center justify-center">
           <img
             src="/hero-cyberpunk.jpg"
-            alt="Antony Carrion - Web Designer"
+            alt="Antony Carrion - Web Designer & Vibe Coder"
             className="intro-portrait w-full h-full object-contain"
           />
           {/* Soft edge gradients so the image dissolves seamlessly into the background */}
@@ -72,7 +72,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
               className="intro-fade-up mt-2.5 sm:mt-3 font-heading text-xs sm:text-sm tracking-[0.22em] text-zinc-300 uppercase flex flex-wrap items-center gap-1.5"
             >
               <span>{t('hero.title1')}</span>
-              <span className="text-red-500 font-semibold">{t('hero.title2')}</span>
+              <span className="text-red-500 font-bold tracking-[0.25em] drop-shadow-[0_0_12px_rgba(239,68,68,0.45)]">{t('hero.title2')}</span>
             </p>
 
             {/* Subtitle / Direct Value Proposition */}
@@ -120,7 +120,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
             <div className="lg:hidden relative w-full max-w-[440px] mx-auto mt-6 mb-2 aspect-[4/3] xs:aspect-[16/11] overflow-hidden flex items-center justify-center">
               <img
                 src="/hero-cyberpunk.jpg"
-                alt="Antony Carrion - Sviluppatore Web"
+                alt="Antony Carrion - Web Designer & Vibe Coder"
                 className="intro-portrait w-full h-full object-cover object-[62%_center]"
               />
               {/* Soft edge gradients so it blends seamlessly into background */}
